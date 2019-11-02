@@ -11,7 +11,7 @@ type sessionRepo struct {
 	db *sql.DB
 }
 
-func NewSessionRepository(db *sql.DB) repositories.Session {
+func NewRepositorySession(db *sql.DB) repositories.Session {
 	return &sessionRepo{
 		db: db,
 	}

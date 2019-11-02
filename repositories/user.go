@@ -6,7 +6,7 @@ import (
 	"github.com/ocboogie/pixel-art/models"
 )
 
-//go:generate mockgen -destination=../mocks/user_repo.go -package mocks -mock_names User=UserRepository github.com/ocboogie/pixel-art/repositories User
+//go:generate mockgen -destination=../mocks/repo_user.go -package mocks -mock_names User=RepositoryUser github.com/ocboogie/pixel-art/repositories User
 
 var (
 	ErrUserNotFound = errors.New("User not found")

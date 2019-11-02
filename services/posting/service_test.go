@@ -13,9 +13,9 @@ func TestPost(t *testing.T) {
 	t.Run("Expected", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
-		repo := mocks.NewPostRepository(ctrl)
-		s := &Service{
-			PostRepo: repo,
+		repo := mocks.NewRepositoryPost(ctrl)
+		s := &service{
+			postRepo: repo,
 		}
 
 		repo.EXPECT().Create(gomock.AssignableToTypeOf(&models.Post{})).Return(nil)
@@ -30,7 +30,7 @@ func TestPost(t *testing.T) {
 		assert.Regexp(t, `^[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}$`, id)
 	})
 	t.Run("Invalid post", func(t *testing.T) {
-		s := &Service{}
+		s := &service{}
 
 		_, err := s.Post(models.PostInput{
 			UserID: "a",

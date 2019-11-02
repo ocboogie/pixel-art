@@ -20,25 +20,15 @@ func main() {
 	defer db.Close()
 	config := config.GetConfig()
 
-	userRepo := postgres.NewUserRepository(db)
+	userRepo := postgres.NewRepositoryUser(db)
 	postRepo := postgres.NewPostRepository(db)
-	sessionRepo := postgres.NewSessionRepository(db)
+	sessionRepo := postgres.NewRepositorySession(db)
 
-	authenticating := &authenticating.Service{
-		Config:      &config,
-		UserRepo:    userRepo,
-		SessionRepo: sessionRepo,
-	}
-	listing := &listing.Service{
-		Config:   &config,
-		PostRepo: postRepo,
-	}
-	posting := &posting.Service{
-		Config:   &config,
-		PostRepo: postRepo,
-	}
+	authenticating := authenticating.New(&config, userRepo, sessionRepo)
+	listing := listing.New(&config, postRepo)
+	posting := posting.New(&config, userRepo, postRepo)
 
-	server := api.New(authenticating, listing, posting)
+	server := api.New(&config, authenticating, listing, posting)
 
 	server.Setup()
 	server.Start()

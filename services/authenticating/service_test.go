@@ -21,10 +21,10 @@ var cfg = &config.Config{
 func TestSignUp(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	repo := mocks.NewUserRepository(ctrl)
-	s := &Service{
-		UserRepo: repo,
-		Config:   cfg,
+	repo := mocks.NewRepositoryUser(ctrl)
+	s := &service{
+		userRepo: repo,
+		config:   cfg,
 	}
 
 	repo.EXPECT().ExistsEmail(gomock.Any()).Return(false, nil)
@@ -41,15 +41,15 @@ func TestSignUp(t *testing.T) {
 func TestLogin(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	userRepo := mocks.NewUserRepository(ctrl)
-	sessionRepo := mocks.NewSessionRepository(ctrl)
-	s := &Service{
-		UserRepo:    userRepo,
-		SessionRepo: sessionRepo,
-		Config:      cfg,
+	userRepo := mocks.NewRepositoryUser(ctrl)
+	sessionRepo := mocks.NewRepositorySession(ctrl)
+	s := &service{
+		userRepo:    userRepo,
+		sessionRepo: sessionRepo,
+		config:      cfg,
 	}
 
-	hashed, err := argon2.Hash("correct battery horse staple", s.Config.HashConfig)
+	hashed, err := argon2.Hash("correct battery horse staple", s.config.HashConfig)
 	assert.NoError(t, err)
 
 	user := &models.User{
@@ -71,10 +71,10 @@ func TestLogin(t *testing.T) {
 func TestCreateSession(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	repo := mocks.NewSessionRepository(ctrl)
-	s := &Service{
-		SessionRepo: repo,
-		Config:      cfg,
+	repo := mocks.NewRepositorySession(ctrl)
+	s := &service{
+		sessionRepo: repo,
+		config:      cfg,
 	}
 
 	// TODO: Test that the session IDs are correct
@@ -90,10 +90,10 @@ func TestVerifySession(t *testing.T) {
 	t.Run("Expected", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
-		repo := mocks.NewSessionRepository(ctrl)
-		s := &Service{
-			SessionRepo: repo,
-			Config:      cfg,
+		repo := mocks.NewRepositorySession(ctrl)
+		s := &service{
+			sessionRepo: repo,
+			config:      cfg,
 		}
 
 		session := &models.Session{
@@ -112,10 +112,10 @@ func TestVerifySession(t *testing.T) {
 	t.Run("Expired", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
-		repo := mocks.NewSessionRepository(ctrl)
-		s := &Service{
-			SessionRepo: repo,
-			Config:      cfg,
+		repo := mocks.NewRepositorySession(ctrl)
+		s := &service{
+			sessionRepo: repo,
+			config:      cfg,
 		}
 
 		session := &models.Session{

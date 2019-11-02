@@ -9,13 +9,27 @@ import (
 	"github.com/ocboogie/pixel-art/repositories"
 )
 
-type Service struct {
-	UserRepo repositories.User
-	PostRepo repositories.Post
-	Config   *config.Config
+//go:generate mockgen -destination=../../mocks/service_posting.go -package mocks -mock_names Service=ServicePosting github.com/ocboogie/pixel-art/services/posting Service
+
+type Service interface {
+	Post(input models.PostInput) (string, error)
 }
 
-func (s *Service) Post(input models.PostInput) (string, error) {
+type service struct {
+	userRepo repositories.User
+	postRepo repositories.Post
+	config   *config.Config
+}
+
+func New(config *config.Config, userRepo repositories.User, postRepo repositories.Post) Service {
+	return &service{
+		userRepo: userRepo,
+		postRepo: postRepo,
+		config:   config,
+	}
+}
+
+func (s *service) Post(input models.PostInput) (string, error) {
 	if err := input.Validate(); err != nil {
 		return "", &ErrInvalidPost{Err: err}
 	}
@@ -34,7 +48,7 @@ func (s *Service) Post(input models.PostInput) (string, error) {
 		CreatedAt: time.Now(),
 	}
 
-	if err := s.PostRepo.Create(post); err != nil {
+	if err := s.postRepo.Create(post); err != nil {
 		return "", err
 	}
 

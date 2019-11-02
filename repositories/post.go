@@ -6,7 +6,7 @@ import (
 	"github.com/ocboogie/pixel-art/models"
 )
 
-//go:generate mockgen -destination=../mocks/post_repo.go -package mocks -mock_names Post=PostRepository github.com/ocboogie/pixel-art/repositories Post
+//go:generate mockgen -destination=../mocks/repo_post.go -package mocks -mock_names Post=RepositoryPost github.com/ocboogie/pixel-art/repositories Post
 
 var (
 	ErrPostNotFound = errors.New("Post not found")

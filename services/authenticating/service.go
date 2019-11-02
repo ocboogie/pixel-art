@@ -13,21 +13,38 @@ import (
 	"github.com/ocboogie/pixel-art/repositories"
 )
 
+//go:generate mockgen -destination=../../mocks/service_authenticating.go -package mocks -mock_names Service=ServiceAuthenticating github.com/ocboogie/pixel-art/services/authenticating Service
+
 // The number of hex characters in a session ID
 const SessionIDLength = 32
 
-type Service struct {
-	UserRepo    repositories.User
-	SessionRepo repositories.Session
-	Config      *config.Config
+type Service interface {
+	SignUp(user *models.UserInput) (string, error)
+	Login(email string, password string) (string, error)
+	CreateSession(userID string) (string, error)
+	VerifySession(sessionID string) (string, error)
 }
 
-func (s *Service) SignUp(user *models.UserInput) (string, error) {
+type service struct {
+	userRepo    repositories.User
+	sessionRepo repositories.Session
+	config      *config.Config
+}
+
+func New(config *config.Config, userRepo repositories.User, sessionRepo repositories.Session) Service {
+	return &service{
+		userRepo:    userRepo,
+		sessionRepo: sessionRepo,
+		config:      config,
+	}
+}
+
+func (s *service) SignUp(user *models.UserInput) (string, error) {
 	if err := user.Validate(); err != nil {
 		return "", &ErrInvalidUser{Err: err}
 	}
 
-	exists, err := s.UserRepo.ExistsEmail(user.Email)
+	exists, err := s.userRepo.ExistsEmail(user.Email)
 	if err != nil {
 		return "", err
 	}
@@ -41,7 +58,7 @@ func (s *Service) SignUp(user *models.UserInput) (string, error) {
 	}
 	id := idBytes.String()
 
-	hashedPassword, err := argon2.Hash(user.Password, s.Config.HashConfig)
+	hashedPassword, err := argon2.Hash(user.Password, s.config.HashConfig)
 	if err != nil {
 		return "", err
 	}
@@ -53,18 +70,18 @@ func (s *Service) SignUp(user *models.UserInput) (string, error) {
 		CreatedAt: time.Now(),
 	}
 
-	if err := s.UserRepo.Create(userHashed); err != nil {
+	if err := s.userRepo.Create(userHashed); err != nil {
 		return "", err
 	}
 
 	return id, nil
 }
 
-func (s *Service) Login(email string, password string) (string, error) {
-	user, err := s.UserRepo.FindByEmail(email)
+func (s *service) Login(email string, password string) (string, error) {
+	user, err := s.userRepo.FindByEmail(email)
 	if err != nil {
 		// TODO: Doc why this is here
-		argon2.Hash(password, s.Config.HashConfig)
+		argon2.Hash(password, s.config.HashConfig)
 		return "", err
 	}
 
@@ -79,13 +96,13 @@ func (s *Service) Login(email string, password string) (string, error) {
 	return s.CreateSession(user.ID)
 }
 
-func (s *Service) hashSessionID(id string) string {
+func (s *service) hashSessionID(id string) string {
 	hasher := sha256.New()
 	hasher.Write([]byte(id))
 	return hex.EncodeToString(hasher.Sum(nil))
 }
 
-func (s *Service) CreateSession(userID string) (string, error) {
+func (s *service) CreateSession(userID string) (string, error) {
 	// Dividing by 2 because for each byte we will have two hex characters
 	b := make([]byte, SessionIDLength/2)
 	_, err := rand.Read(b)
@@ -95,7 +112,7 @@ func (s *Service) CreateSession(userID string) (string, error) {
 	id := hex.EncodeToString(b)
 
 	hashedID := s.hashSessionID(id)
-	expiresAt := time.Now().Add(time.Duration(s.Config.SessionLifetime) * time.Second)
+	expiresAt := time.Now().Add(time.Duration(s.config.SessionLifetime) * time.Second)
 
 	session := &models.Session{
 		ID:        hashedID,
@@ -103,24 +120,24 @@ func (s *Service) CreateSession(userID string) (string, error) {
 		ExpiresAt: expiresAt,
 	}
 
-	if err := s.SessionRepo.Create(session); err != nil {
+	if err := s.sessionRepo.Create(session); err != nil {
 		return "", err
 	}
 
 	return id, nil
 }
 
-func (s *Service) VerifySession(sessionID string) (string, error) {
+func (s *service) VerifySession(sessionID string) (string, error) {
 	hashedID := s.hashSessionID(sessionID)
 
-	session, err := s.SessionRepo.Find(hashedID)
+	session, err := s.sessionRepo.Find(hashedID)
 
 	if err != nil {
 		return "", err
 	}
 
 	if session.ExpiresAt.Before(time.Now()) {
-		s.SessionRepo.Delete(hashedID)
+		s.sessionRepo.Delete(hashedID)
 
 		return "", ErrExpiredSession
 	}

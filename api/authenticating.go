@@ -50,7 +50,7 @@ func (s *server) handlerLogin(c echo.Context) error {
 	sessionCookie := &http.Cookie{
 		Name:    SessionIDCookieName,
 		Value:   sessionID,
-		Expires: time.Now().Add(time.Duration(s.authenticating.Config.SessionLifetime)),
+		Expires: time.Now().Add(time.Duration(s.config.SessionLifetime)),
 	}
 
 	c.SetCookie(sessionCookie)

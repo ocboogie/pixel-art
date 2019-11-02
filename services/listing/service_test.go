@@ -12,14 +12,24 @@ import (
 func TestLatest(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	repo := mocks.NewPostRepository(ctrl)
-	s := &Service{
-		PostRepo: repo,
+	repo := mocks.NewRepositoryPost(ctrl)
+	s := &service{
+		postRepo: repo,
 	}
 
 	mockLatestPosts := []*models.Post{
 		&models.Post{
 			UserID: "60aaf13d-8ddc-403b-ba42-960e18a22f6a",
+			Title:  "Yup",
+			Data:   make([]byte, 0),
+		},
+		&models.Post{
+			UserID: "6caaf13d-8ddc-403b-ba42-960e18a22f6a",
+			Title:  "Yup",
+			Data:   make([]byte, 0),
+		},
+		&models.Post{
+			UserID: "6aaaf13d-8ddc-403b-ba42-960e18a22f6a",
 			Title:  "Yup",
 			Data:   make([]byte, 0),
 		},

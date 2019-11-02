@@ -5,6 +5,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/ocboogie/pixel-art/config"
 	"github.com/ocboogie/pixel-art/services/authenticating"
 	"github.com/ocboogie/pixel-art/services/listing"
 	"github.com/ocboogie/pixel-art/services/posting"
@@ -12,9 +13,10 @@ import (
 
 type server struct {
 	e              *echo.Echo
-	authenticating *authenticating.Service
-	listing        *listing.Service
-	posting        *posting.Service
+	config         *config.Config
+	authenticating authenticating.Service
+	listing        listing.Service
+	posting        posting.Service
 }
 
 type HTTPError interface {
@@ -23,14 +25,16 @@ type HTTPError interface {
 	Status() int
 }
 
-func New(authenticating *authenticating.Service,
-	listing *listing.Service,
-	posting *posting.Service) *server {
+func New(config *config.Config,
+	authenticating authenticating.Service,
+	listing listing.Service,
+	posting posting.Service) *server {
 
 	s := &server{
 		authenticating: authenticating,
 		listing:        listing,
 		posting:        posting,
+		config:         config,
 	}
 
 	return s

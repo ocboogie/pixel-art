@@ -6,7 +6,7 @@ import (
 	"github.com/ocboogie/pixel-art/models"
 )
 
-//go:generate mockgen -destination=../mocks/session_repo.go -package mocks -mock_names Session=SessionRepository github.com/ocboogie/pixel-art/repositories Session
+//go:generate mockgen -destination=../mocks/repo_session.go -package mocks -mock_names Session=RepositorySession github.com/ocboogie/pixel-art/repositories Session
 
 var (
 	ErrSessionNotFound = errors.New("Session not found")
