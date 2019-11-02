@@ -1,0 +1,59 @@
+package api
+
+import (
+	"net/http"
+	"time"
+
+	"github.com/labstack/echo/v4"
+	"github.com/ocboogie/pixel-art/models"
+)
+
+const SessionIDCookieName = "sessionId"
+
+func (s *server) handlerSignUp(c echo.Context) error {
+	userInput := new(models.UserInput)
+
+	if err := c.Bind(userInput); err != nil {
+		return err
+	}
+	if err := userInput.Validate(); err != nil {
+		return err
+	}
+
+	_, err := s.authenticating.SignUp(userInput)
+
+	if err != nil {
+		// TODO:
+		return err
+	}
+
+	return c.NoContent(http.StatusOK)
+}
+
+func (s *server) handlerLogin(c echo.Context) error {
+	userInput := new(models.UserInput)
+
+	if err := c.Bind(userInput); err != nil {
+		return err
+	}
+	if err := userInput.Validate(); err != nil {
+		return err
+	}
+
+	sessionID, err := s.authenticating.Login(userInput.Email, userInput.Password)
+
+	if err != nil {
+		return err
+	}
+
+	// TODO: Move this somewhere else and use secure
+	sessionCookie := &http.Cookie{
+		Name:    SessionIDCookieName,
+		Value:   sessionID,
+		Expires: time.Now().Add(time.Duration(s.authenticating.Config.SessionLifetime)),
+	}
+
+	c.SetCookie(sessionCookie)
+
+	return c.NoContent(http.StatusOK)
+}
