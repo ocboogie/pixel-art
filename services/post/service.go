@@ -12,7 +12,7 @@ import (
 //go:generate mockgen -destination=../../mocks/service_posting.go -package mocks -mock_names Service=ServicePosting github.com/ocboogie/pixel-art/services/posting Service
 
 type Service interface {
-	Post(input models.PostInput) (string, error)
+	Create(input models.PostInput) (string, error)
 }
 
 type service struct {
@@ -29,7 +29,7 @@ func New(config *config.Config, userRepo repositories.User, postRepo repositorie
 	}
 }
 
-func (s *service) Post(input models.PostInput) (string, error) {
+func (s *service) Create(input models.PostInput) (string, error) {
 	if err := input.Validate(); err != nil {
 		return "", &ErrInvalidPost{Err: err}
 	}

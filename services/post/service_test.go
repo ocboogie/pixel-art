@@ -20,7 +20,7 @@ func TestPost(t *testing.T) {
 
 		repo.EXPECT().Create(gomock.AssignableToTypeOf(&models.Post{})).Return(nil)
 
-		id, err := s.Post(models.PostInput{
+		id, err := s.Create(models.PostInput{
 			UserID: "60aaf13d-8ddc-403b-ba42-960e18a22f6a",
 			Title:  "Yup",
 			Data:   make([]byte, 0),
@@ -32,7 +32,7 @@ func TestPost(t *testing.T) {
 	t.Run("Invalid post", func(t *testing.T) {
 		s := &service{}
 
-		_, err := s.Post(models.PostInput{
+		_, err := s.Create(models.PostInput{
 			UserID: "a",
 			Title:  "",
 			Data:   make([]byte, 0),
