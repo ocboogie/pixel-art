@@ -19,12 +19,6 @@ type server struct {
 	posting        posting.Service
 }
 
-type HTTPError interface {
-	error
-
-	Status() int
-}
-
 func New(config *config.Config,
 	authenticating authenticating.Service,
 	listing listing.Service,
@@ -40,8 +34,9 @@ func New(config *config.Config,
 	return s
 }
 
-type ErrorResponse struct {
-	err string `json:error`
+type ResponsePayload struct {
+	data interface{} `json:data,emitempty`
+	err  string      `json:error,emitempty`
 }
 
 func (s *server) Setup() {
@@ -50,24 +45,18 @@ func (s *server) Setup() {
 	s.e.Use(middleware.Logger())
 	s.e.Use(middleware.Recover())
 
-	s.e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(c echo.Context) error {
-			err := next(c)
-			if err != nil {
-				status := http.StatusInternalServerError
-				msg := "Internal server error"
+	s.e.HTTPErrorHandler = func(err error, c echo.Context) {
+		code := http.StatusInternalServerError
+		msg := "Internal server error"
 
-				if httpErr, ok := err.(HTTPError); ok {
-					status = httpErr.Status()
-					msg = httpErr.Error()
-				}
-
-				c.JSON(status, ErrorResponse{err: msg})
-			}
-
-			return err
+		if he, ok := err.(*echo.HTTPError); ok {
+			msg = he.Error()
+			code = he.Code
 		}
-	})
+
+		c.JSON(code, ResponsePayload{err: msg})
+
+	}
 
 	s.routes()
 }
@@ -76,5 +65,6 @@ func (s *server) Start() {
 	if s.e == nil {
 		panic("Shouldn't start before setting up the server")
 	}
+
 	s.e.Start(":4000")
 }

@@ -17,7 +17,7 @@ func (s *server) handlerSignUp(c echo.Context) error {
 		return err
 	}
 	if err := userInput.Validate(); err != nil {
-		return err
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
 	_, err := s.authenticating.SignUp(userInput)
