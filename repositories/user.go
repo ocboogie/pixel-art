@@ -13,7 +13,7 @@ var (
 )
 
 type User interface {
-	// Find(id string) (*models.User, error)
+	Find(id string) (*models.User, error)
 	FindByEmail(email string) (*models.User, error)
 	// Update(user *models.User) error
 	Create(user *models.User) error

@@ -17,6 +17,22 @@ func NewRepositoryUser(db *sql.DB) repositories.User {
 	}
 }
 
+func (r *userRepo) Find(ID string) (*models.User, error) {
+	user := models.User{}
+
+	err := r.db.QueryRow(
+		`SELECT id, email, password FROM users WHERE id=$1 LIMIT 1`,
+		ID,
+	).
+		Scan(&user.ID, &user.Email, &user.Password)
+
+	if err == sql.ErrNoRows {
+		return nil, repositories.ErrUserNotFound
+	}
+
+	return &user, err
+}
+
 func (r *userRepo) FindByEmail(email string) (*models.User, error) {
 	user := models.User{}
 
