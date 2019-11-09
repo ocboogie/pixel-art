@@ -17,12 +17,12 @@ func NewRepositoryUser(db *sql.DB) repositories.User {
 	}
 }
 
-func (r *userRepo) Find(ID string) (*models.User, error) {
+func (r *userRepo) Find(id string) (*models.User, error) {
 	user := models.User{}
 
 	err := r.db.QueryRow(
 		`SELECT id, email, password FROM users WHERE id=$1 LIMIT 1`,
-		ID,
+		id,
 	).
 		Scan(&user.ID, &user.Email, &user.Password)
 
