@@ -1,4 +1,4 @@
-package posting
+package post
 
 import (
 	"time"
@@ -9,7 +9,7 @@ import (
 	"github.com/ocboogie/pixel-art/repositories"
 )
 
-//go:generate mockgen -destination=../../mocks/service_posting.go -package mocks -mock_names Service=ServicePosting github.com/ocboogie/pixel-art/services/posting Service
+//go:generate mockgen -destination=../../mocks/service_post.go -package mocks -mock_names Service=ServicePost github.com/ocboogie/pixel-art/services/post Service
 
 type Service interface {
 	Create(input models.PostInput) (string, error)

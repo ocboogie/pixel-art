@@ -1,4 +1,4 @@
-package posting
+package post
 
 import (
 	"testing"

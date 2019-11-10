@@ -9,7 +9,7 @@ import (
 	"github.com/ocboogie/pixel-art/postgres"
 	"github.com/ocboogie/pixel-art/services/authenticating"
 	"github.com/ocboogie/pixel-art/services/listing"
-	"github.com/ocboogie/pixel-art/services/posting"
+	"github.com/ocboogie/pixel-art/services/post"
 )
 
 func main() {
@@ -26,9 +26,9 @@ func main() {
 
 	authenticating := authenticating.New(&config, userRepo, sessionRepo)
 	listing := listing.New(&config, postRepo)
-	posting := posting.New(&config, userRepo, postRepo)
+	post := post.New(&config, userRepo, postRepo)
 
-	server := api.New(&config, authenticating, listing, posting)
+	server := api.New(&config, authenticating, listing, post)
 
 	server.Setup()
 	server.Start()

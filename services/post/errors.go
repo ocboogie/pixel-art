@@ -1,4 +1,4 @@
-package posting
+package post
 
 type ErrInvalidPost struct {
 	Err error

@@ -8,7 +8,7 @@ import (
 	"github.com/ocboogie/pixel-art/config"
 	"github.com/ocboogie/pixel-art/services/authenticating"
 	"github.com/ocboogie/pixel-art/services/listing"
-	"github.com/ocboogie/pixel-art/services/posting"
+	"github.com/ocboogie/pixel-art/services/post"
 )
 
 type server struct {
@@ -16,18 +16,18 @@ type server struct {
 	config         *config.Config
 	authenticating authenticating.Service
 	listing        listing.Service
-	posting        posting.Service
+	post        post.Service
 }
 
 func New(config *config.Config,
 	authenticating authenticating.Service,
 	listing listing.Service,
-	posting posting.Service) *server {
+	post post.Service) *server {
 
 	s := &server{
 		authenticating: authenticating,
 		listing:        listing,
-		posting:        posting,
+		post:        post,
 		config:         config,
 	}
 
