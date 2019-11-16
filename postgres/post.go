@@ -44,7 +44,7 @@ func (r *postRepo) Save(post *models.Post) error {
 
 func (r *postRepo) Latest(limit uint) ([]*models.Post, error) {
 	rows, err := r.db.Query(
-		`SELECT id, user_id, title, data, create_at FROM posts ORDER BY create_at LIMIT $1`,
+		`SELECT id, user_id, title, data, created_at FROM posts ORDER BY created_at LIMIT $1`,
 		limit,
 	)
 	if err != nil {
