@@ -7,7 +7,6 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/ocboogie/pixel-art/config"
 	"github.com/ocboogie/pixel-art/services/authenticating"
-	"github.com/ocboogie/pixel-art/services/listing"
 	"github.com/ocboogie/pixel-art/services/post"
 )
 
@@ -15,18 +14,15 @@ type server struct {
 	e              *echo.Echo
 	config         *config.Config
 	authenticating authenticating.Service
-	listing        listing.Service
 	post           post.Service
 }
 
 func New(config *config.Config,
 	authenticating authenticating.Service,
-	listing listing.Service,
 	post post.Service) *server {
 
 	s := &server{
 		authenticating: authenticating,
-		listing:        listing,
 		post:           post,
 		config:         config,
 	}
