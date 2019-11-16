@@ -31,8 +31,8 @@ func New(config *config.Config,
 }
 
 type ResponsePayload struct {
-	data interface{} `json:data,emitempty`
-	err  string      `json:error,emitempty`
+	Data interface{} `json:"data,omitempty"`
+	Err  string      `json:"error,omitempty"`
 }
 
 func (s *server) Setup() {
@@ -46,11 +46,13 @@ func (s *server) Setup() {
 		msg := "Internal server error"
 
 		if he, ok := err.(*echo.HTTPError); ok {
-			msg = he.Error()
+			msg = he.Message.(string)
 			code = he.Code
 		}
 
-		c.JSON(code, ResponsePayload{err: msg})
+		c.JSON(code, ResponsePayload{
+			Err: msg,
+		})
 
 	}
 
