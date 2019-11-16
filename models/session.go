@@ -6,6 +6,6 @@ import (
 
 type Session struct {
 	ID        string    `json:"id"`
-	UserID    string    `json:"userId"`
-	ExpiresAt time.Time `json:"expiresAt"`
+	UserID    string    `json:"userId" db:"user_id"`
+	ExpiresAt time.Time `json:"expiresAt" db:"expires_at"`
 }

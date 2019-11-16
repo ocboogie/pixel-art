@@ -13,7 +13,7 @@ import (
 
 type Service interface {
 	Create(input models.PostInput) (string, error)
-	Latest() ([]*models.Post, error)
+	Latest() ([]models.Post, error)
 }
 
 type service struct {
@@ -56,6 +56,6 @@ func (s *service) Create(input models.PostInput) (string, error) {
 	return id, nil
 }
 
-func (s *service) Latest() ([]*models.Post, error) {
+func (s *service) Latest() ([]models.Post, error) {
 	return s.postRepo.Latest(20)
 }

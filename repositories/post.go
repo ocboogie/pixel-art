@@ -15,5 +15,5 @@ var (
 type Post interface {
 	Find(id string) (*models.Post, error)
 	Save(post *models.Post) error
-	Latest(limit uint) ([]*models.Post, error)
+	Latest(limit uint) ([]models.Post, error)
 }

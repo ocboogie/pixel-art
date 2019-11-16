@@ -3,15 +3,16 @@ package postgres
 import (
 	"database/sql"
 
+	"github.com/jmoiron/sqlx"
 	"github.com/ocboogie/pixel-art/models"
 	"github.com/ocboogie/pixel-art/repositories"
 )
 
 type sessionRepo struct {
-	db *sql.DB
+	db *sqlx.DB
 }
 
-func NewRepositorySession(db *sql.DB) repositories.Session {
+func NewRepositorySession(db *sqlx.DB) repositories.Session {
 	return &sessionRepo{
 		db: db,
 	}
@@ -29,11 +30,9 @@ func (r *sessionRepo) Save(session *models.Session) error {
 func (r *sessionRepo) Find(id string) (*models.Session, error) {
 	session := models.Session{}
 
-	err := r.db.QueryRow(
-		`SELECT id, user_id, expires_at FROM sessions WHERE id=$1 LIMIT 1`,
-		id,
-	).
-		Scan(&session.ID, &session.UserID, &session.ExpiresAt)
+	err := r.db.Get(&session,
+		"SELECT * FROM sessions WHERE id=$1 LIMIT 1",
+		id)
 
 	if err == sql.ErrNoRows {
 		return nil, repositories.ErrSessionNotFound

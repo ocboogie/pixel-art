@@ -3,15 +3,16 @@ package postgres
 import (
 	"database/sql"
 
+	"github.com/jmoiron/sqlx"
 	"github.com/ocboogie/pixel-art/models"
 	"github.com/ocboogie/pixel-art/repositories"
 )
 
 type postRepo struct {
-	db *sql.DB
+	db *sqlx.DB
 }
 
-func NewPostRepository(db *sql.DB) repositories.Post {
+func NewPostRepository(db *sqlx.DB) repositories.Post {
 	return &postRepo{
 		db: db,
 	}
@@ -20,11 +21,7 @@ func NewPostRepository(db *sql.DB) repositories.Post {
 func (r *postRepo) Find(id string) (*models.Post, error) {
 	post := models.Post{}
 
-	err := r.db.QueryRow(
-		`SELECT id, user_id, title, data, create_at FROM posts WHERE id=$1 LIMIT 1`,
-		id,
-	).
-		Scan(&post.ID, &post.UserID, &post.Title, &post.Data, &post.CreatedAt)
+	err := r.db.Get(&post, "SELECT * FROM posts WHERE id=$1 LIMIT 1", id)
 
 	if err == sql.ErrNoRows {
 		return nil, repositories.ErrPostNotFound
@@ -42,32 +39,14 @@ func (r *postRepo) Save(post *models.Post) error {
 	return err
 }
 
-func (r *postRepo) Latest(limit uint) ([]*models.Post, error) {
-	rows, err := r.db.Query(
+func (r *postRepo) Latest(limit uint) ([]models.Post, error) {
+	posts := []models.Post{}
+	err := r.db.Select(
+		&posts,
 		`SELECT id, user_id, title, data, created_at FROM posts ORDER BY created_at LIMIT $1`,
 		limit,
 	)
 	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	posts := make([]*models.Post, limit)
-	// FIXME: This is just weird
-	i := 0
-	for rows.Next() {
-		rows.Scan(
-			&posts[i].ID,
-			&posts[i].UserID,
-			&posts[i].Title,
-			&posts[i].Data,
-			&posts[i].CreatedAt,
-		)
-
-		i++
-	}
-
-	if err := rows.Err(); err != nil {
 		return nil, err
 	}
 

@@ -3,15 +3,16 @@ package postgres
 import (
 	"database/sql"
 
+	"github.com/jmoiron/sqlx"
 	"github.com/ocboogie/pixel-art/models"
 	"github.com/ocboogie/pixel-art/repositories"
 )
 
 type userRepo struct {
-	db *sql.DB
+	db *sqlx.DB
 }
 
-func NewRepositoryUser(db *sql.DB) repositories.User {
+func NewRepositoryUser(db *sqlx.DB) repositories.User {
 	return &userRepo{
 		db: db,
 	}
@@ -20,11 +21,11 @@ func NewRepositoryUser(db *sql.DB) repositories.User {
 func (r *userRepo) Find(id string) (*models.User, error) {
 	user := models.User{}
 
-	err := r.db.QueryRow(
-		`SELECT id, email, password FROM users WHERE id=$1 LIMIT 1`,
+	err := r.db.Get(
+		&user,
+		`SELECT * FROM users WHERE id=$1 LIMIT 1`,
 		id,
-	).
-		Scan(&user.ID, &user.Email, &user.Password)
+	)
 
 	if err == sql.ErrNoRows {
 		return nil, repositories.ErrUserNotFound
@@ -36,11 +37,11 @@ func (r *userRepo) Find(id string) (*models.User, error) {
 func (r *userRepo) FindByEmail(email string) (*models.User, error) {
 	user := models.User{}
 
-	err := r.db.QueryRow(
-		`SELECT id, email, password FROM users WHERE email=$1 LIMIT 1`,
+	err := r.db.Get(
+		&user,
+		`SELECT * FROM users WHERE email=$1 LIMIT 1`,
 		email,
-	).
-		Scan(&user.ID, &user.Email, &user.Password)
+	)
 
 	if err == sql.ErrNoRows {
 		return nil, repositories.ErrUserNotFound
@@ -60,6 +61,7 @@ func (r *userRepo) Save(user *models.User) error {
 func (r *userRepo) ExistsEmail(email string) (bool, error) {
 	var exists bool
 
+	// TODO: Make this work with sqlx better
 	err := r.db.QueryRow("SELECT exists (SELECT FROM users WHERE email = $1)", email).Scan(&exists)
 
 	if err != nil && err != sql.ErrNoRows {

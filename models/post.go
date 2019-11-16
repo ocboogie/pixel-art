@@ -8,10 +8,10 @@ import (
 
 type Post struct {
 	ID        string    `json:"id"`
-	UserID    string    `json:"userID"`
+	UserID    string    `json:"userID" db:"user_id"`
 	Title     string    `json:"title"`
 	Data      []byte    `json:"data"`
-	CreatedAt time.Time `json:"createdAt"`
+	CreatedAt time.Time `json:"createdAt" db:"created_at"`
 }
 
 type PostInput struct {

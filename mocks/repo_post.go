@@ -49,10 +49,10 @@ func (mr *RepositoryPostMockRecorder) Find(arg0 interface{}) *gomock.Call {
 }
 
 // Latest mocks base method
-func (m *RepositoryPost) Latest(arg0 uint) ([]*models.Post, error) {
+func (m *RepositoryPost) Latest(arg0 uint) ([]models.Post, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Latest", arg0)
-	ret0, _ := ret[0].([]*models.Post)
+	ret0, _ := ret[0].([]models.Post)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

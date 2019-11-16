@@ -8,6 +8,7 @@ require (
 	github.com/golang-migrate/migrate/v4 v4.7.0
 	github.com/golang/mock v1.3.1
 	github.com/google/uuid v1.1.1
+	github.com/jmoiron/sqlx v1.2.0
 	github.com/labstack/echo v3.3.10+incompatible
 	github.com/labstack/echo/v4 v4.1.11
 	github.com/leodido/go-urn v1.2.0 // indirect

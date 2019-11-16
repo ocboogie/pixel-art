@@ -9,7 +9,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-func Migrate(db *sql.DB) {
+func Migrate(db *sqlx.DB) {
 	driver, err := postgres.WithInstance(db, &postgres.Config{})
 	if err != nil {
 		panic(err)
