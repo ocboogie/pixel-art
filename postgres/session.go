@@ -17,7 +17,7 @@ func NewRepositorySession(db *sql.DB) repositories.Session {
 	}
 }
 
-func (r *sessionRepo) Create(session *models.Session) error {
+func (r *sessionRepo) Save(session *models.Session) error {
 	_, err := r.db.Exec(
 		"INSERT INTO sessions (id, user_id, expires_at) VALUES ($1, $2, $3)",
 		session.ID, session.UserID, session.ExpiresAt,

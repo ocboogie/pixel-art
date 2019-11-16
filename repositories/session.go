@@ -13,7 +13,7 @@ var (
 )
 
 type Session interface {
-	Create(session *models.Session) error
+	Save(session *models.Session) error
 	Find(id string) (*models.Session, error)
 	Delete(id string) error
 }

@@ -28,7 +28,7 @@ func TestSignUp(t *testing.T) {
 	}
 
 	repo.EXPECT().ExistsEmail(gomock.Any()).Return(false, nil)
-	repo.EXPECT().Create(gomock.AssignableToTypeOf(&models.User{})).Return(nil)
+	repo.EXPECT().Save(gomock.AssignableToTypeOf(&models.User{})).Return(nil)
 
 	id, err := s.SignUp(&models.UserInput{Email: "foo@bar.com", Password: "password"})
 
@@ -59,7 +59,7 @@ func TestLogin(t *testing.T) {
 	}
 
 	userRepo.EXPECT().FindByEmail(gomock.Eq("foo@bar.com")).Return(user, nil)
-	sessionRepo.EXPECT().Create(gomock.AssignableToTypeOf(&models.Session{})).Return(nil)
+	sessionRepo.EXPECT().Save(gomock.AssignableToTypeOf(&models.Session{})).Return(nil)
 
 	sessionID, err := s.Login("foo@bar.com", "correct battery horse staple")
 	assert.NoError(t, err)
@@ -78,7 +78,7 @@ func TestCreateSession(t *testing.T) {
 	}
 
 	// TODO: Test that the session IDs are correct
-	repo.EXPECT().Create(gomock.AssignableToTypeOf(&models.Session{})).Return(nil)
+	repo.EXPECT().Save(gomock.AssignableToTypeOf(&models.Session{})).Return(nil)
 	sessionID, err := s.CreateSession("60aaf13d-8ddc-403b-ba42-960e18a22f6a")
 
 	assert.NoError(t, err)

@@ -33,7 +33,7 @@ func (r *postRepo) Find(id string) (*models.Post, error) {
 	return &post, err
 }
 
-func (r *postRepo) Create(post *models.Post) error {
+func (r *postRepo) Save(post *models.Post) error {
 	_, err := r.db.Exec(
 		"INSERT INTO posts (id, user_id, title, data, created_at) VALUES ($1, $2, $3, $4, $5)",
 		post.ID, post.UserID, post.Title, post.Data, post.CreatedAt,

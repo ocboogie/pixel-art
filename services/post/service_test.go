@@ -18,7 +18,7 @@ func TestPost(t *testing.T) {
 			postRepo: repo,
 		}
 
-		repo.EXPECT().Create(gomock.AssignableToTypeOf(&models.Post{})).Return(nil)
+		repo.EXPECT().Save(gomock.AssignableToTypeOf(&models.Post{})).Return(nil)
 
 		id, err := s.Create(models.PostInput{
 			UserID: "60aaf13d-8ddc-403b-ba42-960e18a22f6a",

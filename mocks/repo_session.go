@@ -33,20 +33,6 @@ func (m *RepositorySession) EXPECT() *RepositorySessionMockRecorder {
 	return m.recorder
 }
 
-// Create mocks base method
-func (m *RepositorySession) Create(arg0 *models.Session) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", arg0)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// Create indicates an expected call of Create
-func (mr *RepositorySessionMockRecorder) Create(arg0 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*RepositorySession)(nil).Create), arg0)
-}
-
 // Delete mocks base method
 func (m *RepositorySession) Delete(arg0 string) error {
 	m.ctrl.T.Helper()
@@ -74,4 +60,18 @@ func (m *RepositorySession) Find(arg0 string) (*models.Session, error) {
 func (mr *RepositorySessionMockRecorder) Find(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*RepositorySession)(nil).Find), arg0)
+}
+
+// Save mocks base method
+func (m *RepositorySession) Save(arg0 *models.Session) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Save", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Save indicates an expected call of Save
+func (mr *RepositorySessionMockRecorder) Save(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Save", reflect.TypeOf((*RepositorySession)(nil).Save), arg0)
 }

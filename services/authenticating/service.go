@@ -70,7 +70,7 @@ func (s *service) SignUp(user *models.UserInput) (string, error) {
 		CreatedAt: time.Now(),
 	}
 
-	if err := s.userRepo.Create(userHashed); err != nil {
+	if err := s.userRepo.Save(userHashed); err != nil {
 		return "", err
 	}
 
@@ -120,7 +120,7 @@ func (s *service) CreateSession(userID string) (string, error) {
 		ExpiresAt: expiresAt,
 	}
 
-	if err := s.sessionRepo.Create(session); err != nil {
+	if err := s.sessionRepo.Save(session); err != nil {
 		return "", err
 	}
 

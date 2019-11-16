@@ -33,20 +33,6 @@ func (m *RepositoryUser) EXPECT() *RepositoryUserMockRecorder {
 	return m.recorder
 }
 
-// Create mocks base method
-func (m *RepositoryUser) Create(arg0 *models.User) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", arg0)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// Create indicates an expected call of Create
-func (mr *RepositoryUserMockRecorder) Create(arg0 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*RepositoryUser)(nil).Create), arg0)
-}
-
 // ExistsEmail mocks base method
 func (m *RepositoryUser) ExistsEmail(arg0 string) (bool, error) {
 	m.ctrl.T.Helper()
@@ -90,4 +76,18 @@ func (m *RepositoryUser) FindByEmail(arg0 string) (*models.User, error) {
 func (mr *RepositoryUserMockRecorder) FindByEmail(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByEmail", reflect.TypeOf((*RepositoryUser)(nil).FindByEmail), arg0)
+}
+
+// Save mocks base method
+func (m *RepositoryUser) Save(arg0 *models.User) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Save", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Save indicates an expected call of Save
+func (mr *RepositoryUserMockRecorder) Save(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Save", reflect.TypeOf((*RepositoryUser)(nil).Save), arg0)
 }

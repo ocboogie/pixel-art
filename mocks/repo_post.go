@@ -33,20 +33,6 @@ func (m *RepositoryPost) EXPECT() *RepositoryPostMockRecorder {
 	return m.recorder
 }
 
-// Create mocks base method
-func (m *RepositoryPost) Create(arg0 *models.Post) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", arg0)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// Create indicates an expected call of Create
-func (mr *RepositoryPostMockRecorder) Create(arg0 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*RepositoryPost)(nil).Create), arg0)
-}
-
 // Find mocks base method
 func (m *RepositoryPost) Find(arg0 string) (*models.Post, error) {
 	m.ctrl.T.Helper()
@@ -75,4 +61,18 @@ func (m *RepositoryPost) Latest(arg0 uint) ([]*models.Post, error) {
 func (mr *RepositoryPostMockRecorder) Latest(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Latest", reflect.TypeOf((*RepositoryPost)(nil).Latest), arg0)
+}
+
+// Save mocks base method
+func (m *RepositoryPost) Save(arg0 *models.Post) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Save", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Save indicates an expected call of Save
+func (mr *RepositoryPostMockRecorder) Save(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Save", reflect.TypeOf((*RepositoryPost)(nil).Save), arg0)
 }

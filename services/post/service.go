@@ -48,7 +48,7 @@ func (s *service) Create(input models.PostInput) (string, error) {
 		CreatedAt: time.Now(),
 	}
 
-	if err := s.postRepo.Create(post); err != nil {
+	if err := s.postRepo.Save(post); err != nil {
 		return "", err
 	}
 
