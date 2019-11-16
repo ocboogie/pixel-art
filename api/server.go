@@ -16,7 +16,7 @@ type server struct {
 	config         *config.Config
 	authenticating authenticating.Service
 	listing        listing.Service
-	post        post.Service
+	post           post.Service
 }
 
 func New(config *config.Config,
@@ -27,7 +27,7 @@ func New(config *config.Config,
 	s := &server{
 		authenticating: authenticating,
 		listing:        listing,
-		post:        post,
+		post:           post,
 		config:         config,
 	}
 
