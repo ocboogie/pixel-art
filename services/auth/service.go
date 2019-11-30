@@ -1,4 +1,4 @@
-package authenticating
+package auth
 
 import (
 	"crypto/rand"
@@ -13,15 +13,15 @@ import (
 	"github.com/ocboogie/pixel-art/repositories"
 )
 
-//go:generate mockgen -destination=../../mocks/service_authenticating.go -package mocks -mock_names Service=ServiceAuthenticating github.com/ocboogie/pixel-art/services/authenticating Service
+//go:generate mockgen -destination=../../mocks/service_auth.go -package mocks -mock_names Service=ServiceAuth github.com/ocboogie/pixel-art/services/auth Service
 
 // The number of hex characters in a session ID
 const SessionIDLength = 32
 
 type Service interface {
-	SignUp(user *models.UserInput) (string, error)
-	Login(email string, password string) (string, error)
-	CreateSession(userID string) (string, error)
+	SignUp(user *models.UserNew) (*models.Session, error)
+	Login(credentials *models.UserCredentials) (*models.Session, error)
+	CreateSession(userID string) (*models.Session, error)
 	VerifySession(sessionID string) (string, error)
 }
 
@@ -39,58 +39,55 @@ func New(config *config.Config, userRepo repositories.User, sessionRepo reposito
 	}
 }
 
-func (s *service) SignUp(user *models.UserInput) (string, error) {
-	if err := user.Validate(); err != nil {
-		return "", &ErrInvalidUser{Err: err}
-	}
-
+func (s *service) SignUp(user *models.UserNew) (*models.Session, error) {
 	exists, err := s.userRepo.ExistsEmail(user.Email)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	if exists {
-		return "", ErrEmailAlreadyInUse
+		return nil, ErrEmailAlreadyInUse
 	}
 
 	idBytes, err := uuid.NewRandom()
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	id := idBytes.String()
 
 	hashedPassword, err := argon2.Hash(user.Password, s.config.HashConfig)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	userHashed := &models.User{
 		ID:        id,
+		Name:      user.Name,
 		Email:     user.Email,
 		Password:  hashedPassword,
 		CreatedAt: time.Now(),
 	}
 
 	if err := s.userRepo.Save(userHashed); err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return id, nil
+	return s.CreateSession(id)
 }
 
-func (s *service) Login(email string, password string) (string, error) {
-	user, err := s.userRepo.FindByEmail(email)
+func (s *service) Login(credentials *models.UserCredentials) (*models.Session, error) {
+	user, err := s.userRepo.FindByEmail(credentials.Email)
 	if err != nil {
 		// TODO: Doc why this is here
-		argon2.Hash(password, s.config.HashConfig)
-		return "", err
+		argon2.Hash(credentials.Password, s.config.HashConfig)
+		return nil, err
 	}
 
-	match, err := argon2.Verify(password, user.Password)
+	match, err := argon2.Verify(credentials.Password, user.Password)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	if !match {
-		return "", ErrInvalidCredentials
+		return nil, ErrInvalidCredentials
 	}
 
 	return s.CreateSession(user.ID)
@@ -102,12 +99,12 @@ func (s *service) hashSessionID(id string) string {
 	return hex.EncodeToString(hasher.Sum(nil))
 }
 
-func (s *service) CreateSession(userID string) (string, error) {
+func (s *service) CreateSession(userID string) (*models.Session, error) {
 	// Dividing by 2 because for each byte we will have two hex characters
 	b := make([]byte, SessionIDLength/2)
 	_, err := rand.Read(b)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	id := hex.EncodeToString(b)
 
@@ -120,11 +117,15 @@ func (s *service) CreateSession(userID string) (string, error) {
 		ExpiresAt: expiresAt,
 	}
 
+	// Save the session with the hased ID
 	if err := s.sessionRepo.Save(session); err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return id, nil
+	// We want to return the session with a non hashed ID
+	session.ID = id
+
+	return session, nil
 }
 
 func (s *service) VerifySession(sessionID string) (string, error) {

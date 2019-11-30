@@ -1,6 +1,7 @@
 CREATE TABLE "users" 
 (
     id uuid PRIMARY KEY,
+    name varchar(64) NOT NULL,
     email varchar(254) NOT NULL UNIQUE,
     password varchar(256) NOT NULL,
     created_at timestamp with time zone NOT NULL

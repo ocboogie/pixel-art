@@ -14,16 +14,13 @@ type Post struct {
 	CreatedAt time.Time `json:"createdAt" db:"created_at"`
 }
 
-type PostInput struct {
-	UserID string `json:"userID" validate:"required,uuid"`
+type PostNew struct {
+	UserID string `json:"userId" validate:"required,uuid"`
 	Title  string `json:"title" validate:"required,min=2,max=256"`
 	// TODO: validate Data
-	Data []byte `json:"data"`
+	Data string `json:"data"`
 }
 
-func (input PostInput) Validate() error {
-	// TODO: Probably shouldn't create a new validator everytime
-	validate := validator.New()
-
+func (input PostNew) Validate(validate *validator.Validate) error {
 	return validate.Struct(input)
 }

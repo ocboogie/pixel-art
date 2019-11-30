@@ -34,7 +34,7 @@ func (m *ServicePost) EXPECT() *ServicePostMockRecorder {
 }
 
 // Create mocks base method
-func (m *ServicePost) Create(arg0 models.PostInput) (string, error) {
+func (m *ServicePost) Create(arg0 models.PostNew) (string, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Create", arg0)
 	ret0, _ := ret[0].(string)
@@ -48,17 +48,32 @@ func (mr *ServicePostMockRecorder) Create(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*ServicePost)(nil).Create), arg0)
 }
 
-// Latest mocks base method
-func (m *ServicePost) Latest() ([]*models.Post, error) {
+// Find mocks base method
+func (m *ServicePost) Find(arg0 string) (*models.Post, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Latest")
+	ret := m.ctrl.Call(m, "Find", arg0)
+	ret0, _ := ret[0].(*models.Post)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Find indicates an expected call of Find
+func (mr *ServicePostMockRecorder) Find(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*ServicePost)(nil).Find), arg0)
+}
+
+// Latest mocks base method
+func (m *ServicePost) Latest(arg0 int) ([]*models.Post, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Latest", arg0)
 	ret0, _ := ret[0].([]*models.Post)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Latest indicates an expected call of Latest
-func (mr *ServicePostMockRecorder) Latest() *gomock.Call {
+func (mr *ServicePostMockRecorder) Latest(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Latest", reflect.TypeOf((*ServicePost)(nil).Latest))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Latest", reflect.TypeOf((*ServicePost)(nil).Latest), arg0)
 }

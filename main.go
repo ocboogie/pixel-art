@@ -6,8 +6,10 @@ import (
 	"github.com/ocboogie/pixel-art/api"
 	"github.com/ocboogie/pixel-art/config"
 	"github.com/ocboogie/pixel-art/postgres"
-	"github.com/ocboogie/pixel-art/services/authenticating"
+	"github.com/ocboogie/pixel-art/services/auth"
 	"github.com/ocboogie/pixel-art/services/post"
+	"github.com/ocboogie/pixel-art/services/user"
+	"gopkg.in/go-playground/validator.v9"
 )
 
 func main() {
@@ -18,14 +20,16 @@ func main() {
 	defer db.Close()
 	config := config.GetConfig()
 
+	validate := validator.New()
 	userRepo := postgres.NewRepositoryUser(db)
 	postRepo := postgres.NewPostRepository(db)
 	sessionRepo := postgres.NewRepositorySession(db)
 
-	authenticating := authenticating.New(&config, userRepo, sessionRepo)
+	auth := auth.New(&config, userRepo, sessionRepo)
 	post := post.New(&config, userRepo, postRepo)
+	user := user.New(&config, userRepo)
 
-	server := api.New(&config, authenticating, post)
+	server := api.New(&config, auth, post, user, validate)
 
 	server.Setup()
 	server.Start()

@@ -3,66 +3,52 @@ package api
 import (
 	"net/http"
 
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
+	"github.com/gorilla/mux"
 	"github.com/ocboogie/pixel-art/config"
-	"github.com/ocboogie/pixel-art/services/authenticating"
+	"github.com/ocboogie/pixel-art/services/auth"
 	"github.com/ocboogie/pixel-art/services/post"
+	"github.com/ocboogie/pixel-art/services/user"
+	"github.com/rs/cors"
+	"gopkg.in/go-playground/validator.v9"
 )
 
 type server struct {
-	e              *echo.Echo
-	config         *config.Config
-	authenticating authenticating.Service
-	post           post.Service
+	config   *config.Config
+	router   *mux.Router
+	validate *validator.Validate
+	auth     auth.Service
+	post     post.Service
+	user     user.Service
 }
 
 func New(config *config.Config,
-	authenticating authenticating.Service,
-	post post.Service) *server {
+	auth auth.Service,
+	post post.Service,
+	user user.Service,
+	validate *validator.Validate) *server {
 
 	s := &server{
-		authenticating: authenticating,
-		post:           post,
-		config:         config,
+		config:   config,
+		validate: validate,
+		auth:     auth,
+		post:     post,
+		user:     user,
 	}
 
 	return s
 }
 
-type ResponsePayload struct {
-	Data interface{} `json:"data,omitempty"`
-	Err  string      `json:"error,omitempty"`
-}
-
 func (s *server) Setup() {
-	s.e = echo.New()
-
-	s.e.Use(middleware.Logger())
-	s.e.Use(middleware.Recover())
-
-	s.e.HTTPErrorHandler = func(err error, c echo.Context) {
-		code := http.StatusInternalServerError
-		msg := "Internal server error"
-
-		if he, ok := err.(*echo.HTTPError); ok {
-			msg = he.Message.(string)
-			code = he.Code
-		}
-
-		c.JSON(code, ResponsePayload{
-			Err: msg,
-		})
-
-	}
+	s.router = mux.NewRouter()
 
 	s.routes()
 }
 
 func (s *server) Start() {
-	if s.e == nil {
+	if s.router == nil {
 		panic("Shouldn't start before setting up the server")
 	}
 
-	s.e.Start(":4000")
+	handler := cors.Default().Handler(s.router)
+	http.ListenAndServe(":8000", handler)
 }

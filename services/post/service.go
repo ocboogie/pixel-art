@@ -12,8 +12,9 @@ import (
 //go:generate mockgen -destination=../../mocks/service_post.go -package mocks -mock_names Service=ServicePost github.com/ocboogie/pixel-art/services/post Service
 
 type Service interface {
-	Create(input models.PostInput) (string, error)
-	Latest() ([]models.Post, error)
+	Create(input models.PostNew) (string, error)
+	Latest(limit int) ([]*models.Post, error)
+	Find(id string) (*models.Post, error)
 }
 
 type service struct {
@@ -30,22 +31,15 @@ func New(config *config.Config, userRepo repositories.User, postRepo repositorie
 	}
 }
 
-func (s *service) Create(input models.PostInput) (string, error) {
-	if err := input.Validate(); err != nil {
-		return "", &ErrInvalidPost{Err: err}
-	}
-
-	idBytes, err := uuid.NewRandom()
-	if err != nil {
-		return "", err
-	}
-	id := idBytes.String()
+func (s *service) Create(input models.PostNew) (string, error) {
+	id := uuid.New().String()
 
 	post := &models.Post{
-		ID:        id,
-		UserID:    input.UserID,
-		Title:     input.Title,
-		Data:      input.Data,
+		ID:     id,
+		UserID: input.UserID,
+		Title:  input.Title,
+		// FIXME: Decode from the input
+		Data:      []byte{},
 		CreatedAt: time.Now(),
 	}
 
@@ -56,6 +50,10 @@ func (s *service) Create(input models.PostInput) (string, error) {
 	return id, nil
 }
 
-func (s *service) Latest() ([]models.Post, error) {
-	return s.postRepo.Latest(20)
+func (s *service) Find(id string) (*models.Post, error) {
+	return s.postRepo.Find(id)
+}
+
+func (s *service) Latest(limit int) ([]*models.Post, error) {
+	return s.postRepo.Latest(limit)
 }

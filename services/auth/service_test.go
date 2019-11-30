@@ -1,4 +1,4 @@
-package authenticating
+package auth
 
 import (
 	"testing"
@@ -21,19 +21,22 @@ var cfg = &config.Config{
 func TestSignUp(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	repo := mocks.NewRepositoryUser(ctrl)
+	userRepo := mocks.NewRepositoryUser(ctrl)
+	sessionRepo := mocks.NewRepositorySession(ctrl)
 	s := &service{
-		userRepo: repo,
-		config:   cfg,
+		userRepo:    userRepo,
+		sessionRepo: sessionRepo,
+		config:      cfg,
 	}
 
-	repo.EXPECT().ExistsEmail(gomock.Any()).Return(false, nil)
-	repo.EXPECT().Save(gomock.AssignableToTypeOf(&models.User{})).Return(nil)
+	userRepo.EXPECT().ExistsEmail(gomock.Any()).Return(false, nil)
+	userRepo.EXPECT().Save(gomock.AssignableToTypeOf(&models.User{})).Return(nil)
+	sessionRepo.EXPECT().Save(gomock.AssignableToTypeOf(&models.Session{})).Return(nil)
 
-	id, err := s.SignUp(&models.UserInput{Email: "foo@bar.com", Password: "password"})
+	id, err := s.SignUp(&models.UserNew{Name: "Boogie", Email: "foo@bar.com", Password: "password"})
 
-	assert.NotEmpty(t, id)
 	assert.NoError(t, err)
+	assert.NotEmpty(t, id)
 
 	// TODO: Test when email exists
 }
@@ -61,9 +64,15 @@ func TestLogin(t *testing.T) {
 	userRepo.EXPECT().FindByEmail(gomock.Eq("foo@bar.com")).Return(user, nil)
 	sessionRepo.EXPECT().Save(gomock.AssignableToTypeOf(&models.Session{})).Return(nil)
 
-	sessionID, err := s.Login("foo@bar.com", "correct battery horse staple")
+	credentials := &models.UserCredentials{
+		Email:    "foo@bar.com",
+		Password: "correct battery horse staple",
+	}
+	session, err := s.Login(credentials)
+
 	assert.NoError(t, err)
-	assert.Regexp(t, `^[A-Fa-f0-9]+$`, sessionID)
+	assert.IsType(t, &models.Session{}, session)
+	assert.Regexp(t, `^[A-Fa-f0-9]+$`, session.ID)
 
 	// TODO: Test when email not found
 }
@@ -79,11 +88,12 @@ func TestCreateSession(t *testing.T) {
 
 	// TODO: Test that the session IDs are correct
 	repo.EXPECT().Save(gomock.AssignableToTypeOf(&models.Session{})).Return(nil)
-	sessionID, err := s.CreateSession("60aaf13d-8ddc-403b-ba42-960e18a22f6a")
+	session, err := s.CreateSession("60aaf13d-8ddc-403b-ba42-960e18a22f6a")
 
 	assert.NoError(t, err)
-	assert.Regexp(t, `^[A-Fa-f0-9]+$`, sessionID)
-	assert.Len(t, sessionID, SessionIDLength)
+	assert.IsType(t, &models.Session{}, session)
+	assert.Regexp(t, `^[A-Fa-f0-9]+$`, session.ID)
+	assert.Len(t, session.ID, SessionIDLength)
 }
 
 func TestVerifySession(t *testing.T) {

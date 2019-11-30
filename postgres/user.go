@@ -52,8 +52,8 @@ func (r *userRepo) FindByEmail(email string) (*models.User, error) {
 
 func (r *userRepo) Save(user *models.User) error {
 	_, err := r.db.Exec(
-		"INSERT INTO users (id, email, password, created_at) VALUES ($1, $2, $3, $4)",
-		user.ID, user.Email, user.Password, user.CreatedAt)
+		"INSERT INTO users (id, name, email, password, created_at) VALUES ($1, $2, $3, $4, $5)",
+		user.ID, user.Name, user.Email, user.Password, user.CreatedAt)
 
 	return err
 }

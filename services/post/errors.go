@@ -1,8 +1,9 @@
 package post
 
-type ErrInvalidPost struct {
-	Err error
-}
+import (
+	"github.com/ocboogie/pixel-art/repositories"
+)
 
-func (e *ErrInvalidPost) Error() string { return "Invalid post: " + e.Err.Error() }
-func (e *ErrInvalidPost) Unwrap() error { return e.Err }
+var (
+	ErrNotFound = repositories.ErrPostNotFound
+)

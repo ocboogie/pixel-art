@@ -20,29 +20,38 @@ func TestPost(t *testing.T) {
 
 		repo.EXPECT().Save(gomock.AssignableToTypeOf(&models.Post{})).Return(nil)
 
-		id, err := s.Create(models.PostInput{
+		id, err := s.Create(models.PostNew{
 			UserID: "60aaf13d-8ddc-403b-ba42-960e18a22f6a",
 			Title:  "Yup",
-			Data:   make([]byte, 0),
+			Data:   "",
 		})
 
 		assert.NoError(t, err)
 		assert.Regexp(t, `^[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}$`, id)
 	})
-	t.Run("Invalid post", func(t *testing.T) {
-		s := &service{}
-
-		_, err := s.Create(models.PostInput{
-			UserID: "a",
-			Title:  "",
-			Data:   make([]byte, 0),
-		})
-
-		assert.EqualError(t, err, `Invalid post: Key: 'PostInput.UserID' Error:Field validation for 'UserID' failed on the 'uuid' tag
-Key: 'PostInput.Title' Error:Field validation for 'Title' failed on the 'required' tag`)
-	})
 }
 
+func TestFind(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	repo := mocks.NewRepositoryPost(ctrl)
+	s := &service{
+		postRepo: repo,
+	}
+
+	mockPost := &models.Post{
+		UserID: "60aaf13d-8ddc-403b-ba42-960e18a22f6a",
+		Title:  "Yup",
+		Data:   make([]byte, 0),
+	}
+
+	repo.EXPECT().Find("60aaf13d-8ddc-403b-ba42-960e18a22f6a").Return(mockPost, nil)
+
+	post, err := s.Find("60aaf13d-8ddc-403b-ba42-960e18a22f6a")
+
+	assert.NoError(t, err)
+	assert.Equal(t, mockPost, post)
+}
 func TestLatest(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -71,7 +80,7 @@ func TestLatest(t *testing.T) {
 
 	repo.EXPECT().Latest(gomock.Any()).Return(mockLatestPosts, nil)
 
-	LatestPosts, err := s.Latest()
+	LatestPosts, err := s.Latest(20)
 
 	assert.NoError(t, err)
 	assert.Equal(t, LatestPosts, LatestPosts)

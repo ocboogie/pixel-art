@@ -31,16 +31,17 @@ func (r *postRepo) Find(id string) (*models.Post, error) {
 }
 
 func (r *postRepo) Save(post *models.Post) error {
-	_, err := r.db.Exec(
-		"INSERT INTO posts (id, user_id, title, data, created_at) VALUES ($1, $2, $3, $4, $5)",
-		post.ID, post.UserID, post.Title, post.Data, post.CreatedAt,
+	_, err := r.db.NamedExec(
+		`INSERT INTO posts (id, user_id, title, data, created_at) 
+		 VALUES (:id, :user_id, :title, :data, :created_at)`,
+		post,
 	)
 
 	return err
 }
 
-func (r *postRepo) Latest(limit uint) ([]models.Post, error) {
-	posts := []models.Post{}
+func (r *postRepo) Latest(limit int) ([]*models.Post, error) {
+	posts := []*models.Post{}
 	err := r.db.Select(
 		&posts,
 		`SELECT * FROM posts ORDER BY created_at LIMIT $1`,
