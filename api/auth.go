@@ -25,6 +25,7 @@ func (s *server) saveSession(w http.ResponseWriter, r *http.Request, session *mo
 		Value: session.ID,
 
 		Expires: session.ExpiresAt,
+		Path:    "/",
 
 		// TODO: Enable this in producation
 		// Secure: true,
