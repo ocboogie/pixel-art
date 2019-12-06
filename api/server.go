@@ -3,7 +3,7 @@ package api
 import (
 	"net/http"
 
-	"github.com/gorilla/mux"
+	"github.com/go-chi/chi"
 	"github.com/ocboogie/pixel-art/config"
 	"github.com/ocboogie/pixel-art/services/auth"
 	"github.com/ocboogie/pixel-art/services/post"
@@ -14,7 +14,7 @@ import (
 
 type server struct {
 	config   *config.Config
-	router   *mux.Router
+	router   *chi.Mux
 	validate *validator.Validate
 	auth     auth.Service
 	post     post.Service
@@ -39,7 +39,7 @@ func New(config *config.Config,
 }
 
 func (s *server) Setup() {
-	s.router = mux.NewRouter()
+	s.router = chi.NewRouter()
 
 	s.routes()
 }

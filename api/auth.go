@@ -42,8 +42,8 @@ func (s *server) getSessionID(w http.ResponseWriter, r *http.Request) string {
 	return cookie.Value
 }
 
-func (s *server) authenticated(h http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
+func (s *server) authenticated(next http.Handler) http.Handler {
+	fn := func(w http.ResponseWriter, r *http.Request) {
 		sessionID := s.getSessionID(w, r)
 
 		if sessionID == "" {
@@ -64,8 +64,9 @@ func (s *server) authenticated(h http.HandlerFunc) http.HandlerFunc {
 
 		r = r.WithContext(ctx)
 
-		h(w, r)
+		next.ServeHTTP(w, r)
 	}
+	return http.HandlerFunc(fn)
 }
 
 func (s *server) getUserID(w http.ResponseWriter, r *http.Request) string {
@@ -97,7 +98,7 @@ func (s *server) handleLogin() http.HandlerFunc {
 		session, err := s.auth.Login(&body)
 
 		if err != nil {
-			if err == auth.ErrEmailAlreadyInUse {
+			if err == auth.ErrInvalidCredentials {
 				s.error(w, r, errInvalidCredentials)
 				return
 			}

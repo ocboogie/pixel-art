@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/gorilla/mux"
+	"github.com/go-chi/chi"
 	"github.com/ocboogie/pixel-art/models"
 	postService "github.com/ocboogie/pixel-art/services/post"
 )
@@ -15,8 +15,7 @@ var (
 
 func (s *server) handlePostsFind() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		vars := mux.Vars(r)
-		postID := vars["id"]
+		postID := chi.URLParam(r, "id")
 		post, err := s.post.Find(postID)
 
 		if err != nil {
@@ -71,5 +70,29 @@ func (s *server) handlePostsCreate() http.HandlerFunc {
 		}
 
 		s.respond(w, r, http.StatusOK, id)
+	}
+}
+
+func (s *server) handlePostsAll() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// limit := 50
+		// if i, err := strconv.Atoi(r.URL.Query().Get("limit")); err == nil {
+		// 	limit = i
+		// }
+
+		// s.post.Latest(limit)
+
+		// post, err := s.post.Find(postID)
+
+		// if err != nil {
+		// 	if err == postService.ErrNotFound {
+		// 		s.error(w, r, errPostNotFound)
+		// 		return
+		// 	}
+		// 	s.error(w, r, unexpectedAPIError(err))
+		// 	return
+		// }
+
+		// s.respond(w, r, http.StatusOK, post)
 	}
 }

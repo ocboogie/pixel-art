@@ -19,21 +19,34 @@ func NewPostRepository(db *sqlx.DB) repositories.Post {
 }
 
 func (r *postRepo) Find(id string) (*models.Post, error) {
-	post := models.Post{}
+	post := struct {
+		models.Post
+		AuthorID string `db:"author_id"`
+	}{}
 
-	err := r.db.Get(&post, "SELECT * FROM posts WHERE id=$1 LIMIT 1", id)
+	err := r.db.Get(&post,
+		`SELECT 
+			posts.*, 
+			author.id "author.id", 
+			author.name "author.name", 
+			author.created_at "author.created_at"
+		FROM 
+			posts JOIN users AS author ON posts.author_id = author.id
+		WHERE 
+			posts.id=$1`,
+		id)
 
 	if err == sql.ErrNoRows {
 		return nil, repositories.ErrPostNotFound
 	}
 
-	return &post, err
+	return &post.Post, err
 }
 
 func (r *postRepo) Save(post *models.Post) error {
 	_, err := r.db.NamedExec(
-		`INSERT INTO posts (id, user_id, title, data, created_at) 
-		 VALUES (:id, :user_id, :title, :data, :created_at)`,
+		`INSERT INTO posts (id, author_id, title, data, created_at) 
+		 VALUES (:id, :author.id, :title, :data, :created_at)`,
 		post,
 	)
 
@@ -44,7 +57,15 @@ func (r *postRepo) Latest(limit int) ([]*models.Post, error) {
 	posts := []*models.Post{}
 	err := r.db.Select(
 		&posts,
-		`SELECT * FROM posts ORDER BY created_at LIMIT $1`,
+		`SELECT 
+			posts.*, 
+			author.id "author.id", 
+			author.name "author.name", 
+			author.created_at "author.created_at"
+		FROM 
+			posts JOIN users AS author ON posts.author_id = author.id
+		ORDER BY
+			created_at LIMIT $1`,
 		limit,
 	)
 	if err != nil {

@@ -35,9 +35,11 @@ func (s *service) Create(input models.PostNew) (string, error) {
 	id := uuid.New().String()
 
 	post := &models.Post{
-		ID:     id,
-		UserID: input.UserID,
-		Title:  input.Title,
+		ID: id,
+		Author: models.User{
+			ID: input.UserID,
+		},
+		Title: input.Title,
 		// FIXME: Decode from the input
 		Data:      []byte{},
 		CreatedAt: time.Now(),

@@ -79,6 +79,9 @@ func (s *service) Login(credentials *models.UserCredentials) (*models.Session, e
 	if err != nil {
 		// TODO: Doc why this is here
 		argon2.Hash(credentials.Password, s.config.HashConfig)
+		if err == repositories.ErrUserNotFound {
+			return nil, ErrInvalidCredentials
+		}
 		return nil, err
 	}
 
