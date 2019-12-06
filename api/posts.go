@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/go-chi/chi"
 	"github.com/ocboogie/pixel-art/models"
@@ -11,6 +12,7 @@ import (
 
 var (
 	errPostNotFound = newSimpleAPIError(http.StatusNotFound, false, "Post not found")
+	errInvalidLimit = newSimpleAPIError(http.StatusBadRequest, false, "Limit must be a number")
 )
 
 func (s *server) handlePostsFind() http.HandlerFunc {
@@ -75,7 +77,26 @@ func (s *server) handlePostsCreate() http.HandlerFunc {
 
 func (s *server) handlePostsAll() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// limit := 50
+		limit := 50
+		limitQuery := r.URL.Query().Get("limit")
+		if limitQuery != "" {
+			i, err := strconv.Atoi(limitQuery)
+
+			if err != nil {
+				s.error(w, r, errInvalidLimit)
+				return
+			}
+
+			limit = i
+		}
+
+		posts, err := s.post.Latest(limit)
+		if err != nil {
+			s.error(w, r, unexpectedAPIError(err))
+			return
+		}
+		s.respond(w, r, http.StatusOK, posts)
+
 		// if i, err := strconv.Atoi(r.URL.Query().Get("limit")); err == nil {
 		// 	limit = i
 		// }

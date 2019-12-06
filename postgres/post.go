@@ -19,14 +19,14 @@ func NewPostRepository(db *sqlx.DB) repositories.Post {
 }
 
 func (r *postRepo) Find(id string) (*models.Post, error) {
-	post := struct {
-		models.Post
-		AuthorID string `db:"author_id"`
-	}{}
+	post := models.Post{}
 
 	err := r.db.Get(&post,
 		`SELECT 
-			posts.*, 
+			posts.id "id", 
+			posts.title "title", 
+			posts.data "data", 
+			posts.created_at "created_at", 
 			author.id "author.id", 
 			author.name "author.name", 
 			author.created_at "author.created_at"
@@ -40,7 +40,7 @@ func (r *postRepo) Find(id string) (*models.Post, error) {
 		return nil, repositories.ErrPostNotFound
 	}
 
-	return &post.Post, err
+	return &post, err
 }
 
 func (r *postRepo) Save(post *models.Post) error {
@@ -54,11 +54,17 @@ func (r *postRepo) Save(post *models.Post) error {
 }
 
 func (r *postRepo) Latest(limit int) ([]*models.Post, error) {
+	// TODO: This could be faster by using make with limit as the size but this
+	//       causes nulls in the output
 	posts := []*models.Post{}
+
 	err := r.db.Select(
 		&posts,
 		`SELECT 
-			posts.*, 
+			posts.id "id", 
+			posts.title "title", 
+			posts.data "data", 
+			posts.created_at "created_at", 
 			author.id "author.id", 
 			author.name "author.name", 
 			author.created_at "author.created_at"
