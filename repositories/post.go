@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"errors"
+	"time"
 
 	"github.com/ocboogie/pixel-art/models"
 )
@@ -15,5 +16,5 @@ var (
 type Post interface {
 	Find(id string) (*models.Post, error)
 	Save(post *models.Post) error
-	Latest(limit int) ([]*models.Post, error)
+	Latest(limit int, after *time.Time) ([]*models.Post, error)
 }

@@ -13,7 +13,7 @@ import (
 
 type Service interface {
 	Create(input models.PostNew) (string, error)
-	Latest(limit int) ([]*models.Post, error)
+	Latest(limit int, after *time.Time) ([]*models.Post, error)
 	Find(id string) (*models.Post, error)
 }
 
@@ -56,6 +56,6 @@ func (s *service) Find(id string) (*models.Post, error) {
 	return s.postRepo.Find(id)
 }
 
-func (s *service) Latest(limit int) ([]*models.Post, error) {
-	return s.postRepo.Latest(limit)
+func (s *service) Latest(limit int, after *time.Time) ([]*models.Post, error) {
+	return s.postRepo.Latest(limit, after)
 }

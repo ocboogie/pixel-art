@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/go-chi/chi"
 	"github.com/ocboogie/pixel-art/models"
@@ -12,7 +13,8 @@ import (
 
 var (
 	errPostNotFound = newSimpleAPIError(http.StatusNotFound, false, "Post not found")
-	errInvalidLimit = newSimpleAPIError(http.StatusBadRequest, false, "Limit must be a number")
+	errInvalidLimit = newSimpleAPIError(http.StatusBadRequest, false, `The "limit" parameter must be a number`)
+	errInvalidAfter = newSimpleAPIError(http.StatusBadRequest, false, `The "after" parameter must be a iso-8601 formatted date`)
 )
 
 func (s *server) handlePostsFind() http.HandlerFunc {
@@ -90,30 +92,24 @@ func (s *server) handlePostsAll() http.HandlerFunc {
 			limit = i
 		}
 
-		posts, err := s.post.Latest(limit)
+		var after *time.Time = nil
+		afterQuery := r.URL.Query().Get("after")
+		if afterQuery != "" {
+			afterDate, err := time.Parse(time.RFC3339, afterQuery)
+
+			if err != nil {
+				s.error(w, r, errInvalidAfter)
+				return
+			}
+
+			after = &afterDate
+		}
+
+		posts, err := s.post.Latest(limit, after)
 		if err != nil {
 			s.error(w, r, unexpectedAPIError(err))
 			return
 		}
 		s.respond(w, r, http.StatusOK, posts)
-
-		// if i, err := strconv.Atoi(r.URL.Query().Get("limit")); err == nil {
-		// 	limit = i
-		// }
-
-		// s.post.Latest(limit)
-
-		// post, err := s.post.Find(postID)
-
-		// if err != nil {
-		// 	if err == postService.ErrNotFound {
-		// 		s.error(w, r, errPostNotFound)
-		// 		return
-		// 	}
-		// 	s.error(w, r, unexpectedAPIError(err))
-		// 	return
-		// }
-
-		// s.respond(w, r, http.StatusOK, post)
 	}
 }
