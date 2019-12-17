@@ -36,7 +36,7 @@ export default new Vuex.Store({
     loggedIn(context) {
       // The "true" here can be any string. It just needs to be truthy.
       localStorage.setItem("loggedIn", "true");
-      context.commit("loggedOut");
+      context.commit("loggedIn");
     },
     loggedOut(context) {
       localStorage.removeItem("loggedIn");
