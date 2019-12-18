@@ -8,7 +8,7 @@ import (
 
 var cfg = Config{
 	Size: 3,
-	Colors: []string{
+	Palette: []string{
 		"#1abc9c",
 		"#e74c3c",
 	},

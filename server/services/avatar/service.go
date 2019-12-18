@@ -38,7 +38,7 @@ func (s *service) Validate(data string) bool {
 	color := sections[1]
 	color = "#" + color
 
-	for _, paletteColor := range s.config.Colors {
+	for _, paletteColor := range s.config.Palette {
 		if color == paletteColor {
 			return true
 		}
