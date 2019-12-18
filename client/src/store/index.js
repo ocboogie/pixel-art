@@ -33,12 +33,28 @@ export default new Vuex.Store({
       });
       context.commit("addPosts", posts);
     },
-    loggedIn(context) {
+    async signUp(context, user) {
+      try {
+        await axios.post("/auth/signUp", user);
+      } catch (error) {
+        throw error;
+      }
       // The "true" here can be any string. It just needs to be truthy.
       localStorage.setItem("loggedIn", "true");
       context.commit("loggedIn");
     },
-    loggedOut(context) {
+    async login(context, credentials) {
+      try {
+        await axios.post("/auth/login", credentials);
+      } catch (error) {
+        throw error;
+      }
+      // The "true" here can be any string. It just needs to be truthy.
+      localStorage.setItem("loggedIn", "true");
+      context.commit("loggedIn");
+    },
+    logout(context) {
+      // TODO: Send a logout request
       localStorage.removeItem("loggedIn");
       context.commit("loggedOut");
     }

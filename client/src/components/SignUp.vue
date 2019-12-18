@@ -62,7 +62,6 @@
   </v-card>
 </template>
 <script>
-import store from "../store";
 import { mapActions } from "vuex";
 
 export default {
@@ -76,6 +75,7 @@ export default {
   data: () => ({
     loading: false,
     valid: false,
+    error: "",
     form: {
       name: "",
       email: "",
@@ -103,19 +103,17 @@ export default {
     "form.password": "validateField"
   },
   methods: {
-    ...mapActions(["loggedIn"]),
+    ...mapActions(["signUp"]),
     async submit() {
       this.loading = true;
-
       try {
-        await this.axios.post("/auth/signUp", this.form);
+        await this.signUp(this.form);
       } catch (error) {
         this.loading = false;
         this.error = error.response.data.error.message;
         return;
       }
       this.loading = false;
-      this.loggedIn();
       this.$router.replace({ name: "home" });
     },
     validateField() {

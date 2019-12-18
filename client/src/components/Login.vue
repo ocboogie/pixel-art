@@ -42,7 +42,6 @@
   </v-card>
 </template>
 <script>
-import store from "../store";
 import { mapActions } from "vuex";
 
 export default {
@@ -56,18 +55,17 @@ export default {
     }
   }),
   methods: {
-    ...mapActions(["loggedIn"]),
+    ...mapActions(["login"]),
     async submit() {
       this.loading = true;
       try {
-        await this.axios.post("/auth/login", this.form);
+        await this.login(this.form);
       } catch (error) {
         this.loading = false;
         this.error = error.response.data.error.message;
         return;
       }
       this.loading = false;
-      this.loggedIn();
       this.$router.replace({ name: "home" });
     }
   }
