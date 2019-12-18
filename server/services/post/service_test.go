@@ -2,6 +2,7 @@ package post
 
 import (
 	"testing"
+	"time"
 
 	"github.com/golang/mock/gomock"
 	"github.com/ocboogie/pixel-art/mocks"
@@ -77,10 +78,11 @@ func TestLatest(t *testing.T) {
 			Data:   make([]byte, 0),
 		},
 	}
+	after := time.Now()
 
-	repo.EXPECT().Latest(gomock.Any()).Return(mockLatestPosts, nil)
+	repo.EXPECT().Latest(20, &after).Return(mockLatestPosts, nil)
 
-	LatestPosts, err := s.Latest(20)
+	LatestPosts, err := s.Latest(20, &after)
 
 	assert.NoError(t, err)
 	assert.Equal(t, LatestPosts, LatestPosts)
