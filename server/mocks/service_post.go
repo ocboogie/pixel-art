@@ -8,6 +8,7 @@ import (
 	gomock "github.com/golang/mock/gomock"
 	models "github.com/ocboogie/pixel-art/models"
 	reflect "reflect"
+	time "time"
 )
 
 // ServicePost is a mock of Service interface
@@ -64,16 +65,16 @@ func (mr *ServicePostMockRecorder) Find(arg0 interface{}) *gomock.Call {
 }
 
 // Latest mocks base method
-func (m *ServicePost) Latest(arg0 int) ([]*models.Post, error) {
+func (m *ServicePost) Latest(arg0 int, arg1 *time.Time) ([]*models.Post, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Latest", arg0)
+	ret := m.ctrl.Call(m, "Latest", arg0, arg1)
 	ret0, _ := ret[0].([]*models.Post)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Latest indicates an expected call of Latest
-func (mr *ServicePostMockRecorder) Latest(arg0 interface{}) *gomock.Call {
+func (mr *ServicePostMockRecorder) Latest(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Latest", reflect.TypeOf((*ServicePost)(nil).Latest), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Latest", reflect.TypeOf((*ServicePost)(nil).Latest), arg0, arg1)
 }
