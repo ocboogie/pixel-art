@@ -4,7 +4,6 @@ import (
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 	"github.com/ocboogie/pixel-art/api"
-	"github.com/ocboogie/pixel-art/config"
 	"github.com/ocboogie/pixel-art/postgres"
 	"github.com/ocboogie/pixel-art/services/auth"
 	"github.com/ocboogie/pixel-art/services/post"
@@ -18,18 +17,17 @@ func main() {
 		panic(err)
 	}
 	defer db.Close()
-	config := config.GetConfig()
 
 	validate := validator.New()
 	userRepo := postgres.NewRepositoryUser(db)
 	postRepo := postgres.NewPostRepository(db)
 	sessionRepo := postgres.NewRepositorySession(db)
 
-	auth := auth.New(&config, userRepo, sessionRepo)
-	post := post.New(&config, userRepo, postRepo)
-	user := user.New(&config, userRepo)
+	auth := auth.New(auth.DefaultConfig(), userRepo, sessionRepo)
+	post := post.New(userRepo, postRepo)
+	user := user.New(userRepo)
 
-	server := api.New(&config, auth, post, user, validate)
+	server := api.New(auth, post, user, validate)
 
 	server.Setup()
 	server.Start()

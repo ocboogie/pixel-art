@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/ocboogie/pixel-art/config"
 	"github.com/ocboogie/pixel-art/models"
 	"github.com/ocboogie/pixel-art/pkg/argon2"
 	"github.com/ocboogie/pixel-art/repositories"
@@ -28,10 +27,10 @@ type Service interface {
 type service struct {
 	userRepo    repositories.User
 	sessionRepo repositories.Session
-	config      *config.Config
+	config      Config
 }
 
-func New(config *config.Config, userRepo repositories.User, sessionRepo repositories.Session) Service {
+func New(config Config, userRepo repositories.User, sessionRepo repositories.Session) Service {
 	return &service{
 		userRepo:    userRepo,
 		sessionRepo: sessionRepo,

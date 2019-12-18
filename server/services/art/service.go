@@ -6,8 +6,6 @@ import (
 	"encoding/binary"
 	"io"
 	"strings"
-
-	"github.com/ocboogie/pixel-art/config"
 )
 
 //go:generate mockgen -destination=../../mocks/service_art.go -package mocks -mock_names Service=ServiceArt github.com/ocboogie/pixel-art/services/art Service
@@ -17,10 +15,10 @@ type Service interface {
 }
 
 type service struct {
-	config *config.Config
+	config *Config
 }
 
-func New(config *config.Config) Service {
+func New(config *Config) Service {
 	return &service{
 		config: config,
 	}

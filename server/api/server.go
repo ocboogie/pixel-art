@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi"
-	"github.com/ocboogie/pixel-art/config"
 	"github.com/ocboogie/pixel-art/services/auth"
 	"github.com/ocboogie/pixel-art/services/post"
 	"github.com/ocboogie/pixel-art/services/user"
@@ -13,7 +12,6 @@ import (
 )
 
 type server struct {
-	config   *config.Config
 	router   *chi.Mux
 	validate *validator.Validate
 	auth     auth.Service
@@ -21,14 +19,12 @@ type server struct {
 	user     user.Service
 }
 
-func New(config *config.Config,
-	auth auth.Service,
+func New(auth auth.Service,
 	post post.Service,
 	user user.Service,
 	validate *validator.Validate) *server {
 
 	s := &server{
-		config:   config,
 		validate: validate,
 		auth:     auth,
 		post:     post,

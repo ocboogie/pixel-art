@@ -5,14 +5,13 @@ import (
 	"time"
 
 	"github.com/golang/mock/gomock"
-	"github.com/ocboogie/pixel-art/config"
 	"github.com/ocboogie/pixel-art/mocks"
 	"github.com/ocboogie/pixel-art/models"
 	"github.com/ocboogie/pixel-art/pkg/argon2"
 	"github.com/stretchr/testify/assert"
 )
 
-var cfg = &config.Config{
+var cfg = Config{
 	HashConfig:      argon2.DefaultParams(),
 	SessionLifetime: 7 * 24 * 60 * 60 * 1000,
 	Secret:          "SECRET",

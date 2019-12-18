@@ -5,11 +5,10 @@ import (
 	"encoding/hex"
 	"testing"
 
-	"github.com/ocboogie/pixel-art/config"
 	"github.com/stretchr/testify/assert"
 )
 
-var cfg = &config.Config{
+var cfg = &Config{
 	ArtSize:   3,
 	ArtColors: 3,
 }

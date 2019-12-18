@@ -1,7 +1,6 @@
 package user
 
 import (
-	"github.com/ocboogie/pixel-art/config"
 	"github.com/ocboogie/pixel-art/models"
 	"github.com/ocboogie/pixel-art/repositories"
 )
@@ -14,13 +13,11 @@ type Service interface {
 
 type service struct {
 	userRepo repositories.User
-	config   *config.Config
 }
 
-func New(config *config.Config, userRepo repositories.User) Service {
+func New(userRepo repositories.User) Service {
 	return &service{
 		userRepo: userRepo,
-		config:   config,
 	}
 }
 

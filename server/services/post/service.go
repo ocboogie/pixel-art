@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/ocboogie/pixel-art/config"
 	"github.com/ocboogie/pixel-art/models"
 	"github.com/ocboogie/pixel-art/repositories"
 )
@@ -20,14 +19,12 @@ type Service interface {
 type service struct {
 	userRepo repositories.User
 	postRepo repositories.Post
-	config   *config.Config
 }
 
-func New(config *config.Config, userRepo repositories.User, postRepo repositories.Post) Service {
+func New(userRepo repositories.User, postRepo repositories.Post) Service {
 	return &service{
 		userRepo: userRepo,
 		postRepo: postRepo,
-		config:   config,
 	}
 }
 
