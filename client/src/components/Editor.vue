@@ -60,7 +60,6 @@
         />
       </div>
     </div>
-    <button @click="toBytes">click</button>
   </div>
 </template>
 
@@ -216,31 +215,36 @@ export default {
       const heightBytes = 2;
       // Two 16uint
       const sizeBytes = widthBytes + heightBytes;
+      // One 8uint
+      const colorsBytes = 1;
       // Number of colors for each is 3 bytes
       const colorTableBytes = this.colors.length * 3;
       // Each pixel is 1 byte
       const pixelsBytes = size * size;
 
-      const length = sizeBytes + colorTableBytes + pixelsBytes;
+      const length = sizeBytes + colorsBytes + colorTableBytes + pixelsBytes;
 
       const bytes = new ArrayBuffer(length);
       const dataview = new DataView(bytes, 0, length);
 
       dataview.setUint16(0, size);
       dataview.setUint16(widthBytes, size);
+      dataview.setUint8(sizeBytes, this.colors.length);
       this.colors.forEach((color, index) => {
         const { r, g, b } = hexToRgb(color);
-        dataview.setUint8(sizeBytes + index * 3, r);
-        dataview.setUint8(sizeBytes + index * 3 + 1, g);
-        dataview.setUint8(sizeBytes + index * 3 + 2, b);
+        dataview.setUint8(sizeBytes + colorsBytes + index * 3, r);
+        dataview.setUint8(sizeBytes + colorsBytes + index * 3 + 1, g);
+        dataview.setUint8(sizeBytes + colorsBytes + index * 3 + 2, b);
       });
 
       this.pixels.forEach((colorIndex, index) => {
-        dataview.setUint8(sizeBytes + colorTableBytes + index, colorIndex);
+        dataview.setUint8(
+          sizeBytes + colorsBytes + colorTableBytes + index,
+          colorIndex
+        );
       });
 
-      var b64encoded = base64ArrayBuffer(bytes);
-      console.log(b64encoded);
+      return base64ArrayBuffer(bytes);
     },
 
     getMousePos(canvas, evt) {
