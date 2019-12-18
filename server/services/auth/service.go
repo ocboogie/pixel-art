@@ -10,6 +10,7 @@ import (
 	"github.com/ocboogie/pixel-art/models"
 	"github.com/ocboogie/pixel-art/pkg/argon2"
 	"github.com/ocboogie/pixel-art/repositories"
+	"github.com/ocboogie/pixel-art/services/avatar"
 )
 
 //go:generate mockgen -destination=../../mocks/service_auth.go -package mocks -mock_names Service=ServiceAuth github.com/ocboogie/pixel-art/services/auth Service
@@ -25,20 +26,26 @@ type Service interface {
 }
 
 type service struct {
-	userRepo    repositories.User
-	sessionRepo repositories.Session
-	config      Config
+	userRepo      repositories.User
+	sessionRepo   repositories.Session
+	avatarService avatar.Service
+	config        Config
 }
 
-func New(config Config, userRepo repositories.User, sessionRepo repositories.Session) Service {
+func New(config Config, userRepo repositories.User, sessionRepo repositories.Session, avatarService avatar.Service) Service {
 	return &service{
-		userRepo:    userRepo,
-		sessionRepo: sessionRepo,
-		config:      config,
+		userRepo:      userRepo,
+		sessionRepo:   sessionRepo,
+		avatarService: avatarService,
+		config:        config,
 	}
 }
 
 func (s *service) SignUp(user *models.UserNew) (*models.Session, error) {
+	if valid := s.avatarService.Validate(user.Avatar); !valid {
+		return nil, ErrInvalidAvatar
+	}
+
 	exists, err := s.userRepo.ExistsEmail(user.Email)
 	if err != nil {
 		return nil, err

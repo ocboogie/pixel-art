@@ -20,7 +20,8 @@ SELECT
 	posts.data "data", 
 	posts.created_at "created_at", 
 	author.id "author.id", 
-	author.name "author.name", 
+	author.name "author.name",
+	author.avatar "author.avatar",
 	author.created_at "author.created_at"
 FROM
 	posts JOIN users AS author ON posts.author_id = author.id

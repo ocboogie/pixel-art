@@ -14,8 +14,10 @@ type service struct {
 	config Config
 }
 
-func New() Service {
-	return &service{}
+func New(config Config) Service {
+	return &service{
+		config: config,
+	}
 }
 
 func (s *service) Validate(data string) bool {

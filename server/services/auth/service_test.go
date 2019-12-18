@@ -18,26 +18,71 @@ var cfg = Config{
 }
 
 func TestSignUp(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-	userRepo := mocks.NewRepositoryUser(ctrl)
-	sessionRepo := mocks.NewRepositorySession(ctrl)
-	s := &service{
-		userRepo:    userRepo,
-		sessionRepo: sessionRepo,
-		config:      cfg,
-	}
+	t.Run("Expected", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+		userRepo := mocks.NewRepositoryUser(ctrl)
+		sessionRepo := mocks.NewRepositorySession(ctrl)
+		avatarService := mocks.NewServiceAvatar(ctrl)
+		s := &service{
+			userRepo:      userRepo,
+			sessionRepo:   sessionRepo,
+			avatarService: avatarService,
+			config:        cfg,
+		}
 
-	userRepo.EXPECT().ExistsEmail(gomock.Any()).Return(false, nil)
-	userRepo.EXPECT().Save(gomock.AssignableToTypeOf(&models.User{})).Return(nil)
-	sessionRepo.EXPECT().Save(gomock.AssignableToTypeOf(&models.Session{})).Return(nil)
+		avatarService.EXPECT().Validate(gomock.Any()).Return(true)
+		userRepo.EXPECT().ExistsEmail(gomock.Any()).Return(false, nil)
+		userRepo.EXPECT().Save(gomock.AssignableToTypeOf(&models.User{})).Return(nil)
+		sessionRepo.EXPECT().Save(gomock.AssignableToTypeOf(&models.Session{})).Return(nil)
 
-	id, err := s.SignUp(&models.UserNew{Name: "Boogie", Email: "foo@bar.com", Password: "password"})
+		id, err := s.SignUp(&models.UserNew{Name: "Boogie", Avatar: "1010101010101011100101011#2ecc71", Email: "foo@bar.com", Password: "password"})
 
-	assert.NoError(t, err)
-	assert.NotEmpty(t, id)
+		assert.NoError(t, err)
+		assert.NotEmpty(t, id)
+	})
 
-	// TODO: Test when email exists
+	t.Run("Email in use", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+		userRepo := mocks.NewRepositoryUser(ctrl)
+		sessionRepo := mocks.NewRepositorySession(ctrl)
+		avatarService := mocks.NewServiceAvatar(ctrl)
+		s := &service{
+			userRepo:      userRepo,
+			sessionRepo:   sessionRepo,
+			avatarService: avatarService,
+			config:        cfg,
+		}
+
+		avatarService.EXPECT().Validate(gomock.Any()).Return(true)
+		userRepo.EXPECT().ExistsEmail(gomock.Any()).Return(true, nil)
+
+		_, err := s.SignUp(&models.UserNew{Name: "Boogie", Avatar: "1010101010101011100101011#2ecc71", Email: "foo@bar.com", Password: "password"})
+
+		assert.Equal(t, err, ErrEmailAlreadyInUse)
+	})
+
+	t.Run("Invalid avatar", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+		userRepo := mocks.NewRepositoryUser(ctrl)
+		sessionRepo := mocks.NewRepositorySession(ctrl)
+		avatarService := mocks.NewServiceAvatar(ctrl)
+		s := &service{
+			userRepo:      userRepo,
+			sessionRepo:   sessionRepo,
+			avatarService: avatarService,
+			config:        cfg,
+		}
+
+		avatarService.EXPECT().Validate(gomock.Any()).Return(false)
+		userRepo.EXPECT().ExistsEmail(gomock.Any()).Return(true, nil)
+
+		_, err := s.SignUp(&models.UserNew{Name: "Boogie", Avatar: "1010101010101011100101011#2ecc71", Email: "foo@bar.com", Password: "password"})
+
+		assert.Equal(t, err, ErrInvalidAvatar)
+	})
 }
 
 func TestLogin(t *testing.T) {

@@ -11,5 +11,6 @@ var (
 	ErrInvalidCredentials = errors.New("Invalid credentials")
 	ErrUserNotFound       = errors.New("User not found")
 	ErrExpiredSession     = errors.New("Session expired")
+	ErrInvalidAvatar      = errors.New("Invalid avatar")
 	ErrSessionNotFound    = repositories.ErrSessionNotFound
 )

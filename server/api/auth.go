@@ -13,6 +13,7 @@ var (
 	errInvalidCredentials = newSimpleAPIError(http.StatusBadRequest, true, "Username or password is invalid")
 	errEmailAlreadyInUse  = newSimpleAPIError(http.StatusBadRequest, true, "Email already in use")
 	errUnauthenticated    = newSimpleAPIError(http.StatusUnauthorized, true, "You must be logged in")
+	errInvalidAvatar      = newSimpleAPIError(http.StatusBadRequest, false, "Invalid avatar")
 )
 
 const sessionCookie = "sessionId"
@@ -134,6 +135,10 @@ func (s *server) handleSignUp() http.HandlerFunc {
 		if err != nil {
 			if err == auth.ErrEmailAlreadyInUse {
 				s.error(w, r, errEmailAlreadyInUse)
+				return
+			}
+			if err == auth.ErrInvalidAvatar {
+				s.error(w, r, errInvalidAvatar)
 				return
 			}
 
