@@ -1,13 +1,13 @@
 package art
 
 type Config struct {
-	ArtSize   uint16
-	ArtColors uint8
+	Size   uint16
+	Colors uint8
 }
 
 func DefaultConfig() Config {
 	return Config{
-		ArtSize:   25,
-		ArtColors: 8,
+		Size:   25,
+		Colors: 8,
 	}
 }

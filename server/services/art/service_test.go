@@ -9,8 +9,8 @@ import (
 )
 
 var cfg = &Config{
-	ArtSize:   3,
-	ArtColors: 3,
+	Size:   3,
+	Colors: 3,
 }
 
 func hexToBase64(hexCode string) string {

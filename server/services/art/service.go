@@ -34,7 +34,7 @@ func (s *service) Validate(data string) bool {
 		return false
 	}
 	width = binary.BigEndian.Uint16(widthB)
-	if width != s.config.ArtSize {
+	if width != s.config.Size {
 		return false
 	}
 
@@ -45,7 +45,7 @@ func (s *service) Validate(data string) bool {
 		return false
 	}
 	height = binary.BigEndian.Uint16(heightB)
-	if height != s.config.ArtSize {
+	if height != s.config.Size {
 		return false
 	}
 
@@ -54,7 +54,7 @@ func (s *service) Validate(data string) bool {
 	if err != nil {
 		return false
 	}
-	if colorAmount != s.config.ArtColors {
+	if colorAmount != s.config.Colors {
 		return false
 	}
 
