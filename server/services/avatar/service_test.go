@@ -46,3 +46,13 @@ func TestValidate(t *testing.T) {
 		assert.True(t, s.Validate("101010101#e74c3c"))
 	})
 }
+
+func TestFormat(t *testing.T) {
+	s := &service{
+		config: cfg,
+	}
+
+	format := s.Format()
+	assert.Equal(t, cfg.Size, format.Size)
+	assert.Equal(t, cfg.Palette, format.Palette)
+}

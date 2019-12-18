@@ -7,11 +7,13 @@ import (
 
 func (s *server) routes() {
 	s.router.Use(middleware.RealIP)
-  	s.router.Use(middleware.Logger)
-  	s.router.Use(middleware.Recoverer)
-	
+	s.router.Use(middleware.Logger)
+	s.router.Use(middleware.Recoverer)
+
 	s.router.Post("/auth/login", s.handleLogin())
 	s.router.Post("/auth/signUp", s.handleSignUp())
+
+	s.router.Get("/avatar/format", s.handleAvatarFormat())
 
 	s.router.Route("/posts", func(r chi.Router) {
 		r.Use(s.authenticated)

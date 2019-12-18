@@ -29,7 +29,7 @@ func main() {
 	post := post.New(userRepo, postRepo)
 	user := user.New(userRepo)
 
-	server := api.New(auth, post, user, validate)
+	server := api.New(auth, avatar, post, user, validate)
 
 	server.Setup()
 	server.Start()

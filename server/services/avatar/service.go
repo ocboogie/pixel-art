@@ -2,12 +2,15 @@ package avatar
 
 import (
 	"strings"
+
+	"github.com/ocboogie/pixel-art/models"
 )
 
 //go:generate mockgen -destination=../../mocks/service_avatar.go -package mocks -mock_names Service=ServiceAvatar github.com/ocboogie/pixel-art/services/avatar Service
 
 type Service interface {
 	Validate(data string) bool
+	Format() models.Format
 }
 
 type service struct {
@@ -45,4 +48,11 @@ func (s *service) Validate(data string) bool {
 	}
 
 	return false
+}
+
+func (s *service) Format() models.Format {
+	return models.Format{
+		Size:    s.config.Size,
+		Palette: s.config.Palette,
+	}
 }
