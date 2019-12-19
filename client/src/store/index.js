@@ -53,8 +53,12 @@ export default new Vuex.Store({
       localStorage.setItem("loggedIn", "true");
       context.commit("loggedIn");
     },
-    logout(context) {
-      // TODO: Send a logout request
+    async logout(context) {
+      try {
+        await axios.post("/auth/logout");
+      } catch (error) {
+        throw error;
+      }
       localStorage.removeItem("loggedIn");
       context.commit("loggedOut");
     }
