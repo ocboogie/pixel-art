@@ -21,6 +21,7 @@ const SessionIDLength = 32
 type Service interface {
 	SignUp(user *models.UserNew) (*models.Session, error)
 	Login(credentials *models.UserCredentials) (*models.Session, error)
+	Logout(sessionID string) error
 	CreateSession(userID string) (*models.Session, error)
 	VerifySession(sessionID string) (string, error)
 }
@@ -100,6 +101,10 @@ func (s *service) Login(credentials *models.UserCredentials) (*models.Session, e
 	}
 
 	return s.CreateSession(user.ID)
+}
+
+func (s *service) Logout(sessionID string) error {
+	return s.sessionRepo.Delete(sessionID)
 }
 
 func (s *service) hashSessionID(id string) string {

@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"github.com/ocboogie/pixel-art/models"
 	"github.com/ocboogie/pixel-art/services/auth"
@@ -26,6 +27,21 @@ func (s *server) saveSession(w http.ResponseWriter, r *http.Request, session *mo
 		Value: session.ID,
 
 		Expires: session.ExpiresAt,
+		Path:    "/",
+
+		// TODO: Enable this in producation
+		// Secure: true,
+		// HttpOnly: true,
+	})
+}
+
+func (s *server) deleteSession(w http.ResponseWriter, r *http.Request) {
+	// TODO: Make all shared cookie data in one place
+	http.SetCookie(w, &http.Cookie{
+		Name:  sessionCookie,
+		Value: "",
+
+		Expires: time.Unix(0, 0),
 		Path:    "/",
 
 		// TODO: Enable this in producation
@@ -147,5 +163,21 @@ func (s *server) handleSignUp() http.HandlerFunc {
 		}
 
 		s.saveSession(w, r, session)
+	}
+}
+
+func (s *server) handleLogout() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		sessionID := s.getSessionID(w, r)
+		if sessionID == "" {
+			s.error(w, r, errUnauthenticated)
+			return
+		}
+		err := s.auth.Logout(sessionID)
+		if err != nil {
+			s.error(w, r, unexpectedAPIError(err))
+			return
+		}
+		s.deleteSession(w, r)
 	}
 }

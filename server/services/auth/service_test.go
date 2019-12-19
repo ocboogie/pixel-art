@@ -120,6 +120,22 @@ func TestLogin(t *testing.T) {
 	// TODO: Test when email not found
 }
 
+func TestLogout(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	sessionRepo := mocks.NewRepositorySession(ctrl)
+	s := &service{
+		sessionRepo: sessionRepo,
+		config:      cfg,
+	}
+
+	sessionRepo.EXPECT().Delete("the session id").Return(nil)
+
+	err := s.Logout("the session id")
+
+	assert.NoError(t, err)
+}
+
 func TestCreateSession(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
