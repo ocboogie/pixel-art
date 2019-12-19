@@ -7,9 +7,21 @@
 
       <v-spacer></v-spacer>
 
-      <v-btn v-if="loggedIn" icon>
-        <v-icon>mdi-account</v-icon>
-      </v-btn>
+      <v-menu open-on-hover v-if="loggedIn" down offset-y>
+        <template v-slot:activator="{ on }">
+          <v-btn icon v-on="on">
+            <v-icon>mdi-account</v-icon>
+          </v-btn>
+        </template>
+        <v-list width="150">
+          <v-list-item to="/profile">
+            <v-list-item-title>Profile</v-list-item-title>
+          </v-list-item>
+          <v-list-item @click="logout">
+            <v-list-item-title>Logout</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
       <v-btn to="/login" v-else text>
         Login
       </v-btn>
@@ -23,13 +35,14 @@
 
 <script>
 import HelloWorld from "./components/HelloWorld";
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 
 export default {
   name: "App",
   computed: mapState({
     loggedIn: state => state.auth.loggedIn
   }),
+  methods: mapActions(["logout"]),
 
   components: {
     HelloWorld
