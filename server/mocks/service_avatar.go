@@ -6,6 +6,7 @@ package mocks
 
 import (
 	gomock "github.com/golang/mock/gomock"
+	models "github.com/ocboogie/pixel-art/models"
 	reflect "reflect"
 )
 
@@ -30,6 +31,20 @@ func NewServiceAvatar(ctrl *gomock.Controller) *ServiceAvatar {
 // EXPECT returns an object that allows the caller to indicate expected use
 func (m *ServiceAvatar) EXPECT() *ServiceAvatarMockRecorder {
 	return m.recorder
+}
+
+// Format mocks base method
+func (m *ServiceAvatar) Format() models.Format {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Format")
+	ret0, _ := ret[0].(models.Format)
+	return ret0
+}
+
+// Format indicates an expected call of Format
+func (mr *ServiceAvatarMockRecorder) Format() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Format", reflect.TypeOf((*ServiceAvatar)(nil).Format))
 }
 
 // Validate mocks base method
