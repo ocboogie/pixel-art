@@ -77,7 +77,6 @@ func TestSignUp(t *testing.T) {
 		}
 
 		avatarService.EXPECT().Validate(gomock.Any()).Return(false)
-		userRepo.EXPECT().ExistsEmail(gomock.Any()).Return(true, nil)
 
 		_, err := s.SignUp(&models.UserNew{Name: "Boogie", Avatar: "1010101010101011100101011#2ecc71", Email: "foo@bar.com", Password: "password"})
 
