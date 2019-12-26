@@ -69,6 +69,7 @@ func (s *service) SignUp(user *models.UserNew) (*models.Session, error) {
 	userHashed := &models.User{
 		ID:        id,
 		Name:      user.Name,
+		Avatar:    user.Avatar,
 		Email:     user.Email,
 		Password:  hashedPassword,
 		CreatedAt: time.Now(),
