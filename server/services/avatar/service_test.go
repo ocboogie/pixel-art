@@ -1,6 +1,7 @@
 package avatar
 
 import (
+	"math/rand"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -55,4 +56,21 @@ func TestFormat(t *testing.T) {
 	format := s.Format()
 	assert.Equal(t, cfg.Size, format.Size)
 	assert.Equal(t, cfg.Palette, format.Palette)
+}
+
+func TestGenerateRandom(t *testing.T) {
+	s := &service{
+		config: cfg,
+	}
+
+	t.Run("Is valid", func(t *testing.T) {
+		assert.True(t, s.Validate(s.GenerateRandom()))
+	})
+	// This may fail if the implementation changes
+	t.Run("Expected return", func(t *testing.T) {
+		rand.Seed(0)
+		avatar := s.GenerateRandom()
+		assert.Equal(t, "111010010#e74c3c", avatar)
+	})
+
 }
