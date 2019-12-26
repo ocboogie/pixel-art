@@ -18,7 +18,7 @@ instance.interceptors.response.use(
   error => {
     const { response } = error;
     if (response && response.status === 401) {
-      store.dispatch("loggedOut");
+      store.commit("loggedOut");
     }
     return Promise.reject(error);
   }
