@@ -140,6 +140,8 @@ func (s *server) handleSignUp() http.HandlerFunc {
 			return
 		}
 
+		body.Avatar = s.avatar.GenerateRandom()
+
 		if err := body.Validate(s.validate); err != nil {
 			// FIXME:
 			s.error(w, r, errInvalidBody(err))
