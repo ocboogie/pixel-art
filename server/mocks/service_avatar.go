@@ -47,6 +47,20 @@ func (mr *ServiceAvatarMockRecorder) Format() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Format", reflect.TypeOf((*ServiceAvatar)(nil).Format))
 }
 
+// GenerateRandom mocks base method
+func (m *ServiceAvatar) GenerateRandom() string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GenerateRandom")
+	ret0, _ := ret[0].(string)
+	return ret0
+}
+
+// GenerateRandom indicates an expected call of GenerateRandom
+func (mr *ServiceAvatarMockRecorder) GenerateRandom() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateRandom", reflect.TypeOf((*ServiceAvatar)(nil).GenerateRandom))
+}
+
 // Validate mocks base method
 func (m *ServiceAvatar) Validate(arg0 string) bool {
 	m.ctrl.T.Helper()
