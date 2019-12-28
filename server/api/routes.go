@@ -13,6 +13,10 @@ func (s *server) routes() {
 	s.router.Post("/auth/login", s.handleLogin())
 	s.router.Post("/auth/signUp", s.handleSignUp())
 	s.router.Post("/auth/logout", s.handleLogout())
+	s.router.Group(func(r chi.Router) {
+		r.Use(s.authenticated)
+		r.Get("/me", s.handleMe())
+	})
 
 	s.router.Get("/avatar/format", s.handleAvatarFormat())
 
