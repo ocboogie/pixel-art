@@ -8,6 +8,7 @@ import (
 	"github.com/ocboogie/pixel-art/mocks"
 	"github.com/ocboogie/pixel-art/models"
 	"github.com/ocboogie/pixel-art/pkg/argon2"
+	"github.com/ocboogie/pixel-art/repositories"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -85,17 +86,8 @@ func TestSignUp(t *testing.T) {
 }
 
 func TestLogin(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-	userRepo := mocks.NewRepositoryUser(ctrl)
-	sessionRepo := mocks.NewRepositorySession(ctrl)
-	s := &service{
-		userRepo:    userRepo,
-		sessionRepo: sessionRepo,
-		config:      cfg,
-	}
-
-	hashed, err := argon2.Hash("correct battery horse staple", s.config.HashConfig)
+	// TODO: This takes way too long for a test
+	hashed, err := argon2.Hash("correct battery horse staple", cfg.HashConfig)
 	assert.NoError(t, err)
 
 	user := &models.User{
@@ -104,20 +96,68 @@ func TestLogin(t *testing.T) {
 		Password: hashed,
 	}
 
-	userRepo.EXPECT().FindByEmail(gomock.Eq("foo@bar.com")).Return(user, nil)
-	sessionRepo.EXPECT().Save(gomock.AssignableToTypeOf(&models.Session{})).Return(nil)
+	t.Run("Expected", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+		userRepo := mocks.NewRepositoryUser(ctrl)
+		sessionRepo := mocks.NewRepositorySession(ctrl)
+		s := &service{
+			userRepo:    userRepo,
+			sessionRepo: sessionRepo,
+			config:      cfg,
+		}
 
-	credentials := &models.UserCredentials{
-		Email:    "foo@bar.com",
-		Password: "correct battery horse staple",
-	}
-	session, err := s.Login(credentials)
+		userRepo.EXPECT().FindByEmail(gomock.Eq("foo@bar.com")).Return(user, nil)
+		sessionRepo.EXPECT().Save(gomock.AssignableToTypeOf(&models.Session{})).Return(nil)
 
-	assert.NoError(t, err)
-	assert.IsType(t, &models.Session{}, session)
-	assert.Regexp(t, `^[A-Fa-f0-9]+$`, session.ID)
+		session, err := s.Login(&models.UserCredentials{
+			Email:    "foo@bar.com",
+			Password: "correct battery horse staple",
+		})
 
-	// TODO: Test when email not found
+		assert.NoError(t, err)
+		assert.IsType(t, &models.Session{}, session)
+		assert.Regexp(t, `^[A-Fa-f0-9]+$`, session.ID)
+	})
+
+	t.Run("Email not found", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+		userRepo := mocks.NewRepositoryUser(ctrl)
+		sessionRepo := mocks.NewRepositorySession(ctrl)
+		s := &service{
+			userRepo:    userRepo,
+			sessionRepo: sessionRepo,
+			config:      cfg,
+		}
+
+		userRepo.EXPECT().FindByEmail(gomock.Eq("foo@bar.com")).Return(nil, repositories.ErrUserNotFound)
+
+		_, err := s.Login(&models.UserCredentials{
+			Email: "foo@bar.com",
+		})
+		assert.Equal(t, ErrInvalidCredentials, err)
+	})
+
+	t.Run("Invalid credentials", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+		userRepo := mocks.NewRepositoryUser(ctrl)
+		sessionRepo := mocks.NewRepositorySession(ctrl)
+		s := &service{
+			userRepo:    userRepo,
+			sessionRepo: sessionRepo,
+			config:      cfg,
+		}
+
+		userRepo.EXPECT().FindByEmail(gomock.Eq("foo@bar.com")).Return(user, nil)
+
+		_, err := s.Login(&models.UserCredentials{
+			Email:    "foo@bar.com",
+			Password: "test",
+		})
+		assert.Equal(t, ErrInvalidCredentials, err)
+	})
 }
 
 func TestLogout(t *testing.T) {
