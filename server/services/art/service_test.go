@@ -28,14 +28,17 @@ func TestValidate(t *testing.T) {
 	}
 
 	t.Run("Invalid width", func(t *testing.T) {
+		assert.False(t, s.Validate(""))
 		assert.False(t, s.Validate(hexToBase64("01")))
 		assert.False(t, s.Validate(hexToBase64("0010")))
 	})
 	t.Run("Invalid height", func(t *testing.T) {
+		assert.False(t, s.Validate(hexToBase64("0003")))
 		assert.False(t, s.Validate(hexToBase64("000303")))
 		assert.False(t, s.Validate(hexToBase64("00030300")))
 	})
 	t.Run("Invalid color amount", func(t *testing.T) {
+		assert.False(t, s.Validate(hexToBase64("00030003")))
 		assert.False(t, s.Validate(hexToBase64("0003000304")))
 	})
 	t.Run("Invalid color table", func(t *testing.T) {
