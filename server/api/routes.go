@@ -21,17 +21,11 @@ func (s *server) routes() {
 	s.router.Get("/avatar/format", s.handleAvatarFormat())
 
 	s.router.Route("/posts", func(r chi.Router) {
-		r.Use(s.authenticated)
-
 		r.Get("/{id}", s.handlePostsFind())
-		r.Post("/", s.handlePostsCreate())
 		r.Get("/", s.handlePostsAll())
+		r.Group(func(r chi.Router) {
+			r.Use(s.authenticated)
+			r.Post("/", s.handlePostsCreate())
+		})
 	})
-	// s.router.HandleFunc("/posts/{id}", s.authenticated(s.handlePostsFind())).
-	// 	Methods("GET")
-	// s.router.HandleFunc("/posts", s.authenticated(s.handlePostsCreate())).
-	// 	Methods("POST")
-	// s.router.HandleFunc("/posts", s.authenticated(s.handlePostsAll())).
-	// 	Methods("GET").
-	// 	Queries("limit", "{limit}")
 }
