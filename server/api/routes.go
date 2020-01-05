@@ -10,9 +10,11 @@ func (s *server) routes() {
 	s.router.Use(middleware.Logger)
 	s.router.Use(middleware.Recoverer)
 
-	s.router.Post("/auth/login", s.handleLogin())
-	s.router.Post("/auth/signUp", s.handleSignUp())
-	s.router.Post("/auth/logout", s.handleLogout())
+	s.router.Route("/auth", func(r chi.Router) {
+		r.Post("/login", s.handleLogin())
+		r.Post("/signUp", s.handleSignUp())
+		r.Post("/logout", s.handleLogout())
+	})
 	s.router.Group(func(r chi.Router) {
 		r.Use(s.authenticated)
 		r.Get("/me", s.handleMe())
