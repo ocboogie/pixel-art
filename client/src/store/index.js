@@ -4,27 +4,30 @@ import axios from "../plugins/axios";
 
 Vue.use(Vuex);
 
-const loggedIn = Boolean(localStorage.getItem("loggedIn"));
-
 export default new Vuex.Store({
   state: {
-    auth: {
-      loggedIn
-    },
+    me: null,
     posts: []
   },
   mutations: {
     addPosts(state, posts) {
       state.posts = state.posts.concat(posts);
     },
-    loggedIn(state) {
-      Vue.set(state.auth, "loggedIn", true);
+    modifyMe(state, meDiff) {
+      state.me = { ...state.me, ...meDiff };
+    },
+    loggedIn(state, user) {
+      state.me = user;
     },
     loggedOut(state) {
-      Vue.set(state.auth, "loggedIn", false);
+      state.me = null;
     }
   },
   actions: {
+    async fetchMe(context) {
+      const { data: user } = await axios.get("/me");
+      context.commit("loggedIn", user);
+    },
     async loadPosts(context) {
       const { data: posts } = await axios.get("/posts", {
         params: {
@@ -39,9 +42,7 @@ export default new Vuex.Store({
       } catch (error) {
         throw error;
       }
-      // The "true" here can be any string. It just needs to be truthy.
-      localStorage.setItem("loggedIn", "true");
-      context.commit("loggedIn");
+      context.dispatch("fetchMe");
     },
     async login(context, credentials) {
       try {
@@ -49,9 +50,7 @@ export default new Vuex.Store({
       } catch (error) {
         throw error;
       }
-      // The "true" here can be any string. It just needs to be truthy.
-      localStorage.setItem("loggedIn", "true");
-      context.commit("loggedIn");
+      context.dispatch("fetchMe");
     },
     async logout(context) {
       try {
@@ -59,8 +58,25 @@ export default new Vuex.Store({
       } catch (error) {
         throw error;
       }
-      localStorage.removeItem("loggedIn");
       context.commit("loggedOut");
+    },
+    async updateProfile(context, user) {
+      const body = {};
+      if (user.name != context.state.me) {
+        body.name = user.name;
+      }
+      if (user.avatar != context.state.me.avatar) {
+        body.avatar = user.avatar;
+      }
+
+      await axios.patch("/me", body);
+
+      context.commit("modifyMe", body);
+    }
+  },
+  getters: {
+    loggedIn(state) {
+      return Boolean(state.me);
     }
   },
   modules: {}

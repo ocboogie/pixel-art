@@ -32,6 +32,10 @@
 import Vue from "vue";
 export default {
   props: {
+    size: {
+      type: Number,
+      required: true
+    },
     avatarData: {
       type: String,
       default: null
@@ -46,7 +50,6 @@ export default {
     }
   },
   data: () => ({
-    size: 5,
     cells: [],
     cellColor: null,
     // Draw states

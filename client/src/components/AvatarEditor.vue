@@ -1,9 +1,16 @@
 <template>
   <v-card>
-    <avatar ref="avatar" class="avatar" editable :color="selectedColor" />
+    <avatar
+      ref="avatar"
+      class="avatar"
+      editable
+      :avatarData="avatarData"
+      :size="size"
+      :color="selectedColor"
+    />
     <div class="colors">
       <div
-        v-for="color in colors"
+        v-for="color in palette"
         :key="color"
         class="color"
         :style="{ backgroundColor: color }"
@@ -16,16 +23,31 @@
 <script>
 import Avatar from "./Avatar.vue";
 
-const colors = ["#1abc9c", "#2ecc71", "#3498db", "#9b59b6", "#e74c3c"];
-
 export default {
   components: {
     Avatar
   },
-  data: () => ({
-    colors,
-    selectedColor: colors[Math.floor(Math.random() * colors.length)]
-  }),
+  props: {
+    avatarData: {
+      type: String,
+      default: null
+    },
+    palette: {
+      type: Array,
+      required: true
+    },
+    size: {
+      type: Number,
+      required: true
+    }
+  },
+  data() {
+    return {
+      selectedColor: this.palette[
+        Math.floor(Math.random() * this.palette.length)
+      ]
+    };
+  },
   methods: {
     changeColor(color) {
       this.selectedColor = color;
