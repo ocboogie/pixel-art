@@ -34,10 +34,10 @@ func (m *ServiceAvatar) EXPECT() *ServiceAvatarMockRecorder {
 }
 
 // Format mocks base method
-func (m *ServiceAvatar) Format() models.Format {
+func (m *ServiceAvatar) Format() models.AvatarFormat {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Format")
-	ret0, _ := ret[0].(models.Format)
+	ret0, _ := ret[0].(models.AvatarFormat)
 	return ret0
 }
 

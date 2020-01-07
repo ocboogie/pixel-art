@@ -12,6 +12,7 @@ import (
 
 type Service interface {
 	Validate(data string) bool
+	Format() models.AvatarFormat
 }
 
 type service struct {

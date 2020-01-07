@@ -12,7 +12,7 @@ import (
 
 type Service interface {
 	Validate(data string) bool
-	Format() models.Format
+	Format() models.AvatarFormat
 	GenerateRandom() string
 }
 
@@ -53,8 +53,8 @@ func (s *service) Validate(data string) bool {
 	return false
 }
 
-func (s *service) Format() models.Format {
-	return models.Format{
+func (s *service) Format() models.AvatarFormat {
+	return models.AvatarFormat{
 		Size:    s.config.Size,
 		Palette: s.config.Palette,
 	}
