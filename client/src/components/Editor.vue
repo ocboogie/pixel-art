@@ -69,11 +69,15 @@ import { Chrome } from "vue-color";
 import base64ArrayBuffer from "../utils/base64ArrayBuffer";
 import hexToRgb from "../utils/hexToRgb";
 
-const size = 25;
-
 export default {
   components: {
     Chrome
+  },
+  props: {
+    size: {
+      type: Number,
+      required: true
+    }
   },
   data: () => ({
     showGrid: false,
@@ -90,21 +94,20 @@ export default {
     editingColor: null
   }),
   computed: {
-    size: () => size,
     gridSizeX() {
       const rect = this.$refs.canvas.getBoundingClientRect();
 
-      return rect.width / size;
+      return rect.width / this.size;
     },
     gridSizeY() {
       const rect = this.$refs.canvas.getBoundingClientRect();
 
-      return rect.height / size;
+      return rect.height / this.size;
     }
   },
   created() {
     this.isDrawing = false;
-    this.pixels = new Uint8Array(size * size);
+    this.pixels = new Uint8Array(this.size * this.size);
     this.dragPixels = new Set();
     this.undoStack = [];
     this.redoStack = [];
@@ -150,8 +153,8 @@ export default {
       );
 
       this.pixels.forEach((colorIndex, index) => {
-        const x = index % size;
-        const y = Math.floor(index / size);
+        const x = index % this.size;
+        const y = Math.floor(index / this.size);
 
         this.ctx.fillStyle = this.colors[colorIndex];
         this.ctx.fillRect(x, y, 1, 1);
@@ -159,8 +162,8 @@ export default {
 
       this.ctx.fillStyle = this.colors[this.selectedColor];
       this.dragPixels.forEach(index => {
-        const x = index % size;
-        const y = Math.floor(index / size);
+        const x = index % this.size;
+        const y = Math.floor(index / this.size);
         this.ctx.fillRect(x, y, 1, 1);
       });
     },
@@ -174,7 +177,7 @@ export default {
       this.redoStack = [];
     },
     drag(x, y) {
-      const index = x + size * y;
+      const index = x + this.size * y;
 
       if (this.pixels[index] === this.selectedColor) {
         return;
@@ -220,15 +223,15 @@ export default {
       // Number of colors for each is 3 bytes
       const colorTableBytes = this.colors.length * 3;
       // Each pixel is 1 byte
-      const pixelsBytes = size * size;
+      const pixelsBytes = this.size * this.size;
 
       const length = sizeBytes + colorsBytes + colorTableBytes + pixelsBytes;
 
       const bytes = new ArrayBuffer(length);
       const dataview = new DataView(bytes, 0, length);
 
-      dataview.setUint16(0, size);
-      dataview.setUint16(widthBytes, size);
+      dataview.setUint16(0, this.size);
+      dataview.setUint16(widthBytes, this.size);
       dataview.setUint8(sizeBytes, this.colors.length);
       this.colors.forEach((color, index) => {
         const { r, g, b } = hexToRgb(color);
@@ -250,8 +253,8 @@ export default {
     getMousePos(canvas, evt) {
       const rect = canvas.getBoundingClientRect();
 
-      const widthRatio = size / rect.width;
-      const heightRatio = size / rect.height;
+      const widthRatio = this.size / rect.width;
+      const heightRatio = this.size / rect.height;
 
       // The "Math.max(..., 0)"" fixes a weird bug where if the user drags the
       // mouse near the left edge of the canvas while holding click it would
