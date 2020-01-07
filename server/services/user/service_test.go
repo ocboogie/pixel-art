@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestLatest(t *testing.T) {
+func TestFind(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	repo := mocks.NewRepositoryUser(ctrl)
@@ -29,4 +29,24 @@ func TestLatest(t *testing.T) {
 
 	assert.NoError(t, err)
 	assert.Equal(t, mockUser, user)
+}
+
+func TestUpdate(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	repo := mocks.NewRepositoryUser(ctrl)
+	s := &service{
+		userRepo: repo,
+	}
+
+	mockUpdate := &models.User{
+		ID:   "60aaf13d-8ddc-403b-ba42-960e18a22f6a",
+		Name: "test",
+	}
+
+	repo.EXPECT().Update(mockUpdate).Return(nil)
+
+	err := s.Update(mockUpdate)
+
+	assert.NoError(t, err)
 }

@@ -50,6 +50,12 @@ func (r *userRepo) FindByEmail(email string) (*models.User, error) {
 	return &user, err
 }
 
+func (r *userRepo) Update(user *models.User) error {
+	_, err := r.db.NamedExec(`UPDATE users SET name=:name, avatar=:avatar, email=:email, password=:password WHERE id=:id`, user)
+
+	return err
+}
+
 func (r *userRepo) Save(user *models.User) error {
 	_, err := r.db.Exec(
 		"INSERT INTO users (id, name, avatar, email, password, created_at) VALUES ($1, $2, $3, $4, $5, $6)",

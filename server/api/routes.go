@@ -18,6 +18,7 @@ func (s *server) routes() {
 	s.router.Group(func(r chi.Router) {
 		r.Use(s.authenticated)
 		r.Get("/me", s.handleMe())
+		r.Patch("/me", s.handleUpdateMe())
 	})
 
 	s.router.Get("/avatar/format", s.handleAvatarFormat())

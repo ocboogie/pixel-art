@@ -15,7 +15,7 @@ var (
 type User interface {
 	Find(id string) (*models.User, error)
 	FindByEmail(email string) (*models.User, error)
-	// Update(user *models.User) error
+	Update(user *models.User) error
 	Save(user *models.User) error
 	ExistsEmail(email string) (bool, error)
 }

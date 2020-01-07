@@ -47,3 +47,17 @@ func (mr *ServiceUserMockRecorder) Find(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*ServiceUser)(nil).Find), arg0)
 }
+
+// Update mocks base method
+func (m *ServiceUser) Update(arg0 *models.User) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Update", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Update indicates an expected call of Update
+func (mr *ServiceUserMockRecorder) Update(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*ServiceUser)(nil).Update), arg0)
+}

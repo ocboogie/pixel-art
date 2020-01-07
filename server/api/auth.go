@@ -96,18 +96,6 @@ func (s *server) getUserID(w http.ResponseWriter, r *http.Request) string {
 	return id
 }
 
-func (s *server) handleMe() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		userID := s.getUserID(w, r)
-		user, err := s.user.Find(userID)
-		if err != nil {
-			s.error(w, r, unexpectedAPIError(err))
-		}
-
-		s.respond(w, r, http.StatusOK, user)
-	}
-}
-
 func (s *server) handleLogin() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		decoder := json.NewDecoder(r.Body)
