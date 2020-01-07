@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var cfg = &Config{
+var cfg = Config{
 	Size:   3,
 	Colors: 3,
 }
@@ -54,4 +54,14 @@ func TestValidate(t *testing.T) {
 	t.Run("Valid", func(t *testing.T) {
 		assert.True(t, s.Validate(hexToBase64("0003000303FF000000FF000000FF000102000102000102")))
 	})
+}
+
+func TestFormat(t *testing.T) {
+	s := &service{
+		config: cfg,
+	}
+
+	format := s.Format()
+	assert.Equal(t, cfg.Size, format.Size)
+	assert.Equal(t, cfg.Colors, format.Colors)
 }

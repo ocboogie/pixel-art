@@ -6,20 +6,22 @@ import (
 	"encoding/binary"
 	"io"
 	"strings"
+
+	"github.com/ocboogie/pixel-art/models"
 )
 
 //go:generate mockgen -destination=../../mocks/service_art.go -package mocks -mock_names Service=ServiceArt github.com/ocboogie/pixel-art/services/art Service
 
 type Service interface {
 	Validate(data string) bool
-	Format() models.AvatarFormat
+	Format() models.ArtFormat
 }
 
 type service struct {
-	config *Config
+	config Config
 }
 
-func New(config *Config) Service {
+func New(config Config) Service {
 	return &service{
 		config: config,
 	}
@@ -81,4 +83,11 @@ func (s *service) Validate(data string) bool {
 	}
 
 	return true
+}
+
+func (s *service) Format() models.ArtFormat {
+	return models.ArtFormat{
+		Size:   s.config.Size,
+		Colors: s.config.Colors,
+	}
 }

@@ -5,6 +5,7 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/ocboogie/pixel-art/api"
 	"github.com/ocboogie/pixel-art/postgres"
+	"github.com/ocboogie/pixel-art/services/art"
 	"github.com/ocboogie/pixel-art/services/auth"
 	"github.com/ocboogie/pixel-art/services/avatar"
 	"github.com/ocboogie/pixel-art/services/post"
@@ -26,10 +27,11 @@ func main() {
 
 	avatar := avatar.New(avatar.DefaultConfig())
 	auth := auth.New(auth.DefaultConfig(), userRepo, sessionRepo, avatar)
+	art := art.New(art.DefaultConfig())
 	post := post.New(userRepo, postRepo)
 	user := user.New(userRepo)
 
-	server := api.New(auth, avatar, post, user, validate)
+	server := api.New(auth, avatar, art, post, user, validate)
 
 	server.Setup()
 	server.Start()
