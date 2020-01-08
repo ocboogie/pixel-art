@@ -15,6 +15,7 @@ var (
 	errPostNotFound = newSimpleAPIError(http.StatusNotFound, false, "Post not found")
 	errInvalidLimit = newSimpleAPIError(http.StatusBadRequest, false, `The "limit" parameter must be a number`)
 	errInvalidAfter = newSimpleAPIError(http.StatusBadRequest, false, `The "after" parameter must be a iso-8601 formatted date`)
+	errInvalidArt   = newSimpleAPIError(http.StatusBadRequest, false, "Art data does not meet specifications")
 )
 
 func (s *server) handlePostsFind() http.HandlerFunc {
@@ -38,8 +39,7 @@ func (s *server) handlePostsFind() http.HandlerFunc {
 func (s *server) handlePostsCreate() http.HandlerFunc {
 	type request struct {
 		Title string `json:"title" validate:"required,min=2,max=256"`
-		// TODO: validate Data
-		Data string `json:"data"`
+		Data  string `json:"data"`
 	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -63,6 +63,11 @@ func (s *server) handlePostsCreate() http.HandlerFunc {
 		if err := newPost.Validate(s.validate); err != nil {
 			// FIXME:
 			s.error(w, r, errInvalidBody(err))
+			return
+		}
+
+		if !s.art.Validate(newPost.Data) {
+			s.error(w, r, errInvalidArt)
 			return
 		}
 

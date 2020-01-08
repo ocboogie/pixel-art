@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestPost(t *testing.T) {
+func TestCreate(t *testing.T) {
 	t.Run("Expected", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()

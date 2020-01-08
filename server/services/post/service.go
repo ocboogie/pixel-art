@@ -1,6 +1,7 @@
 package post
 
 import (
+	"encoding/base64"
 	"time"
 
 	"github.com/google/uuid"
@@ -31,14 +32,19 @@ func New(userRepo repositories.User, postRepo repositories.Post) Service {
 func (s *service) Create(input models.PostNew) (string, error) {
 	id := uuid.New().String()
 
+	data, err := base64.StdEncoding.DecodeString(input.Data)
+
+	if err != nil {
+		return "", err
+	}
+
 	post := &models.Post{
 		ID: id,
 		Author: models.User{
 			ID: input.UserID,
 		},
-		Title: input.Title,
-		// FIXME: Decode from the input
-		Data:      []byte{},
+		Title:     input.Title,
+		Data:      data,
 		CreatedAt: time.Now(),
 	}
 

@@ -84,11 +84,12 @@ export default {
     colors: [
       "#ffffff",
       "#000000",
-      "#A7226E",
-      "#EC2049",
-      "#F26B38",
-      "#F7DB4F",
-      "#2F9599"
+      "#b440a3",
+      "#ff91ab",
+      "#79c220",
+      "#f1e899",
+      "#2a1a54",
+      "#20798b"
     ],
     selectedColor: 1,
     editingColor: null
