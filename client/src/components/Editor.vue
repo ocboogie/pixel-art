@@ -66,7 +66,7 @@
 <script>
 import Vue from "vue";
 import { Chrome } from "vue-color";
-import base64ArrayBuffer from "../utils/base64ArrayBuffer";
+import arrayBufferToBase64 from "../utils/arrayBufferToBase64";
 import hexToRgb from "../utils/hexToRgb";
 
 export default {
@@ -248,7 +248,7 @@ export default {
         );
       });
 
-      return base64ArrayBuffer(bytes);
+      return arrayBufferToBase64(bytes);
     },
 
     getMousePos(canvas, evt) {
