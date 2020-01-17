@@ -3,7 +3,11 @@
     <template v-if="!loading">
       <v-app-bar app color="primary" dark>
         <div class="d-flex align-center">
-          <v-toolbar-title>Pixel Art</v-toolbar-title>
+          <v-toolbar-title>
+            <router-link to="/" class="toolbar-title">
+              Pixel Art
+            </router-link>
+          </v-toolbar-title>
         </div>
 
         <v-spacer></v-spacer>
@@ -53,3 +57,9 @@ export default {
   methods: mapActions(["logout", "fetchMe"])
 };
 </script>
+<style lang="scss" scoped>
+.toolbar-title {
+  color: inherit;
+  text-decoration: inherit;
+}
+</style>
