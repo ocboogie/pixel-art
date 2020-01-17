@@ -1,18 +1,20 @@
 <template>
   <v-card max-width="344" class="mx-auto post">
-    <v-list-item>
-      <v-list-item-avatar
-        class="avatar elevation-2"
-        color="white"
-      ></v-list-item-avatar>
+    <v-list-item class="header">
+      <!-- TODO: Take the user to the user page of the author -->
+      <v-list-item-avatar class="avatar elevation-2" color="white">
+        <!-- FIXME: The size should either be fetched on page load or be saved in
+        the avatar data format -->
+        <Avatar :size="5" :avatarData="post.author.avatar" />
+      </v-list-item-avatar>
       <v-list-item-content>
-        <v-list-item-title>Our Changing Planetarstarstarst</v-list-item-title>
+        <v-list-item-title>{{ post.title }}</v-list-item-title>
       </v-list-item-content>
     </v-list-item>
 
-    <v-img src="https://art.pixilart.com/5c3a0d7c7f68636.png"></v-img>
+    <ArtRenderer class="art" :data="post.data" />
 
-    <v-card-actions>
+    <v-card-actions class="actions">
       <v-spacer></v-spacer>
       <v-btn icon>
         <v-icon>mdi-heart</v-icon>
@@ -24,7 +26,14 @@
   </v-card>
 </template>
 <script>
+import Avatar from "./Avatar.vue";
+import ArtRenderer from "./ArtRenderer.vue";
+
 export default {
+  components: {
+    Avatar,
+    ArtRenderer
+  },
   props: {
     post: {
       type: Object,
@@ -34,10 +43,20 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-// The .post is to give this a higher CSS priority, making the margin-right
-// override vuetify
-.post .avatar {
-  margin-left: -35px;
-  margin-right: 12px;
+.post {
+  .header {
+    border-bottom: thin solid rgba(0, 0, 0, 0.12);
+    .avatar {
+      margin-left: -10px;
+      margin-right: 12px;
+    }
+  }
+  .art {
+    width: 100%;
+    height: 100%;
+  }
+  .actions {
+    border-top: thin solid rgba(0, 0, 0, 0.12);
+  }
 }
 </style>
