@@ -1,5 +1,5 @@
 // https://gist.github.com/jonleighton/958841
-export default function base64ArrayBuffer(arrayBuffer) {
+export default function arrayBufferToBase64(arrayBuffer) {
   var base64 = "";
   var encodings =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
