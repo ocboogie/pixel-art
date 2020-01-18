@@ -11,14 +11,14 @@ type Post struct {
 	Author    User      `json:"author" db:"author"`
 	Title     string    `json:"title"`
 	Data      []byte    `json:"data"`
+	Likes     int       `json:"likes"`
 	CreatedAt time.Time `json:"createdAt" db:"created_at"`
 }
 
 type PostNew struct {
 	UserID string `json:"userId" validate:"required,uuid"`
 	Title  string `json:"title" validate:"required,min=2,max=256"`
-	// TODO: validate Data
-	Data string `json:"data"`
+	Data   string `json:"data"`
 }
 
 func (input PostNew) Validate(validate *validator.Validate) error {

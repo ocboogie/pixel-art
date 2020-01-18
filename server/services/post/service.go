@@ -15,17 +15,21 @@ type Service interface {
 	Create(input models.PostNew) (string, error)
 	Latest(limit int, after *time.Time) ([]*models.Post, error)
 	Find(id string) (*models.Post, error)
+	Like(userID string, postID string) error
+	Unlike(userID string, postID string) error
 }
 
 type service struct {
 	userRepo repositories.User
 	postRepo repositories.Post
+	likeRepo repositories.Like
 }
 
-func New(userRepo repositories.User, postRepo repositories.Post) Service {
+func New(userRepo repositories.User, postRepo repositories.Post, likeRepo repositories.Like) Service {
 	return &service{
 		userRepo: userRepo,
 		postRepo: postRepo,
+		likeRepo: likeRepo,
 	}
 }
 
@@ -61,4 +65,12 @@ func (s *service) Find(id string) (*models.Post, error) {
 
 func (s *service) Latest(limit int, after *time.Time) ([]*models.Post, error) {
 	return s.postRepo.Latest(limit, after)
+}
+
+func (s *service) Like(userID string, postID string) error {
+	return s.likeRepo.Save(userID, postID)
+}
+
+func (s *service) Unlike(userID string, postID string) error {
+	return s.likeRepo.Delete(userID, postID)
 }

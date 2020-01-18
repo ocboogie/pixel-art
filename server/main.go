@@ -23,12 +23,13 @@ func main() {
 	validate := validator.New()
 	userRepo := postgres.NewRepositoryUser(db)
 	postRepo := postgres.NewPostRepository(db)
+	likeRepo := postgres.NewLikeRepository(db)
 	sessionRepo := postgres.NewRepositorySession(db)
 
 	avatar := avatar.New(avatar.DefaultConfig())
 	auth := auth.New(auth.DefaultConfig(), userRepo, sessionRepo, avatar)
 	art := art.New(art.DefaultConfig())
-	post := post.New(userRepo, postRepo)
+	post := post.New(userRepo, postRepo, likeRepo)
 	user := user.New(userRepo)
 
 	server := api.New(auth, avatar, art, post, user, validate)

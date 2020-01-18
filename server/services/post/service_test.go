@@ -1,6 +1,7 @@
 package post
 
 import (
+	"errors"
 	"testing"
 	"time"
 
@@ -53,6 +54,7 @@ func TestFind(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, mockPost, post)
 }
+
 func TestLatest(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -86,4 +88,38 @@ func TestLatest(t *testing.T) {
 
 	assert.NoError(t, err)
 	assert.Equal(t, LatestPosts, LatestPosts)
+}
+
+func TestLike(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	repo := mocks.NewRepositoryLike(ctrl)
+	s := &service{
+		likeRepo: repo,
+	}
+
+	mockErr := errors.New("mock error")
+
+	repo.EXPECT().Save("107ed308-3984-11ea-a137-2e728ce88125", "60aaf13d-8ddc-403b-ba42-960e18a22f6a").Return(mockErr)
+
+	err := s.Like("107ed308-3984-11ea-a137-2e728ce88125", "60aaf13d-8ddc-403b-ba42-960e18a22f6a")
+
+	assert.Equal(t, mockErr, err)
+}
+
+func TestUnlike(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	repo := mocks.NewRepositoryLike(ctrl)
+	s := &service{
+		likeRepo: repo,
+	}
+
+	mockErr := errors.New("mock error")
+
+	repo.EXPECT().Delete("107ed308-3984-11ea-a137-2e728ce88125", "60aaf13d-8ddc-403b-ba42-960e18a22f6a").Return(mockErr)
+
+	err := s.Unlike("107ed308-3984-11ea-a137-2e728ce88125", "60aaf13d-8ddc-403b-ba42-960e18a22f6a")
+
+	assert.Equal(t, mockErr, err)
 }

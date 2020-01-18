@@ -24,3 +24,9 @@ CREATE TABLE "posts"
     created_at timestamp with time zone NOT NULL
 );
 
+CREATE TABLE "likes"
+(
+    user_id uuid REFERENCES users(id) ON DELETE CASCADE NOT NULL,
+    post_id uuid REFERENCES posts(id) ON DELETE CASCADE NOT NULL,
+    CONSTRAINT like_pkey PRIMARY KEY (user_id, post_id)
+);

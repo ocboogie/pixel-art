@@ -13,18 +13,27 @@ type postRepo struct {
 	db *sqlx.DB
 }
 
+// Not sure if the use of author.id in the GROUP BY will break anything but
+// postgres complains otherwise
 const postSelect = `
-SELECT 
-	posts.id "id", 
-	posts.title "title", 
-	posts.data "data", 
-	posts.created_at "created_at", 
-	author.id "author.id", 
+SELECT
+	posts.id "id",
+	posts.title "title",
+	posts.data "data",
+	posts.created_at "created_at",
+	count(likes.post_id) "likes",
+	author.id "author.id",
 	author.name "author.name",
 	author.avatar "author.avatar",
 	author.created_at "author.created_at"
 FROM
-	posts JOIN users AS author ON posts.author_id = author.id
+	posts
+JOIN
+	users AS author ON posts.author_id = author.id
+LEFT OUTER JOIN
+	likes ON posts.id = likes.post_id
+GROUP BY 
+	posts.id, author.id
 `
 
 func NewPostRepository(db *sqlx.DB) repositories.Post {
