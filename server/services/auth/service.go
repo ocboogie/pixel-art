@@ -11,6 +11,7 @@ import (
 	"github.com/ocboogie/pixel-art/pkg/argon2"
 	"github.com/ocboogie/pixel-art/repositories"
 	"github.com/ocboogie/pixel-art/services/avatar"
+	"github.com/sirupsen/logrus"
 )
 
 //go:generate mockgen -destination=../../mocks/service_auth.go -package mocks -mock_names Service=ServiceAuth github.com/ocboogie/pixel-art/services/auth Service
@@ -27,14 +28,16 @@ type Service interface {
 }
 
 type service struct {
+	log           *logrus.Logger
 	userRepo      repositories.User
 	sessionRepo   repositories.Session
 	avatarService avatar.Service
 	config        Config
 }
 
-func New(config Config, userRepo repositories.User, sessionRepo repositories.Session, avatarService avatar.Service) Service {
+func New(log *logrus.Logger, config Config, userRepo repositories.User, sessionRepo repositories.Session, avatarService avatar.Service) Service {
 	return &service{
+		log:           log,
 		userRepo:      userRepo,
 		sessionRepo:   sessionRepo,
 		avatarService: avatarService,
@@ -79,6 +82,12 @@ func (s *service) SignUp(user *models.UserNew) (*models.Session, error) {
 		return nil, err
 	}
 
+	s.log.WithFields(logrus.Fields{
+		"username": user.Name,
+		"email":    user.Email,
+		"userID":   id,
+	}).Info("User signed up")
+
 	return s.CreateSession(id)
 }
 
@@ -100,6 +109,12 @@ func (s *service) Login(credentials *models.UserCredentials) (*models.Session, e
 	if !match {
 		return nil, ErrInvalidCredentials
 	}
+
+	s.log.WithFields(logrus.Fields{
+		"username": user.Name,
+		"email":    user.Email,
+		"userID":   user.ID,
+	}).Info("User logged in")
 
 	return s.CreateSession(user.ID)
 }

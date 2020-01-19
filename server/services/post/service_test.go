@@ -8,6 +8,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/ocboogie/pixel-art/mocks"
 	"github.com/ocboogie/pixel-art/models"
+	"github.com/ocboogie/pixel-art/services/testutils"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -17,6 +18,7 @@ func TestCreate(t *testing.T) {
 		defer ctrl.Finish()
 		repo := mocks.NewRepositoryPost(ctrl)
 		s := &service{
+			log:      testutils.NullLogger(),
 			postRepo: repo,
 		}
 
@@ -95,6 +97,7 @@ func TestLike(t *testing.T) {
 	defer ctrl.Finish()
 	repo := mocks.NewRepositoryLike(ctrl)
 	s := &service{
+		log:      testutils.NullLogger(),
 		likeRepo: repo,
 	}
 
@@ -112,6 +115,7 @@ func TestUnlike(t *testing.T) {
 	defer ctrl.Finish()
 	repo := mocks.NewRepositoryLike(ctrl)
 	s := &service{
+		log:      testutils.NullLogger(),
 		likeRepo: repo,
 	}
 

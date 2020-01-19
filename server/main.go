@@ -10,6 +10,7 @@ import (
 	"github.com/ocboogie/pixel-art/services/avatar"
 	"github.com/ocboogie/pixel-art/services/post"
 	"github.com/ocboogie/pixel-art/services/user"
+	"github.com/sirupsen/logrus"
 	"gopkg.in/go-playground/validator.v9"
 )
 
@@ -21,16 +22,17 @@ func main() {
 	defer db.Close()
 
 	validate := validator.New()
+	log := logrus.New()
 	userRepo := postgres.NewRepositoryUser(db)
 	postRepo := postgres.NewPostRepository(db)
 	likeRepo := postgres.NewLikeRepository(db)
 	sessionRepo := postgres.NewRepositorySession(db)
 
 	avatar := avatar.New(avatar.DefaultConfig())
-	auth := auth.New(auth.DefaultConfig(), userRepo, sessionRepo, avatar)
+	auth := auth.New(log, auth.DefaultConfig(), userRepo, sessionRepo, avatar)
 	art := art.New(art.DefaultConfig())
-	post := post.New(userRepo, postRepo, likeRepo)
-	user := user.New(userRepo)
+	post := post.New(log, userRepo, postRepo, likeRepo)
+	user := user.New(log, userRepo)
 
 	server := api.New(auth, avatar, art, post, user, validate)
 

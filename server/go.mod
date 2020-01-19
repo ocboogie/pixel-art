@@ -17,6 +17,7 @@ require (
 	github.com/leodido/go-urn v1.2.0 // indirect
 	github.com/lib/pq v1.2.0
 	github.com/rs/cors v1.6.0
+	github.com/sirupsen/logrus v1.4.1
 	github.com/stretchr/testify v1.4.0
 	github.com/vektah/gqlparser v1.1.2
 	golang.org/x/crypto v0.0.0-20191029031824-8986dd9e96cf

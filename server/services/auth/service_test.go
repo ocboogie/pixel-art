@@ -9,6 +9,7 @@ import (
 	"github.com/ocboogie/pixel-art/models"
 	"github.com/ocboogie/pixel-art/pkg/argon2"
 	"github.com/ocboogie/pixel-art/repositories"
+	"github.com/ocboogie/pixel-art/services/testutils"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -26,6 +27,7 @@ func TestSignUp(t *testing.T) {
 		sessionRepo := mocks.NewRepositorySession(ctrl)
 		avatarService := mocks.NewServiceAvatar(ctrl)
 		s := &service{
+			log:           testutils.NullLogger(),
 			userRepo:      userRepo,
 			sessionRepo:   sessionRepo,
 			avatarService: avatarService,
@@ -50,6 +52,7 @@ func TestSignUp(t *testing.T) {
 		sessionRepo := mocks.NewRepositorySession(ctrl)
 		avatarService := mocks.NewServiceAvatar(ctrl)
 		s := &service{
+			log:           testutils.NullLogger(),
 			userRepo:      userRepo,
 			sessionRepo:   sessionRepo,
 			avatarService: avatarService,
@@ -71,6 +74,7 @@ func TestSignUp(t *testing.T) {
 		sessionRepo := mocks.NewRepositorySession(ctrl)
 		avatarService := mocks.NewServiceAvatar(ctrl)
 		s := &service{
+			log:           testutils.NullLogger(),
 			userRepo:      userRepo,
 			sessionRepo:   sessionRepo,
 			avatarService: avatarService,
@@ -102,6 +106,7 @@ func TestLogin(t *testing.T) {
 		userRepo := mocks.NewRepositoryUser(ctrl)
 		sessionRepo := mocks.NewRepositorySession(ctrl)
 		s := &service{
+			log:         testutils.NullLogger(),
 			userRepo:    userRepo,
 			sessionRepo: sessionRepo,
 			config:      cfg,
@@ -126,6 +131,7 @@ func TestLogin(t *testing.T) {
 		userRepo := mocks.NewRepositoryUser(ctrl)
 		sessionRepo := mocks.NewRepositorySession(ctrl)
 		s := &service{
+			log:         testutils.NullLogger(),
 			userRepo:    userRepo,
 			sessionRepo: sessionRepo,
 			config:      cfg,
@@ -145,6 +151,7 @@ func TestLogin(t *testing.T) {
 		userRepo := mocks.NewRepositoryUser(ctrl)
 		sessionRepo := mocks.NewRepositorySession(ctrl)
 		s := &service{
+			log:         testutils.NullLogger(),
 			userRepo:    userRepo,
 			sessionRepo: sessionRepo,
 			config:      cfg,
@@ -165,6 +172,7 @@ func TestLogout(t *testing.T) {
 	defer ctrl.Finish()
 	sessionRepo := mocks.NewRepositorySession(ctrl)
 	s := &service{
+		log:         testutils.NullLogger(),
 		sessionRepo: sessionRepo,
 		config:      cfg,
 	}
@@ -181,6 +189,7 @@ func TestCreateSession(t *testing.T) {
 	defer ctrl.Finish()
 	repo := mocks.NewRepositorySession(ctrl)
 	s := &service{
+		log:         testutils.NullLogger(),
 		sessionRepo: repo,
 		config:      cfg,
 	}
@@ -201,6 +210,7 @@ func TestVerifySession(t *testing.T) {
 		defer ctrl.Finish()
 		repo := mocks.NewRepositorySession(ctrl)
 		s := &service{
+			log:         testutils.NullLogger(),
 			sessionRepo: repo,
 			config:      cfg,
 		}
@@ -223,6 +233,7 @@ func TestVerifySession(t *testing.T) {
 		defer ctrl.Finish()
 		repo := mocks.NewRepositorySession(ctrl)
 		s := &service{
+			log:         testutils.NullLogger(),
 			sessionRepo: repo,
 			config:      cfg,
 		}

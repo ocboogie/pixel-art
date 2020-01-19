@@ -6,6 +6,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/ocboogie/pixel-art/mocks"
 	"github.com/ocboogie/pixel-art/models"
+	"github.com/ocboogie/pixel-art/services/testutils"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -36,6 +37,7 @@ func TestUpdate(t *testing.T) {
 	defer ctrl.Finish()
 	repo := mocks.NewRepositoryUser(ctrl)
 	s := &service{
+		log:      testutils.NullLogger(),
 		userRepo: repo,
 	}
 
