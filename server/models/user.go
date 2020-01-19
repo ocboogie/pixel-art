@@ -38,16 +38,3 @@ func (input UserNew) Validate(validate *validator.Validate) error {
 func (input UserCredentials) Validate(validate *validator.Validate) error {
 	return validate.Struct(input)
 }
-
-// func (user *UserInput) () error {
-// 	if user.ID == "" {
-// 		uuid, err := uuid.NewRandom()
-// 		if err != nil {
-// 			return err
-// 		}
-
-// 		user.ID = uuid.String()
-// 	}
-
-// 	return nil
-// }
