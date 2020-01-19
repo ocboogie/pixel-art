@@ -7,12 +7,6 @@ import (
 	postService "github.com/ocboogie/pixel-art/services/post"
 )
 
-var (
-	errAlreadyLiked     = newSimpleAPIError(http.StatusConflict, false, `Already liked that post`)
-	errInvalidUserState = newSimpleAPIError(http.StatusBadRequest, false, `Invalid user state`)
-	errLikeNotFound     = newSimpleAPIError(http.StatusNotFound, false, `Like not found`)
-)
-
 func (s *server) handleLikesLike() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		postID := chi.URLParam(r, "id")

@@ -10,13 +10,6 @@ import (
 	"github.com/ocboogie/pixel-art/services/auth"
 )
 
-var (
-	errInvalidCredentials = newSimpleAPIError(http.StatusBadRequest, true, "Username or password is invalid")
-	errEmailAlreadyInUse  = newSimpleAPIError(http.StatusBadRequest, true, "Email already in use")
-	errUnauthenticated    = newSimpleAPIError(http.StatusUnauthorized, true, "You must be logged in")
-	errInvalidAvatar      = newSimpleAPIError(http.StatusBadRequest, false, "Invalid avatar")
-)
-
 const sessionCookie = "sessionId"
 
 type userIDContextKey struct{}
