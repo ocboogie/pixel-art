@@ -86,10 +86,45 @@ func TestLatest(t *testing.T) {
 
 	repo.EXPECT().Latest(20, &after).Return(mockLatestPosts, nil)
 
-	LatestPosts, err := s.Latest(20, &after)
+	latestPosts, err := s.Latest(20, &after)
 
 	assert.NoError(t, err)
-	assert.Equal(t, LatestPosts, LatestPosts)
+	assert.Equal(t, mockLatestPosts, latestPosts)
+}
+
+func TestPostsByUser(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	repo := mocks.NewRepositoryPost(ctrl)
+	s := &service{
+		postRepo: repo,
+	}
+
+	mockUsersPosts := []*models.Post{
+		&models.Post{
+			Author: models.User{ID: "60aaf13d-8ddc-403b-ba42-960e18a22f6a"},
+			Title:  "Yup",
+			Data:   make([]byte, 0),
+		},
+		&models.Post{
+			Author: models.User{ID: "6caaf13d-8ddc-403b-ba42-960e18a22f6a"},
+			Title:  "Yup",
+			Data:   make([]byte, 0),
+		},
+		&models.Post{
+			Author: models.User{ID: "6aaaf13d-8ddc-403b-ba42-960e18a22f6a"},
+			Title:  "Yup",
+			Data:   make([]byte, 0),
+		},
+	}
+	after := time.Now()
+
+	repo.EXPECT().PostsByUser("60aaf13d-8ddc-403b-ba42-960e18a22f6a", 20, &after).Return(mockUsersPosts, nil)
+
+	usersPosts, err := s.PostsByUser("60aaf13d-8ddc-403b-ba42-960e18a22f6a", 20, &after)
+
+	assert.NoError(t, err)
+	assert.Equal(t, mockUsersPosts, usersPosts)
 }
 
 func TestLike(t *testing.T) {

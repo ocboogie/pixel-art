@@ -14,4 +14,5 @@ var (
 	errInvalidLimit       = newSimpleAPIError(http.StatusBadRequest, false, `The "limit" parameter must be a number`)
 	errInvalidAfter       = newSimpleAPIError(http.StatusBadRequest, false, `The "after" parameter must be a iso-8601 formatted date`)
 	errInvalidArt         = newSimpleAPIError(http.StatusBadRequest, false, "Art data does not meet specifications")
+	errUserNotFound       = newSimpleAPIError(http.StatusNotFound, false, "User not found")
 )

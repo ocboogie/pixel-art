@@ -16,6 +16,7 @@ type Service interface {
 	Create(input models.PostNew) (string, error)
 	Latest(limit int, after *time.Time) ([]*models.Post, error)
 	Find(id string) (*models.Post, error)
+	PostsByUser(id string, limit int, after *time.Time) ([]*models.Post, error)
 	Like(userID string, postID string) error
 	Unlike(userID string, postID string) error
 }
@@ -74,6 +75,10 @@ func (s *service) Find(id string) (*models.Post, error) {
 
 func (s *service) Latest(limit int, after *time.Time) ([]*models.Post, error) {
 	return s.postRepo.Latest(limit, after)
+}
+
+func (s *service) PostsByUser(userID string, limit int, after *time.Time) ([]*models.Post, error) {
+	return s.postRepo.PostsByUser(userID, limit, after)
 }
 
 func (s *service) Like(userID string, postID string) error {

@@ -64,6 +64,21 @@ func (mr *RepositoryPostMockRecorder) Latest(arg0, arg1 interface{}) *gomock.Cal
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Latest", reflect.TypeOf((*RepositoryPost)(nil).Latest), arg0, arg1)
 }
 
+// PostsByUser mocks base method
+func (m *RepositoryPost) PostsByUser(arg0 string, arg1 int, arg2 *time.Time) ([]*models.Post, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "PostsByUser", arg0, arg1, arg2)
+	ret0, _ := ret[0].([]*models.Post)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// PostsByUser indicates an expected call of PostsByUser
+func (mr *RepositoryPostMockRecorder) PostsByUser(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PostsByUser", reflect.TypeOf((*RepositoryPost)(nil).PostsByUser), arg0, arg1, arg2)
+}
+
 // Save mocks base method
 func (m *RepositoryPost) Save(arg0 *models.Post) error {
 	m.ctrl.T.Helper()

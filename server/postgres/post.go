@@ -47,7 +47,7 @@ func (r *postRepo) Find(id string) (*models.Post, error) {
 
 	err := r.db.Get(&post,
 		postSelect+`
-		WHERE 
+		HAVING 
 			posts.id=$1`,
 		id)
 
@@ -78,10 +78,12 @@ func (r *postRepo) Latest(limit int, after *time.Time) ([]*models.Post, error) {
 		err = r.db.Select(
 			&posts,
 			postSelect+`
-			WHERE
+			HAVING
 				posts.created_at > $2
 			ORDER BY
-				created_at LIMIT $1`,
+				created_at 
+			LIMIT
+				$1`,
 			limit,
 			after,
 		)
@@ -91,6 +93,47 @@ func (r *postRepo) Latest(limit int, after *time.Time) ([]*models.Post, error) {
 			postSelect+`
 			ORDER BY
 				created_at LIMIT $1`,
+			limit,
+		)
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	return posts, nil
+}
+
+func (r *postRepo) PostsByUser(userID string, limit int, after *time.Time) ([]*models.Post, error) {
+	// TODO: DRY: Latest
+	posts := []*models.Post{}
+
+	var err error
+	if after != nil {
+		err = r.db.Select(
+			&posts,
+			postSelect+`
+			HAVING
+				posts.author_id = $1 AND 
+				posts.created_at > $2
+			ORDER BY
+				created_at 
+			LIMIT
+				$3`,
+			userID,
+			after,
+			limit,
+		)
+	} else {
+		err = r.db.Select(
+			&posts,
+			postSelect+`
+			HAVING
+				posts.author_id = $1
+			ORDER BY
+				created_at 
+			LIMIT 
+				$2`,
+			userID,
 			limit,
 		)
 	}

@@ -78,3 +78,46 @@ func (mr *ServicePostMockRecorder) Latest(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Latest", reflect.TypeOf((*ServicePost)(nil).Latest), arg0, arg1)
 }
+
+// Like mocks base method
+func (m *ServicePost) Like(arg0, arg1 string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Like", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Like indicates an expected call of Like
+func (mr *ServicePostMockRecorder) Like(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Like", reflect.TypeOf((*ServicePost)(nil).Like), arg0, arg1)
+}
+
+// PostsByUser mocks base method
+func (m *ServicePost) PostsByUser(arg0 string, arg1 int, arg2 *time.Time) ([]*models.Post, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "PostsByUser", arg0, arg1, arg2)
+	ret0, _ := ret[0].([]*models.Post)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// PostsByUser indicates an expected call of PostsByUser
+func (mr *ServicePostMockRecorder) PostsByUser(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PostsByUser", reflect.TypeOf((*ServicePost)(nil).PostsByUser), arg0, arg1, arg2)
+}
+
+// Unlike mocks base method
+func (m *ServicePost) Unlike(arg0, arg1 string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Unlike", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Unlike indicates an expected call of Unlike
+func (mr *ServicePostMockRecorder) Unlike(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Unlike", reflect.TypeOf((*ServicePost)(nil).Unlike), arg0, arg1)
+}
