@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"time"
 
+	sq "github.com/Masterminds/squirrel"
 	"github.com/jmoiron/sqlx"
 	"github.com/ocboogie/pixel-art/models"
 	"github.com/ocboogie/pixel-art/repositories"
@@ -11,45 +12,44 @@ import (
 
 type postRepo struct {
 	db *sqlx.DB
+	sb sq.StatementBuilderType
 }
 
-// Not sure if the use of author.id in the GROUP BY will break anything but
-// postgres complains otherwise
-const postSelect = `
-SELECT
-	posts.id "id",
-	posts.title "title",
-	posts.data "data",
-	posts.created_at "created_at",
-	count(likes.post_id) "likes",
-	author.id "author.id",
-	author.name "author.name",
-	author.avatar "author.avatar",
-	author.created_at "author.created_at"
-FROM
-	posts
-JOIN
-	users AS author ON posts.author_id = author.id
-LEFT OUTER JOIN
-	likes ON posts.id = likes.post_id
-GROUP BY 
-	posts.id, author.id
-`
+// BaseSelect is used to fetch post(s) because the query for posts is pretty
+// complex
+func BaseSelect(sb sq.StatementBuilderType) sq.SelectBuilder {
+	return sb.Select(`posts.id "id",
+			posts.title "title",
+			posts.data "data",
+			posts.created_at "created_at",
+			count(likes.post_id) "likes",
+			author.id "author.id",
+			author.name "author.name",
+			author.avatar "author.avatar",
+			author.created_at "author.created_at"`).
+		From("posts").
+		Join("users AS author ON posts.author_id = author.id").
+		JoinClause("LEFT OUTER JOIN likes ON posts.id = likes.post_id").
+		// Not sure if the use of author.id in the GROUP BY will break anything but
+		// postgres complains otherwise
+		GroupBy("posts.id", "author.id")
+}
 
-func NewPostRepository(db *sqlx.DB) repositories.Post {
+func NewPostRepository(db *sqlx.DB, sb sq.StatementBuilderType) repositories.Post {
 	return &postRepo{
 		db: db,
+		sb: sb,
 	}
 }
 
 func (r *postRepo) Find(id string) (*models.Post, error) {
 	post := models.Post{}
 
-	err := r.db.Get(&post,
-		postSelect+`
-		HAVING 
-			posts.id=$1`,
-		id)
+	query, args, _ := BaseSelect(r.sb).
+		Having("posts.id=?", id).
+		ToSql()
+
+	err := r.db.Get(&post, query, args...)
 
 	if err == sql.ErrNoRows {
 		return nil, repositories.ErrPostNotFound
@@ -73,30 +73,18 @@ func (r *postRepo) Latest(limit int, after *time.Time) ([]*models.Post, error) {
 	//       causes nulls in the output
 	posts := []*models.Post{}
 
-	var err error
+	stmt := BaseSelect(r.sb)
+
 	if after != nil {
-		err = r.db.Select(
-			&posts,
-			postSelect+`
-			HAVING
-				posts.created_at > $2
-			ORDER BY
-				created_at 
-			LIMIT
-				$1`,
-			limit,
-			after,
-		)
-	} else {
-		err = r.db.Select(
-			&posts,
-			postSelect+`
-			ORDER BY
-				created_at LIMIT $1`,
-			limit,
-		)
+		stmt = stmt.Having("posts.created_at > ?", after)
 	}
-	if err != nil {
+
+	query, args, _ := stmt.
+		OrderBy("created_at").
+		Limit(uint64(limit)).
+		ToSql()
+
+	if err := r.db.Select(&posts, query, args...); err != nil {
 		return nil, err
 	}
 
@@ -107,37 +95,19 @@ func (r *postRepo) PostsByUser(userID string, limit int, after *time.Time) ([]*m
 	// TODO: DRY: Latest
 	posts := []*models.Post{}
 
-	var err error
+	stmt := BaseSelect(r.sb)
+
 	if after != nil {
-		err = r.db.Select(
-			&posts,
-			postSelect+`
-			HAVING
-				posts.author_id = $1 AND 
-				posts.created_at > $2
-			ORDER BY
-				created_at 
-			LIMIT
-				$3`,
-			userID,
-			after,
-			limit,
-		)
-	} else {
-		err = r.db.Select(
-			&posts,
-			postSelect+`
-			HAVING
-				posts.author_id = $1
-			ORDER BY
-				created_at 
-			LIMIT 
-				$2`,
-			userID,
-			limit,
-		)
+		stmt = stmt.Having("posts.created_at > ?", after)
 	}
-	if err != nil {
+
+	query, args, _ := stmt.
+		Having("posts.author_id = ?", userID).
+		OrderBy("created_at").
+		Limit(uint64(limit)).
+		ToSql()
+
+	if err := r.db.Select(&posts, query, args...); err != nil {
 		return nil, err
 	}
 

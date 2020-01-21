@@ -1,6 +1,7 @@
 package main
 
 import (
+	sq "github.com/Masterminds/squirrel"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 	"github.com/ocboogie/pixel-art/api"
@@ -19,12 +20,13 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	sb := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 	defer db.Close()
 
 	validate := validator.New()
 	log := logrus.New()
 	userRepo := postgres.NewRepositoryUser(db)
-	postRepo := postgres.NewPostRepository(db)
+	postRepo := postgres.NewPostRepository(db, sb)
 	likeRepo := postgres.NewLikeRepository(db)
 	sessionRepo := postgres.NewRepositorySession(db)
 
