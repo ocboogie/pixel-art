@@ -66,17 +66,17 @@ func TestLatest(t *testing.T) {
 	}
 
 	mockLatestPosts := []*models.Post{
-		&models.Post{
+		{
 			Author: models.User{ID: "60aaf13d-8ddc-403b-ba42-960e18a22f6a"},
 			Title:  "Yup",
 			Data:   make([]byte, 0),
 		},
-		&models.Post{
+		{
 			Author: models.User{ID: "6caaf13d-8ddc-403b-ba42-960e18a22f6a"},
 			Title:  "Yup",
 			Data:   make([]byte, 0),
 		},
-		&models.Post{
+		{
 			Author: models.User{ID: "6aaaf13d-8ddc-403b-ba42-960e18a22f6a"},
 			Title:  "Yup",
 			Data:   make([]byte, 0),
@@ -101,17 +101,17 @@ func TestPostsByUser(t *testing.T) {
 	}
 
 	mockUsersPosts := []*models.Post{
-		&models.Post{
+		{
 			Author: models.User{ID: "60aaf13d-8ddc-403b-ba42-960e18a22f6a"},
 			Title:  "Yup",
 			Data:   make([]byte, 0),
 		},
-		&models.Post{
+		{
 			Author: models.User{ID: "6caaf13d-8ddc-403b-ba42-960e18a22f6a"},
 			Title:  "Yup",
 			Data:   make([]byte, 0),
 		},
-		&models.Post{
+		{
 			Author: models.User{ID: "6aaaf13d-8ddc-403b-ba42-960e18a22f6a"},
 			Title:  "Yup",
 			Data:   make([]byte, 0),

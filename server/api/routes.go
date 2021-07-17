@@ -2,14 +2,9 @@ package api
 
 import (
 	"github.com/go-chi/chi"
-	"github.com/go-chi/chi/middleware"
 )
 
 func (s *server) routes() {
-	s.router.Use(middleware.RealIP)
-	s.router.Use(middleware.Logger)
-	s.router.Use(middleware.Recoverer)
-
 	s.router.Route("/auth", func(r chi.Router) {
 		r.Post("/login", s.handleLogin())
 		r.Post("/signUp", s.handleSignUp())
