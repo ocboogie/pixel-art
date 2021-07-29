@@ -6,12 +6,12 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/cors"
+	"github.com/go-playground/validator/v10"
 	"github.com/ocboogie/pixel-art/services/art"
 	"github.com/ocboogie/pixel-art/services/auth"
 	"github.com/ocboogie/pixel-art/services/avatar"
 	"github.com/ocboogie/pixel-art/services/post"
 	"github.com/ocboogie/pixel-art/services/user"
-	"gopkg.in/go-playground/validator.v9"
 )
 
 type server struct {

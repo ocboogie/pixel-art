@@ -2,6 +2,7 @@ package main
 
 import (
 	sq "github.com/Masterminds/squirrel"
+	"github.com/go-playground/validator/v10"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 	"github.com/ocboogie/pixel-art/api"
@@ -12,7 +13,6 @@ import (
 	"github.com/ocboogie/pixel-art/services/post"
 	"github.com/ocboogie/pixel-art/services/user"
 	"github.com/sirupsen/logrus"
-	"gopkg.in/go-playground/validator.v9"
 )
 
 func main() {
