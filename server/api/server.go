@@ -9,7 +9,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/ocboogie/pixel-art/models"
 	"github.com/ocboogie/pixel-art/services/auth"
-	"github.com/ocboogie/pixel-art/services/post"
+	"github.com/ocboogie/pixel-art/services/feed"
 	"github.com/ocboogie/pixel-art/services/user"
 )
 
@@ -19,14 +19,14 @@ type server struct {
 	auth       auth.Service
 	avatarSpec models.AvatarSpec
 	artSpec    models.ArtSpec
-	post       post.Service
+	feed       feed.Service
 	user       user.Service
 }
 
 func New(auth auth.Service,
 	avatarSpec models.AvatarSpec,
 	artSpec models.ArtSpec,
-	post post.Service,
+	feed feed.Service,
 	user user.Service,
 	validate *validator.Validate) *server {
 
@@ -35,7 +35,7 @@ func New(auth auth.Service,
 		auth:       auth,
 		avatarSpec: avatarSpec,
 		artSpec:    artSpec,
-		post:       post,
+		feed:       feed,
 		user:       user,
 	}
 

@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi"
-	postService "github.com/ocboogie/pixel-art/services/post"
+	"github.com/ocboogie/pixel-art/services/feed"
 )
 
 func (s *server) handleLikesLike() http.HandlerFunc {
@@ -12,16 +12,16 @@ func (s *server) handleLikesLike() http.HandlerFunc {
 		postID := chi.URLParam(r, "id")
 		userID := s.getUserID(w, r)
 
-		err := s.post.Like(userID, postID)
+		err := s.feed.Like(userID, postID)
 
 		if err != nil {
 			apiErr := unexpectedAPIError(err)
 			switch err {
-			case postService.ErrAlreadyLiked:
+			case feed.ErrAlreadyLiked:
 				apiErr = errAlreadyLiked
-			case postService.ErrNotFound:
+			case feed.ErrNotFound:
 				apiErr = errPostNotFound
-			case postService.ErrUserNotFound:
+			case feed.ErrUserNotFound:
 				apiErr = errInvalidUserState
 			}
 			s.error(w, r, apiErr)
@@ -35,11 +35,11 @@ func (s *server) handleLikesUnlike() http.HandlerFunc {
 		postID := chi.URLParam(r, "id")
 		userID := s.getUserID(w, r)
 
-		err := s.post.Unlike(userID, postID)
+		err := s.feed.Unlike(userID, postID)
 
 		if err != nil {
 			apiErr := unexpectedAPIError(err)
-			if err == postService.ErrLikeNotFound {
+			if err == feed.ErrLikeNotFound {
 				apiErr = errLikeNotFound
 			}
 

@@ -57,7 +57,7 @@ func (s *server) handleUsersPosts() http.HandlerFunc {
 		}
 
 		userID := chi.URLParam(r, "id")
-		posts, err := s.post.PostsByUser(userID, limit, after)
+		posts, err := s.feed.PostsByUser(userID, limit, after)
 		if err != nil {
 			s.error(w, r, unexpectedAPIError(err))
 			return

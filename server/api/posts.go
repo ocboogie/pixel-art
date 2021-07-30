@@ -8,13 +8,13 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/ocboogie/pixel-art/models"
-	postService "github.com/ocboogie/pixel-art/services/post"
+	postService "github.com/ocboogie/pixel-art/services/feed"
 )
 
 func (s *server) handlePostsFind() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		postID := chi.URLParam(r, "id")
-		post, err := s.post.Find(postID)
+		post, err := s.feed.Find(postID)
 
 		if err != nil {
 			if err == postService.ErrNotFound {
@@ -59,7 +59,7 @@ func (s *server) handlePostsCreate() http.HandlerFunc {
 			return
 		}
 
-		id, err := s.post.Create(newPost)
+		id, err := s.feed.Create(newPost)
 
 		if err != nil {
 			s.error(w, r, unexpectedAPIError(err))
@@ -73,7 +73,7 @@ func (s *server) handlePostsCreate() http.HandlerFunc {
 func (s *server) handlePostsDelete() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		postID := chi.URLParam(r, "id")
-		post, err := s.post.Find(postID)
+		post, err := s.feed.Find(postID)
 
 		if err != nil {
 			if err == postService.ErrNotFound {
@@ -92,7 +92,7 @@ func (s *server) handlePostsDelete() http.HandlerFunc {
 			return
 		}
 
-		err = s.post.Delete(post.ID)
+		err = s.feed.Delete(post.ID)
 
 		if err != nil {
 			if err == postService.ErrNotFound {
@@ -135,7 +135,7 @@ func (s *server) handlePostsAll() http.HandlerFunc {
 			after = &afterDate
 		}
 
-		posts, err := s.post.Latest(limit, after)
+		posts, err := s.feed.Latest(limit, after)
 		if err != nil {
 			s.error(w, r, unexpectedAPIError(err))
 			return

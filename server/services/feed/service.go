@@ -1,4 +1,4 @@
-package post
+package feed
 
 import (
 	"time"
@@ -9,7 +9,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-//go:generate mockgen -destination=../../mocks/service_post.go -package mocks -mock_names Service=ServicePost github.com/ocboogie/pixel-art/services/post Service
+//go:generate mockgen -destination=../../mocks/service_feed.go -package mocks -mock_names Service=ServiceFeed github.com/ocboogie/pixel-art/services/feed Service
 
 type Service interface {
 	Create(input models.PostNew) (string, error)

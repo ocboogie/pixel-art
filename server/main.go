@@ -9,7 +9,7 @@ import (
 	"github.com/ocboogie/pixel-art/models"
 	"github.com/ocboogie/pixel-art/postgres"
 	"github.com/ocboogie/pixel-art/services/auth"
-	"github.com/ocboogie/pixel-art/services/post"
+	"github.com/ocboogie/pixel-art/services/feed"
 	"github.com/ocboogie/pixel-art/services/user"
 	"github.com/sirupsen/logrus"
 )
@@ -43,10 +43,10 @@ func main() {
 	sessionRepo := postgres.NewRepositorySession(db)
 
 	auth := auth.New(log, auth.DefaultConfig(), userRepo, sessionRepo)
-	post := post.New(log, userRepo, postRepo, likeRepo)
+	feed := feed.New(log, userRepo, postRepo, likeRepo)
 	user := user.New(log, userRepo)
 
-	server := api.New(auth, avatarSpec, artSpec, post, user, validate)
+	server := api.New(auth, avatarSpec, artSpec, feed, user, validate)
 
 	server.Setup()
 	server.Start()

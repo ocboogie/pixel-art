@@ -51,7 +51,7 @@ func (s *server) handleMePosts() http.HandlerFunc {
 		}
 
 		userID := s.getUserID(w, r)
-		posts, err := s.post.PostsByUser(userID, limit, after)
+		posts, err := s.feed.PostsByUser(userID, limit, after)
 		if err != nil {
 			s.error(w, r, unexpectedAPIError(err))
 			return
