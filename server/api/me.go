@@ -12,7 +12,7 @@ import (
 func (s *server) handleMe() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		userID := s.getUserID(w, r)
-		user, err := s.user.Find(userID)
+		user, err := s.profile.Find(userID)
 		if err != nil {
 			s.error(w, r, unexpectedAPIError(err))
 		}
@@ -83,7 +83,7 @@ func (s *server) handleUpdateMe() http.HandlerFunc {
 			return
 		}
 
-		user, err := s.user.Find(s.getUserID(w, r))
+		user, err := s.profile.Find(s.getUserID(w, r))
 		if err != nil {
 			s.error(w, r, unexpectedAPIError(err))
 			return
@@ -100,7 +100,7 @@ func (s *server) handleUpdateMe() http.HandlerFunc {
 			user.Avatar = *body.Avatar
 		}
 
-		if err := s.user.Update(user); err != nil {
+		if err := s.profile.Update(user); err != nil {
 			s.error(w, r, unexpectedAPIError(err))
 			return
 		}

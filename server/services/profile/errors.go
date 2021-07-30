@@ -1,4 +1,4 @@
-package user
+package profile
 
 import (
 	"github.com/ocboogie/pixel-art/repositories"

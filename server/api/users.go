@@ -6,13 +6,13 @@ import (
 	"time"
 
 	"github.com/go-chi/chi"
-	userService "github.com/ocboogie/pixel-art/services/user"
+	userService "github.com/ocboogie/pixel-art/services/profile"
 )
 
 func (s *server) handleUsersFind() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		userID := chi.URLParam(r, "id")
-		user, err := s.user.Find(userID)
+		user, err := s.profile.Find(userID)
 
 		if err != nil {
 			if err == userService.ErrNotFound {

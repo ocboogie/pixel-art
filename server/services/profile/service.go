@@ -1,4 +1,4 @@
-package user
+package profile
 
 import (
 	"github.com/ocboogie/pixel-art/models"
@@ -6,7 +6,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-//go:generate mockgen -destination=../../mocks/service_user.go -package mocks -mock_names Service=ServiceUser github.com/ocboogie/pixel-art/services/user Service
+//go:generate mockgen -destination=../../mocks/service_profile.go -package mocks -mock_names Service=ServiceProfile github.com/ocboogie/pixel-art/services/profile Service
 
 type Service interface {
 	Find(id string) (*models.User, error)

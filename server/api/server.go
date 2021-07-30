@@ -10,7 +10,7 @@ import (
 	"github.com/ocboogie/pixel-art/models"
 	"github.com/ocboogie/pixel-art/services/auth"
 	"github.com/ocboogie/pixel-art/services/feed"
-	"github.com/ocboogie/pixel-art/services/user"
+	"github.com/ocboogie/pixel-art/services/profile"
 )
 
 type server struct {
@@ -20,14 +20,14 @@ type server struct {
 	avatarSpec models.AvatarSpec
 	artSpec    models.ArtSpec
 	feed       feed.Service
-	user       user.Service
+	profile    profile.Service
 }
 
 func New(auth auth.Service,
 	avatarSpec models.AvatarSpec,
 	artSpec models.ArtSpec,
 	feed feed.Service,
-	user user.Service,
+	profile profile.Service,
 	validate *validator.Validate) *server {
 
 	s := &server{
@@ -36,7 +36,7 @@ func New(auth auth.Service,
 		avatarSpec: avatarSpec,
 		artSpec:    artSpec,
 		feed:       feed,
-		user:       user,
+		profile:    profile,
 	}
 
 	return s
