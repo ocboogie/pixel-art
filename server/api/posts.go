@@ -70,6 +70,43 @@ func (s *server) handlePostsCreate() http.HandlerFunc {
 	}
 }
 
+func (s *server) handlePostsDelete() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		postID := chi.URLParam(r, "id")
+		post, err := s.post.Find(postID)
+
+		if err != nil {
+			if err == postService.ErrNotFound {
+				s.error(w, r, errPostNotFound)
+				return
+			}
+			s.error(w, r, unexpectedAPIError(err))
+			return
+		}
+
+		userID := s.getUserID(w, r)
+
+		// TODO: Abstract this away somewhere.
+		if userID != post.Author.ID {
+			s.error(w, r, errInvalidPermissions)
+			return
+		}
+
+		err = s.post.Delete(post.ID)
+
+		if err != nil {
+			if err == postService.ErrNotFound {
+				s.error(w, r, errPostNotFound)
+				return
+			}
+			s.error(w, r, unexpectedAPIError(err))
+			return
+		}
+
+		s.respond(w, r, http.StatusOK, nil)
+	}
+}
+
 func (s *server) handlePostsAll() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		limit := 50

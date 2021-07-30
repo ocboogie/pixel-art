@@ -58,6 +58,29 @@ func (r *postRepo) Find(id string) (*models.Post, error) {
 	return &post, err
 }
 
+func (r *postRepo) Delete(id string) error {
+	res, err := r.db.Exec(
+		`DELETE FROM posts
+		 WHERE id=$1`,
+		id,
+	)
+	if err != nil {
+		return err
+	}
+
+	count, err := res.RowsAffected()
+
+	if err != nil {
+		return err
+	}
+
+	if count != 1 {
+		return repositories.ErrPostNotFound
+	}
+
+	return nil
+}
+
 func (r *postRepo) Save(post *models.Post) error {
 	_, err := r.db.NamedExec(
 		`INSERT INTO posts (id, author_id, title, art, created_at) 

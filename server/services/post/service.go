@@ -13,6 +13,7 @@ import (
 
 type Service interface {
 	Create(input models.PostNew) (string, error)
+	Delete(id string) error
 	Latest(limit int, after *time.Time) ([]*models.Post, error)
 	Find(id string) (*models.Post, error)
 	PostsByUser(id string, limit int, after *time.Time) ([]*models.Post, error)
@@ -60,6 +61,10 @@ func (s *service) Create(input models.PostNew) (string, error) {
 	}).Info("Post created")
 
 	return id, nil
+}
+
+func (s *service) Delete(id string) error {
+	return s.postRepo.Delete(id)
 }
 
 func (s *service) Find(id string) (*models.Post, error) {

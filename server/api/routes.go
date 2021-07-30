@@ -30,6 +30,7 @@ func (s *server) routes() {
 		r.Get("/", s.handlePostsAll())
 		r.Group(func(r chi.Router) {
 			r.Use(s.authenticated)
+			r.Delete("/{id}", s.handlePostsDelete())
 			r.Post("/", s.handlePostsCreate())
 		})
 	})

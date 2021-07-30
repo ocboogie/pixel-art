@@ -10,6 +10,7 @@ import (
 
 type Post interface {
 	Find(id string) (*models.Post, error)
+	Delete(id string) error
 	Save(post *models.Post) error
 	Latest(limit int, after *time.Time) ([]*models.Post, error)
 	PostsByUser(userID string, limit int, after *time.Time) ([]*models.Post, error)

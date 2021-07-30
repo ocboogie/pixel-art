@@ -34,6 +34,20 @@ func TestCreate(t *testing.T) {
 		assert.Regexp(t, `^[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}$`, id)
 	})
 }
+func TestDelete(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	repo := mocks.NewRepositoryPost(ctrl)
+	s := &service{
+		postRepo: repo,
+	}
+
+	repo.EXPECT().Delete("60aaf13d-8ddc-403b-ba42-960e18a22f6a").Return(nil)
+
+	err := s.Delete("60aaf13d-8ddc-403b-ba42-960e18a22f6a")
+
+	assert.NoError(t, err)
+}
 
 func TestFind(t *testing.T) {
 	ctrl := gomock.NewController(t)
