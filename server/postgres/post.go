@@ -20,7 +20,7 @@ type postRepo struct {
 func BaseSelect(sb sq.StatementBuilderType) sq.SelectBuilder {
 	return sb.Select(`posts.id "id",
 			posts.title "title",
-			posts.data "data",
+			posts.art "art",
 			posts.created_at "created_at",
 			count(likes.post_id) "likes",
 			author.id "author.id",
@@ -60,8 +60,8 @@ func (r *postRepo) Find(id string) (*models.Post, error) {
 
 func (r *postRepo) Save(post *models.Post) error {
 	_, err := r.db.NamedExec(
-		`INSERT INTO posts (id, author_id, title, data, created_at) 
-		 VALUES (:id, :author.id, :title, :data, :created_at)`,
+		`INSERT INTO posts (id, author_id, title, art, created_at) 
+		 VALUES (:id, :author.id, :title, :art, :created_at)`,
 		post,
 	)
 

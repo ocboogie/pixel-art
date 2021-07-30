@@ -5,36 +5,37 @@
 package mocks
 
 import (
-	gomock "github.com/golang/mock/gomock"
-	models "github.com/ocboogie/pixel-art/models"
 	reflect "reflect"
 	time "time"
+
+	gomock "github.com/golang/mock/gomock"
+	models "github.com/ocboogie/pixel-art/models"
 )
 
-// RepositoryPost is a mock of Post interface
+// RepositoryPost is a mock of Post interface.
 type RepositoryPost struct {
 	ctrl     *gomock.Controller
 	recorder *RepositoryPostMockRecorder
 }
 
-// RepositoryPostMockRecorder is the mock recorder for RepositoryPost
+// RepositoryPostMockRecorder is the mock recorder for RepositoryPost.
 type RepositoryPostMockRecorder struct {
 	mock *RepositoryPost
 }
 
-// NewRepositoryPost creates a new mock instance
+// NewRepositoryPost creates a new mock instance.
 func NewRepositoryPost(ctrl *gomock.Controller) *RepositoryPost {
 	mock := &RepositoryPost{ctrl: ctrl}
 	mock.recorder = &RepositoryPostMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use
+// EXPECT returns an object that allows the caller to indicate expected use.
 func (m *RepositoryPost) EXPECT() *RepositoryPostMockRecorder {
 	return m.recorder
 }
 
-// Find mocks base method
+// Find mocks base method.
 func (m *RepositoryPost) Find(arg0 string) (*models.Post, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Find", arg0)
@@ -43,13 +44,13 @@ func (m *RepositoryPost) Find(arg0 string) (*models.Post, error) {
 	return ret0, ret1
 }
 
-// Find indicates an expected call of Find
+// Find indicates an expected call of Find.
 func (mr *RepositoryPostMockRecorder) Find(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*RepositoryPost)(nil).Find), arg0)
 }
 
-// Latest mocks base method
+// Latest mocks base method.
 func (m *RepositoryPost) Latest(arg0 int, arg1 *time.Time) ([]*models.Post, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Latest", arg0, arg1)
@@ -58,13 +59,13 @@ func (m *RepositoryPost) Latest(arg0 int, arg1 *time.Time) ([]*models.Post, erro
 	return ret0, ret1
 }
 
-// Latest indicates an expected call of Latest
+// Latest indicates an expected call of Latest.
 func (mr *RepositoryPostMockRecorder) Latest(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Latest", reflect.TypeOf((*RepositoryPost)(nil).Latest), arg0, arg1)
 }
 
-// PostsByUser mocks base method
+// PostsByUser mocks base method.
 func (m *RepositoryPost) PostsByUser(arg0 string, arg1 int, arg2 *time.Time) ([]*models.Post, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "PostsByUser", arg0, arg1, arg2)
@@ -73,13 +74,13 @@ func (m *RepositoryPost) PostsByUser(arg0 string, arg1 int, arg2 *time.Time) ([]
 	return ret0, ret1
 }
 
-// PostsByUser indicates an expected call of PostsByUser
+// PostsByUser indicates an expected call of PostsByUser.
 func (mr *RepositoryPostMockRecorder) PostsByUser(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PostsByUser", reflect.TypeOf((*RepositoryPost)(nil).PostsByUser), arg0, arg1, arg2)
 }
 
-// Save mocks base method
+// Save mocks base method.
 func (m *RepositoryPost) Save(arg0 *models.Post) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Save", arg0)
@@ -87,7 +88,7 @@ func (m *RepositoryPost) Save(arg0 *models.Post) error {
 	return ret0
 }
 
-// Save indicates an expected call of Save
+// Save indicates an expected call of Save.
 func (mr *RepositoryPostMockRecorder) Save(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Save", reflect.TypeOf((*RepositoryPost)(nil).Save), arg0)

@@ -5,34 +5,35 @@
 package mocks
 
 import (
-	gomock "github.com/golang/mock/gomock"
 	reflect "reflect"
+
+	gomock "github.com/golang/mock/gomock"
 )
 
-// RepositoryLike is a mock of Like interface
+// RepositoryLike is a mock of Like interface.
 type RepositoryLike struct {
 	ctrl     *gomock.Controller
 	recorder *RepositoryLikeMockRecorder
 }
 
-// RepositoryLikeMockRecorder is the mock recorder for RepositoryLike
+// RepositoryLikeMockRecorder is the mock recorder for RepositoryLike.
 type RepositoryLikeMockRecorder struct {
 	mock *RepositoryLike
 }
 
-// NewRepositoryLike creates a new mock instance
+// NewRepositoryLike creates a new mock instance.
 func NewRepositoryLike(ctrl *gomock.Controller) *RepositoryLike {
 	mock := &RepositoryLike{ctrl: ctrl}
 	mock.recorder = &RepositoryLikeMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use
+// EXPECT returns an object that allows the caller to indicate expected use.
 func (m *RepositoryLike) EXPECT() *RepositoryLikeMockRecorder {
 	return m.recorder
 }
 
-// Delete mocks base method
+// Delete mocks base method.
 func (m *RepositoryLike) Delete(arg0, arg1 string) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Delete", arg0, arg1)
@@ -40,13 +41,13 @@ func (m *RepositoryLike) Delete(arg0, arg1 string) error {
 	return ret0
 }
 
-// Delete indicates an expected call of Delete
+// Delete indicates an expected call of Delete.
 func (mr *RepositoryLikeMockRecorder) Delete(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*RepositoryLike)(nil).Delete), arg0, arg1)
 }
 
-// Save mocks base method
+// Save mocks base method.
 func (m *RepositoryLike) Save(arg0, arg1 string) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Save", arg0, arg1)
@@ -54,7 +55,7 @@ func (m *RepositoryLike) Save(arg0, arg1 string) error {
 	return ret0
 }
 
-// Save indicates an expected call of Save
+// Save indicates an expected call of Save.
 func (mr *RepositoryLikeMockRecorder) Save(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Save", reflect.TypeOf((*RepositoryLike)(nil).Save), arg0, arg1)

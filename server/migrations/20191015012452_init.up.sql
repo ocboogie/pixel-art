@@ -20,7 +20,7 @@ CREATE TABLE "posts"
     id uuid PRIMARY KEY,
     author_id uuid REFERENCES users(id) ON DELETE CASCADE NOT NULL,
     title varchar(256) NOT NULL,
-    data bytea NOT NULL,
+    art bytea NOT NULL,
     created_at timestamp with time zone NOT NULL
 );
 

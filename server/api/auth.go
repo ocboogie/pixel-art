@@ -133,9 +133,7 @@ func (s *server) handleSignUp() http.HandlerFunc {
 			return
 		}
 
-		body.Avatar = s.avatar.GenerateRandom()
-
-		if err := body.Validate(s.validate); err != nil {
+		if err := body.Validate(s.validate, s.avatarSpec); err != nil {
 			// FIXME:
 			s.error(w, r, errInvalidBody(err))
 			return
@@ -146,10 +144,6 @@ func (s *server) handleSignUp() http.HandlerFunc {
 		if err != nil {
 			if err == auth.ErrEmailAlreadyInUse {
 				s.error(w, r, errEmailAlreadyInUse)
-				return
-			}
-			if err == auth.ErrInvalidAvatar {
-				s.error(w, r, errInvalidAvatar)
 				return
 			}
 

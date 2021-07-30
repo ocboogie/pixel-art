@@ -31,8 +31,8 @@ func (s *server) handlePostsFind() http.HandlerFunc {
 
 func (s *server) handlePostsCreate() http.HandlerFunc {
 	type request struct {
-		Title string `json:"title" validate:"required,min=2,max=256"`
-		Data  string `json:"data"`
+		Title string     `json:"title" validate:"required,min=2,max=256"`
+		Art   models.Art `json:"art"`
 	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -49,18 +49,13 @@ func (s *server) handlePostsCreate() http.HandlerFunc {
 
 		newPost := models.PostNew{
 			Title:  body.Title,
-			Data:   body.Data,
+			Art:    body.Art,
 			UserID: userID,
 		}
 
-		if err := newPost.Validate(s.validate); err != nil {
+		if err := newPost.Validate(s.validate, s.artSpec); err != nil {
 			// FIXME:
 			s.error(w, r, errInvalidBody(err))
-			return
-		}
-
-		if !s.art.Validate(newPost.Data) {
-			s.error(w, r, errInvalidArt)
 			return
 		}
 

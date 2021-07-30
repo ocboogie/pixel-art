@@ -5,35 +5,36 @@
 package mocks
 
 import (
+	reflect "reflect"
+
 	gomock "github.com/golang/mock/gomock"
 	models "github.com/ocboogie/pixel-art/models"
-	reflect "reflect"
 )
 
-// ServiceUser is a mock of Service interface
+// ServiceUser is a mock of Service interface.
 type ServiceUser struct {
 	ctrl     *gomock.Controller
 	recorder *ServiceUserMockRecorder
 }
 
-// ServiceUserMockRecorder is the mock recorder for ServiceUser
+// ServiceUserMockRecorder is the mock recorder for ServiceUser.
 type ServiceUserMockRecorder struct {
 	mock *ServiceUser
 }
 
-// NewServiceUser creates a new mock instance
+// NewServiceUser creates a new mock instance.
 func NewServiceUser(ctrl *gomock.Controller) *ServiceUser {
 	mock := &ServiceUser{ctrl: ctrl}
 	mock.recorder = &ServiceUserMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use
+// EXPECT returns an object that allows the caller to indicate expected use.
 func (m *ServiceUser) EXPECT() *ServiceUserMockRecorder {
 	return m.recorder
 }
 
-// Find mocks base method
+// Find mocks base method.
 func (m *ServiceUser) Find(arg0 string) (*models.User, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Find", arg0)
@@ -42,13 +43,13 @@ func (m *ServiceUser) Find(arg0 string) (*models.User, error) {
 	return ret0, ret1
 }
 
-// Find indicates an expected call of Find
+// Find indicates an expected call of Find.
 func (mr *ServiceUserMockRecorder) Find(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*ServiceUser)(nil).Find), arg0)
 }
 
-// Update mocks base method
+// Update mocks base method.
 func (m *ServiceUser) Update(arg0 *models.User) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Update", arg0)
@@ -56,7 +57,7 @@ func (m *ServiceUser) Update(arg0 *models.User) error {
 	return ret0
 }
 
-// Update indicates an expected call of Update
+// Update indicates an expected call of Update.
 func (mr *ServiceUserMockRecorder) Update(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*ServiceUser)(nil).Update), arg0)

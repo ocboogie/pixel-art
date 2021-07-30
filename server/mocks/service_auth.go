@@ -5,35 +5,36 @@
 package mocks
 
 import (
+	reflect "reflect"
+
 	gomock "github.com/golang/mock/gomock"
 	models "github.com/ocboogie/pixel-art/models"
-	reflect "reflect"
 )
 
-// ServiceAuth is a mock of Service interface
+// ServiceAuth is a mock of Service interface.
 type ServiceAuth struct {
 	ctrl     *gomock.Controller
 	recorder *ServiceAuthMockRecorder
 }
 
-// ServiceAuthMockRecorder is the mock recorder for ServiceAuth
+// ServiceAuthMockRecorder is the mock recorder for ServiceAuth.
 type ServiceAuthMockRecorder struct {
 	mock *ServiceAuth
 }
 
-// NewServiceAuth creates a new mock instance
+// NewServiceAuth creates a new mock instance.
 func NewServiceAuth(ctrl *gomock.Controller) *ServiceAuth {
 	mock := &ServiceAuth{ctrl: ctrl}
 	mock.recorder = &ServiceAuthMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use
+// EXPECT returns an object that allows the caller to indicate expected use.
 func (m *ServiceAuth) EXPECT() *ServiceAuthMockRecorder {
 	return m.recorder
 }
 
-// CreateSession mocks base method
+// CreateSession mocks base method.
 func (m *ServiceAuth) CreateSession(arg0 string) (*models.Session, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateSession", arg0)
@@ -42,13 +43,13 @@ func (m *ServiceAuth) CreateSession(arg0 string) (*models.Session, error) {
 	return ret0, ret1
 }
 
-// CreateSession indicates an expected call of CreateSession
+// CreateSession indicates an expected call of CreateSession.
 func (mr *ServiceAuthMockRecorder) CreateSession(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateSession", reflect.TypeOf((*ServiceAuth)(nil).CreateSession), arg0)
 }
 
-// Login mocks base method
+// Login mocks base method.
 func (m *ServiceAuth) Login(arg0 *models.UserCredentials) (*models.Session, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Login", arg0)
@@ -57,13 +58,13 @@ func (m *ServiceAuth) Login(arg0 *models.UserCredentials) (*models.Session, erro
 	return ret0, ret1
 }
 
-// Login indicates an expected call of Login
+// Login indicates an expected call of Login.
 func (mr *ServiceAuthMockRecorder) Login(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Login", reflect.TypeOf((*ServiceAuth)(nil).Login), arg0)
 }
 
-// Logout mocks base method
+// Logout mocks base method.
 func (m *ServiceAuth) Logout(arg0 string) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Logout", arg0)
@@ -71,13 +72,13 @@ func (m *ServiceAuth) Logout(arg0 string) error {
 	return ret0
 }
 
-// Logout indicates an expected call of Logout
+// Logout indicates an expected call of Logout.
 func (mr *ServiceAuthMockRecorder) Logout(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Logout", reflect.TypeOf((*ServiceAuth)(nil).Logout), arg0)
 }
 
-// SignUp mocks base method
+// SignUp mocks base method.
 func (m *ServiceAuth) SignUp(arg0 *models.UserNew) (*models.Session, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SignUp", arg0)
@@ -86,13 +87,13 @@ func (m *ServiceAuth) SignUp(arg0 *models.UserNew) (*models.Session, error) {
 	return ret0, ret1
 }
 
-// SignUp indicates an expected call of SignUp
+// SignUp indicates an expected call of SignUp.
 func (mr *ServiceAuthMockRecorder) SignUp(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SignUp", reflect.TypeOf((*ServiceAuth)(nil).SignUp), arg0)
 }
 
-// VerifySession mocks base method
+// VerifySession mocks base method.
 func (m *ServiceAuth) VerifySession(arg0 string) (string, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "VerifySession", arg0)
@@ -101,7 +102,7 @@ func (m *ServiceAuth) VerifySession(arg0 string) (string, error) {
 	return ret0, ret1
 }
 
-// VerifySession indicates an expected call of VerifySession
+// VerifySession indicates an expected call of VerifySession.
 func (mr *ServiceAuthMockRecorder) VerifySession(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VerifySession", reflect.TypeOf((*ServiceAuth)(nil).VerifySession), arg0)

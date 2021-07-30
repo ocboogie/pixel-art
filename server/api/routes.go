@@ -17,8 +17,8 @@ func (s *server) routes() {
 		r.Get("/posts", s.handleMePosts())
 	})
 
-	s.router.Get("/avatar/format", s.handleAvatarFormat())
-	s.router.Get("/art/format", s.handleArtFormat())
+	s.router.Get("/avatar/spec", s.handleAvatarSpec())
+	s.router.Get("/art/spec", s.handleArtSpec())
 
 	s.router.Route("/users/{id}", func(r chi.Router) {
 		r.Get("/", s.handleUsersFind())

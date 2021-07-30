@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/ocboogie/pixel-art/models"
 )
 
 func (s *server) handleMe() http.HandlerFunc {
@@ -61,8 +63,8 @@ func (s *server) handleMePosts() http.HandlerFunc {
 
 func (s *server) handleUpdateMe() http.HandlerFunc {
 	type request struct {
-		Name   *string `json:"name,omitempty" validate:"omitempty,min=2,max=64"`
-		Avatar *string `json:"avatar,omitempty" validate:"omitempty,min=2,max=64"`
+		Name   *string        `json:"name,omitempty" validate:"omitempty,min=2,max=64"`
+		Avatar *models.Avatar `json:"avatar,omitempty" validate:"omitempty,min=2,max=64"`
 	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -91,7 +93,7 @@ func (s *server) handleUpdateMe() http.HandlerFunc {
 			user.Name = *body.Name
 		}
 		if body.Avatar != nil {
-			if !s.avatar.Validate(*body.Avatar) {
+			if err := body.Avatar.Validate(s.avatarSpec); err != nil {
 				s.error(w, r, errInvalidAvatar)
 				return
 			}

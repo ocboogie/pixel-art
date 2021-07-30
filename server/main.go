@@ -6,14 +6,26 @@ import (
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 	"github.com/ocboogie/pixel-art/api"
+	"github.com/ocboogie/pixel-art/models"
 	"github.com/ocboogie/pixel-art/postgres"
-	"github.com/ocboogie/pixel-art/services/art"
 	"github.com/ocboogie/pixel-art/services/auth"
-	"github.com/ocboogie/pixel-art/services/avatar"
 	"github.com/ocboogie/pixel-art/services/post"
 	"github.com/ocboogie/pixel-art/services/user"
 	"github.com/sirupsen/logrus"
 )
+
+var avatarSpec = models.AvatarSpec{
+	Size: 5,
+	Palette: []string{
+		"#1abc9c", "#2ecc71", "#3498db", "#9b59b6", "#e74c3c",
+	},
+}
+var artSpec = models.ArtSpec{
+	Size:   3,
+	Colors: 3,
+	// Size:   25,
+	// Colors: 8,
+}
 
 func main() {
 	db, err := sqlx.Open("postgres", "host=localhost port=5432 user=postgres dbname=postgres password=password sslmode=disable")
@@ -30,13 +42,11 @@ func main() {
 	likeRepo := postgres.NewLikeRepository(db)
 	sessionRepo := postgres.NewRepositorySession(db)
 
-	avatar := avatar.New(avatar.DefaultConfig())
-	auth := auth.New(log, auth.DefaultConfig(), userRepo, sessionRepo, avatar)
-	art := art.New(art.DefaultConfig())
+	auth := auth.New(log, auth.DefaultConfig(), userRepo, sessionRepo)
 	post := post.New(log, userRepo, postRepo, likeRepo)
 	user := user.New(log, userRepo)
 
-	server := api.New(auth, avatar, art, post, user, validate)
+	server := api.New(auth, avatarSpec, artSpec, post, user, validate)
 
 	server.Setup()
 	server.Start()
@@ -45,5 +55,5 @@ func main() {
 	// 	panic(err)
 	// }
 	// defer db.Close()
-	// migrations.Migrate(db)
+	// migrations.Migrate(db.DB)
 }

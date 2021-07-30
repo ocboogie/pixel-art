@@ -5,35 +5,36 @@
 package mocks
 
 import (
+	reflect "reflect"
+
 	gomock "github.com/golang/mock/gomock"
 	models "github.com/ocboogie/pixel-art/models"
-	reflect "reflect"
 )
 
-// RepositoryUser is a mock of User interface
+// RepositoryUser is a mock of User interface.
 type RepositoryUser struct {
 	ctrl     *gomock.Controller
 	recorder *RepositoryUserMockRecorder
 }
 
-// RepositoryUserMockRecorder is the mock recorder for RepositoryUser
+// RepositoryUserMockRecorder is the mock recorder for RepositoryUser.
 type RepositoryUserMockRecorder struct {
 	mock *RepositoryUser
 }
 
-// NewRepositoryUser creates a new mock instance
+// NewRepositoryUser creates a new mock instance.
 func NewRepositoryUser(ctrl *gomock.Controller) *RepositoryUser {
 	mock := &RepositoryUser{ctrl: ctrl}
 	mock.recorder = &RepositoryUserMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use
+// EXPECT returns an object that allows the caller to indicate expected use.
 func (m *RepositoryUser) EXPECT() *RepositoryUserMockRecorder {
 	return m.recorder
 }
 
-// ExistsEmail mocks base method
+// ExistsEmail mocks base method.
 func (m *RepositoryUser) ExistsEmail(arg0 string) (bool, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ExistsEmail", arg0)
@@ -42,13 +43,13 @@ func (m *RepositoryUser) ExistsEmail(arg0 string) (bool, error) {
 	return ret0, ret1
 }
 
-// ExistsEmail indicates an expected call of ExistsEmail
+// ExistsEmail indicates an expected call of ExistsEmail.
 func (mr *RepositoryUserMockRecorder) ExistsEmail(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExistsEmail", reflect.TypeOf((*RepositoryUser)(nil).ExistsEmail), arg0)
 }
 
-// Find mocks base method
+// Find mocks base method.
 func (m *RepositoryUser) Find(arg0 string) (*models.User, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Find", arg0)
@@ -57,13 +58,13 @@ func (m *RepositoryUser) Find(arg0 string) (*models.User, error) {
 	return ret0, ret1
 }
 
-// Find indicates an expected call of Find
+// Find indicates an expected call of Find.
 func (mr *RepositoryUserMockRecorder) Find(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*RepositoryUser)(nil).Find), arg0)
 }
 
-// FindByEmail mocks base method
+// FindByEmail mocks base method.
 func (m *RepositoryUser) FindByEmail(arg0 string) (*models.User, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FindByEmail", arg0)
@@ -72,13 +73,13 @@ func (m *RepositoryUser) FindByEmail(arg0 string) (*models.User, error) {
 	return ret0, ret1
 }
 
-// FindByEmail indicates an expected call of FindByEmail
+// FindByEmail indicates an expected call of FindByEmail.
 func (mr *RepositoryUserMockRecorder) FindByEmail(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByEmail", reflect.TypeOf((*RepositoryUser)(nil).FindByEmail), arg0)
 }
 
-// Save mocks base method
+// Save mocks base method.
 func (m *RepositoryUser) Save(arg0 *models.User) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Save", arg0)
@@ -86,13 +87,13 @@ func (m *RepositoryUser) Save(arg0 *models.User) error {
 	return ret0
 }
 
-// Save indicates an expected call of Save
+// Save indicates an expected call of Save.
 func (mr *RepositoryUserMockRecorder) Save(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Save", reflect.TypeOf((*RepositoryUser)(nil).Save), arg0)
 }
 
-// Update mocks base method
+// Update mocks base method.
 func (m *RepositoryUser) Update(arg0 *models.User) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Update", arg0)
@@ -100,7 +101,7 @@ func (m *RepositoryUser) Update(arg0 *models.User) error {
 	return ret0
 }
 
-// Update indicates an expected call of Update
+// Update indicates an expected call of Update.
 func (mr *RepositoryUserMockRecorder) Update(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*RepositoryUser)(nil).Update), arg0)

@@ -4,10 +4,8 @@ import (
 	"net/http"
 )
 
-func (s *server) handleAvatarFormat() http.HandlerFunc {
-	// Since this shouldn't change, we can just run it once and save it.
-	format := s.avatar.Format()
+func (s *server) handleAvatarSpec() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		s.respond(w, r, http.StatusOK, format)
+		s.respond(w, r, http.StatusOK, s.avatarSpec)
 	}
 }

@@ -10,7 +10,6 @@ import (
 	"github.com/ocboogie/pixel-art/models"
 	"github.com/ocboogie/pixel-art/pkg/argon2"
 	"github.com/ocboogie/pixel-art/repositories"
-	"github.com/ocboogie/pixel-art/services/avatar"
 	"github.com/sirupsen/logrus"
 )
 
@@ -28,28 +27,22 @@ type Service interface {
 }
 
 type service struct {
-	log           *logrus.Logger
-	userRepo      repositories.User
-	sessionRepo   repositories.Session
-	avatarService avatar.Service
-	config        Config
+	log         *logrus.Logger
+	userRepo    repositories.User
+	sessionRepo repositories.Session
+	config      Config
 }
 
-func New(log *logrus.Logger, config Config, userRepo repositories.User, sessionRepo repositories.Session, avatarService avatar.Service) Service {
+func New(log *logrus.Logger, config Config, userRepo repositories.User, sessionRepo repositories.Session) Service {
 	return &service{
-		log:           log,
-		userRepo:      userRepo,
-		sessionRepo:   sessionRepo,
-		avatarService: avatarService,
-		config:        config,
+		log:         log,
+		userRepo:    userRepo,
+		sessionRepo: sessionRepo,
+		config:      config,
 	}
 }
 
 func (s *service) SignUp(user *models.UserNew) (*models.Session, error) {
-	if valid := s.avatarService.Validate(user.Avatar); !valid {
-		return nil, ErrInvalidAvatar
-	}
-
 	exists, err := s.userRepo.ExistsEmail(user.Email)
 	if err != nil {
 		return nil, err

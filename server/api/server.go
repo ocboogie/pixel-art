@@ -7,37 +7,36 @@ import (
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/cors"
 	"github.com/go-playground/validator/v10"
-	"github.com/ocboogie/pixel-art/services/art"
+	"github.com/ocboogie/pixel-art/models"
 	"github.com/ocboogie/pixel-art/services/auth"
-	"github.com/ocboogie/pixel-art/services/avatar"
 	"github.com/ocboogie/pixel-art/services/post"
 	"github.com/ocboogie/pixel-art/services/user"
 )
 
 type server struct {
-	router   *chi.Mux
-	validate *validator.Validate
-	auth     auth.Service
-	avatar   avatar.Service
-	art      art.Service
-	post     post.Service
-	user     user.Service
+	router     *chi.Mux
+	validate   *validator.Validate
+	auth       auth.Service
+	avatarSpec models.AvatarSpec
+	artSpec    models.ArtSpec
+	post       post.Service
+	user       user.Service
 }
 
 func New(auth auth.Service,
-	avatar avatar.Service,
-	art art.Service,
+	avatarSpec models.AvatarSpec,
+	artSpec models.ArtSpec,
 	post post.Service,
 	user user.Service,
 	validate *validator.Validate) *server {
 
 	s := &server{
-		validate: validate,
-		auth:     auth,
-		avatar:   avatar,
-		art:      art,
-		post:     post,
-		user:     user,
+		validate:   validate,
+		auth:       auth,
+		avatarSpec: avatarSpec,
+		artSpec:    artSpec,
+		post:       post,
+		user:       user,
 	}
 
 	return s

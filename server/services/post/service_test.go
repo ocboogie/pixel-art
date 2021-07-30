@@ -27,7 +27,7 @@ func TestCreate(t *testing.T) {
 		id, err := s.Create(models.PostNew{
 			UserID: "60aaf13d-8ddc-403b-ba42-960e18a22f6a",
 			Title:  "Yup",
-			Data:   "",
+			Art:    models.Art(""),
 		})
 
 		assert.NoError(t, err)
@@ -46,7 +46,7 @@ func TestFind(t *testing.T) {
 	mockPost := &models.Post{
 		Author: models.User{ID: "60aaf13d-8ddc-403b-ba42-960e18a22f6a"},
 		Title:  "Yup",
-		Data:   make([]byte, 0),
+		Art:    models.Art(""),
 	}
 
 	repo.EXPECT().Find("60aaf13d-8ddc-403b-ba42-960e18a22f6a").Return(mockPost, nil)
@@ -69,17 +69,17 @@ func TestLatest(t *testing.T) {
 		{
 			Author: models.User{ID: "60aaf13d-8ddc-403b-ba42-960e18a22f6a"},
 			Title:  "Yup",
-			Data:   make([]byte, 0),
+			Art:    models.Art(""),
 		},
 		{
 			Author: models.User{ID: "6caaf13d-8ddc-403b-ba42-960e18a22f6a"},
 			Title:  "Yup",
-			Data:   make([]byte, 0),
+			Art:    models.Art(""),
 		},
 		{
 			Author: models.User{ID: "6aaaf13d-8ddc-403b-ba42-960e18a22f6a"},
 			Title:  "Yup",
-			Data:   make([]byte, 0),
+			Art:    models.Art(""),
 		},
 	}
 	after := time.Now()
@@ -104,17 +104,14 @@ func TestPostsByUser(t *testing.T) {
 		{
 			Author: models.User{ID: "60aaf13d-8ddc-403b-ba42-960e18a22f6a"},
 			Title:  "Yup",
-			Data:   make([]byte, 0),
 		},
 		{
 			Author: models.User{ID: "6caaf13d-8ddc-403b-ba42-960e18a22f6a"},
 			Title:  "Yup",
-			Data:   make([]byte, 0),
 		},
 		{
 			Author: models.User{ID: "6aaaf13d-8ddc-403b-ba42-960e18a22f6a"},
 			Title:  "Yup",
-			Data:   make([]byte, 0),
 		},
 	}
 	after := time.Now()

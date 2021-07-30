@@ -1,7 +1,6 @@
 package post
 
 import (
-	"encoding/base64"
 	"time"
 
 	"github.com/google/uuid"
@@ -40,19 +39,13 @@ func New(log *logrus.Logger, userRepo repositories.User, postRepo repositories.P
 func (s *service) Create(input models.PostNew) (string, error) {
 	id := uuid.New().String()
 
-	data, err := base64.StdEncoding.DecodeString(input.Data)
-
-	if err != nil {
-		return "", err
-	}
-
 	post := &models.Post{
 		ID: id,
 		Author: models.User{
 			ID: input.UserID,
 		},
 		Title:     input.Title,
-		Data:      data,
+		Art:       input.Art,
 		CreatedAt: time.Now(),
 	}
 
