@@ -1,0 +1,1 @@
+export default (cells, color) => {};

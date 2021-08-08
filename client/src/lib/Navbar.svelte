@@ -1,12 +1,6 @@
 <script>
   import { goto, url } from "@roxi/routify";
   import { me } from "../store";
-
-  let loggedIn;
-
-  me.subscribe((me) => {
-    loggedIn = Boolean(me);
-  });
 </script>
 
 <nav class="drop-shadow shadow bg-blue-500 flex justify-between items-center">
@@ -14,7 +8,7 @@
     <a href={$url("/")} class="text-white text-xl">Pixel Art</a>
   </div>
   <div class="right px-2">
-    {#if Boolean(loggedIn)}
+    {#if Boolean($me)}
       <div class="profile-container">
         <svg
           xmlns="http://www.w3.org/2000/svg"

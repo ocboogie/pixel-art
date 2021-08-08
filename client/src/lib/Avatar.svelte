@@ -1,5 +1,6 @@
 <script>
   import { onMount } from "svelte";
+  import { random } from "../utils/avatar";
 
   export let size;
   export let avatarData = null;
@@ -36,19 +37,7 @@
   });
 
   export function randomize() {
-    const sizeHalf = Math.ceil(size / 2);
-    for (let y = 0; y < size; y += 1) {
-      for (let x = 0; x < sizeHalf; x += 1) {
-        const pos = y * size + x;
-        const mirroredPos = y * size + (size - 1 - x);
-        const cell = Math.random() >= 0.5;
-        cells[pos] = cell;
-        if (mirroredPos !== pos) {
-          cells[mirroredPos] = cell;
-        }
-        cells = cells;
-      }
-    }
+    cells = random(size);
   }
 
   function resetDragDrawState() {
@@ -72,12 +61,6 @@
   function toggle(pos) {
     cells[pos] = !cells[pos];
     cells = cells;
-  }
-
-  export function intoData() {
-    let data = cells.map((cell) => (cell ? "1" : "0")).join("");
-    data += cellColor;
-    return data;
   }
 </script>
 

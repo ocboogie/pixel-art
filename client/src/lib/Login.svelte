@@ -1,5 +1,6 @@
 <script>
   import cn from "classnames";
+  import { goto } from "@roxi/routify";
   import { ButtonPrimary, Card, Input, Label } from "./base";
   import { me } from "../store";
   import axios from "../axios";
@@ -10,6 +11,7 @@
   async function login() {
     await axios.post("/auth/login", { email, password });
     me.set(await axios.get("/me"));
+    $goto("/");
   }
 </script>
 
