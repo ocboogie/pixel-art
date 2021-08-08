@@ -1,8 +1,12 @@
 <script>
-  import { url } from "@roxi/routify";
-  import cn from "classnames";
+  import { goto, url } from "@roxi/routify";
+  import { me } from "../store";
 
-  export let loggedIn;
+  let loggedIn;
+
+  me.subscribe((me) => {
+    loggedIn = Boolean(me);
+  });
 </script>
 
 <nav class="drop-shadow shadow bg-blue-500 flex justify-between items-center">
@@ -10,7 +14,7 @@
     <a href={$url("/")} class="text-white text-xl">Pixel Art</a>
   </div>
   <div class="right px-2">
-    {#if loggedIn}
+    {#if Boolean(loggedIn)}
       <div class="profile-container">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -41,14 +45,14 @@
           </a>
           <a
             class="px-2 py-3 hover:bg-gray-200 duration-75 block cursor-pointer"
-            href="/logout">Logout</a
+            href={$url("/logout")}>Logout</a
           >
         </div>
       </div>
     {:else}
       <a
         class="px-3 py-2 text-white rounded hover:bg-white hover:bg-opacity-20 duration-75 block cursor-pointer"
-        href="/login"
+        href={$url("/login")}
       >
         Login
       </a>
