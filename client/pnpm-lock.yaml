@@ -3,7 +3,9 @@ lockfileVersion: 5.3
 specifiers:
   '@roxi/routify': ^2.18.0
   '@sveltejs/vite-plugin-svelte': ^1.0.0-next.11
+  '@zerodevx/svelte-toast': 0.4.0
   autoprefixer: ^10.2.6
+  axios: ^0.21.1
   classnames: ^2.3.1
   cssnano: ^5.0.6
   npm-run-all: ^4.1.5
@@ -15,6 +17,8 @@ specifiers:
   vite: ^2.4.2
 
 dependencies:
+  '@zerodevx/svelte-toast': 0.4.0
+  axios: 0.21.1
   classnames: 2.3.1
 
 devDependencies:
@@ -174,6 +178,10 @@ packages:
       '@types/node': 16.3.3
     dev: true
 
+  /@zerodevx/svelte-toast/0.4.0:
+    resolution: {integrity: sha512-CG5L8ZcaXAzJabLxzkTDe/X7L7SINFrv20R6wC8bQEbS5ZivI8nGHfLxa7iC6kUoc25ZKwY6TkiN7b6Gf9FfAQ==}
+    dev: false
+
   /abab/2.0.5:
     resolution: {integrity: sha512-9IK9EadsbHo6jLWIpxpR6pL0sazTXV6+SQv25ZB+F7Bj9mJNaOc4nCRabwd5M/JwmUa8idz6Eci6eKfJryPs6Q==}
     dev: true
@@ -273,6 +281,14 @@ packages:
       postcss: 8.3.5
       postcss-value-parser: 4.1.0
     dev: true
+
+  /axios/0.21.1:
+    resolution: {integrity: sha512-dKQiRHxGD9PPRIUNIWvZhPTPpl1rf/OxTYKsqKUDjBwYylTvV7SjSHJb9ratfyzM6wCdLCOYLzs73qpg5c4iGA==}
+    dependencies:
+      follow-redirects: 1.14.1
+    transitivePeerDependencies:
+      - debug
+    dev: false
 
   /balanced-match/1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
@@ -861,6 +877,16 @@ packages:
     dependencies:
       to-regex-range: 5.0.1
     dev: true
+
+  /follow-redirects/1.14.1:
+    resolution: {integrity: sha512-HWqDgT7ZEkqRzBvc2s64vSZ/hfOceEol3ac/7tKwzuvEyWx3/4UegXh5oBOIotkGsObyk3xznnSRVADBgWSQVg==}
+    engines: {node: '>=4.0'}
+    peerDependencies:
+      debug: '*'
+    peerDependenciesMeta:
+      debug:
+        optional: true
+    dev: false
 
   /form-data/3.0.1:
     resolution: {integrity: sha512-RHkBKtLWUVwd7SqRIvCZMEvAMoGUp0XU+seQiZejj0COz3RI3hWP4sCv3gZWWLjJTd7rGwcsF5eKZGii0r/hbg==}

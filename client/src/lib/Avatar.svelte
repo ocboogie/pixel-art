@@ -1,6 +1,5 @@
 <script>
   import { onMount } from "svelte";
-  import { compute_rest_props } from "svelte/internal";
 
   export let size;
   export let avatarData = null;
