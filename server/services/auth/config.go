@@ -17,7 +17,7 @@ type Config struct {
 func DefaultConfig() Config {
 	secret, exists := os.LookupEnv("SECRET")
 	if !exists {
-		log.Fatal("You must supply a \"SECRET\" environment variable")
+		log.Fatal("You must supply a \"SECRET\" environment variable (see .env.exmaple)")
 	}
 
 	return Config{

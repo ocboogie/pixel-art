@@ -1,9 +1,13 @@
 package main
 
 import (
+	"log"
+	"os"
+
 	sq "github.com/Masterminds/squirrel"
 	"github.com/go-playground/validator/v10"
 	"github.com/jmoiron/sqlx"
+	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"github.com/ocboogie/pixel-art/api"
 	"github.com/ocboogie/pixel-art/models"
@@ -28,7 +32,18 @@ var artSpec = models.ArtSpec{
 }
 
 func main() {
-	db, err := sqlx.Open("postgres", "host=localhost port=5432 user=postgres dbname=postgres password=password sslmode=disable")
+	err := godotenv.Load(".env")
+
+	if err != nil {
+		log.Fatalf("Error loading .env file: %v", err)
+	}
+
+	database, exists := os.LookupEnv("DATABASE")
+	if !exists {
+		log.Fatal("You must supply a \"DATABASE\" environment variable (see .env.example)")
+	}
+
+	db, err := sqlx.Open("postgres", database)
 	if err != nil {
 		panic(err)
 	}
