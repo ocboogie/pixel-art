@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  import { random } from "../utils/avatar";
+  import { deserialize, random } from "../utils/avatar";
 
   export let size;
   export let avatarData = null;
@@ -22,10 +22,7 @@
     if (!avatarData) {
       randomize();
     } else {
-      const [cellsString, color] = avatarData.split("#");
-      size = Math.ceil(Math.sqrt(cellsString.length));
-      cells = [...cellsString].map((cell) => cell === "1");
-      cellColor = `#${color}`;
+      [size, cells, cellColor] = deserialize(avatarData);
     }
   }
 

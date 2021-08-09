@@ -10,7 +10,7 @@
 
   async function login() {
     await axios.post("/auth/login", { email, password });
-    me.set(await axios.get("/me"));
+    me.set((await axios.get("/me")).data);
     $goto("/");
   }
 </script>

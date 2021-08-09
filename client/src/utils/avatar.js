@@ -22,3 +22,12 @@ export function serialize(cells, color) {
 
   return data;
 }
+
+export function deserialize(data) {
+  const [cellsString, colorString] = data.split("#");
+  const size = Math.ceil(Math.sqrt(cellsString.length));
+  const cells = [...cellsString].map((cell) => cell === "1");
+  const color = `#${colorString}`;
+
+  return [size, cells, color];
+}

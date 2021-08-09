@@ -24,7 +24,7 @@
       password,
       avatar: avatar,
     });
-    me.set(await axios.get("/me"));
+    me.set((await axios.get("/me")).data);
     $goto("/");
   }
 </script>

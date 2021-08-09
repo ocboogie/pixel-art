@@ -3,6 +3,7 @@
   import axios from "../axios";
   import { goto } from "@roxi/routify";
   import { onMount } from "svelte";
+  import Loading from "../lib/Loading.svelte";
 
   onMount(async () => {
     await axios.post("/auth/logout");
@@ -11,4 +12,4 @@
   });
 </script>
 
-<h1 class="text-3xl">Logging out...</h1>
+<Loading>Logging out...</Loading>

@@ -5,7 +5,7 @@ import "net/http"
 var (
 	errInvalidCredentials = newSimpleAPIError(http.StatusBadRequest, true, "Username or password is invalid")
 	errEmailAlreadyInUse  = newSimpleAPIError(http.StatusBadRequest, true, "Email already in use")
-	errUnauthenticated    = newSimpleAPIError(http.StatusUnauthorized, true, "You must be logged in")
+	errUnauthenticated    = newSimpleAPIError(http.StatusUnauthorized, true, "You must be logged in to do that")
 	errInvalidPermissions = newSimpleAPIError(http.StatusForbidden, true, "You do not have permission to do that")
 	errInvalidAvatar      = newSimpleAPIError(http.StatusBadRequest, false, "Invalid avatar")
 	errAlreadyLiked       = newSimpleAPIError(http.StatusConflict, false, `Already liked that post`)
