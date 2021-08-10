@@ -15,7 +15,6 @@ import (
 	"github.com/ocboogie/pixel-art/services/auth"
 	"github.com/ocboogie/pixel-art/services/feed"
 	"github.com/ocboogie/pixel-art/services/profile"
-	"github.com/sirupsen/logrus"
 )
 
 var avatarSpec = models.AvatarSpec{
@@ -51,15 +50,14 @@ func main() {
 	defer db.Close()
 
 	validate := validator.New()
-	log := logrus.New()
 	userRepo := postgres.NewRepositoryUser(db)
 	postRepo := postgres.NewPostRepository(db, sb)
 	likeRepo := postgres.NewLikeRepository(db)
 	sessionRepo := postgres.NewRepositorySession(db)
 
-	auth := auth.New(log, auth.DefaultConfig(), userRepo, sessionRepo)
-	feed := feed.New(log, userRepo, postRepo, likeRepo)
-	profile := profile.New(log, userRepo)
+	auth := auth.New(auth.DefaultConfig(), userRepo, sessionRepo)
+	feed := feed.New(userRepo, postRepo, likeRepo)
+	profile := profile.New(userRepo)
 
 	server := api.New(auth, avatarSpec, artSpec, feed, profile, validate)
 

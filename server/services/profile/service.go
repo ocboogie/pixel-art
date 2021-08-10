@@ -3,7 +3,7 @@ package profile
 import (
 	"github.com/ocboogie/pixel-art/models"
 	"github.com/ocboogie/pixel-art/repositories"
-	"github.com/sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 )
 
 //go:generate mockgen -destination=../../mocks/service_profile.go -package mocks -mock_names Service=ServiceProfile github.com/ocboogie/pixel-art/services/profile Service
@@ -14,13 +14,11 @@ type Service interface {
 }
 
 type service struct {
-	log      *logrus.Logger
 	userRepo repositories.User
 }
 
-func New(log *logrus.Logger, userRepo repositories.User) Service {
+func New(userRepo repositories.User) Service {
 	return &service{
-		log:      log,
 		userRepo: userRepo,
 	}
 }
@@ -35,7 +33,7 @@ func (s *service) Update(user *models.User) error {
 		return err
 	}
 
-	s.log.WithFields(logrus.Fields{
+	log.WithFields(log.Fields{
 		"username": user.Name,
 		"userID":   user.ID,
 	}).Info("User updated")

@@ -11,6 +11,7 @@ import (
 	"github.com/ocboogie/pixel-art/services/auth"
 	"github.com/ocboogie/pixel-art/services/feed"
 	"github.com/ocboogie/pixel-art/services/profile"
+	"github.com/sirupsen/logrus"
 )
 
 type server struct {
@@ -46,6 +47,9 @@ func (s *server) Setup() {
 	s.router = chi.NewRouter()
 
 	s.router.Use(middleware.RealIP)
+	middleware.DefaultLogger = middleware.RequestLogger(&middleware.DefaultLogFormatter{
+		Logger: logrus.New(),
+	})
 	s.router.Use(middleware.Logger)
 	s.router.Use(middleware.Recoverer)
 	s.router.Use(cors.Handler(cors.Options{

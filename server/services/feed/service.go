@@ -6,7 +6,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/ocboogie/pixel-art/models"
 	"github.com/ocboogie/pixel-art/repositories"
-	"github.com/sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 )
 
 //go:generate mockgen -destination=../../mocks/service_feed.go -package mocks -mock_names Service=ServiceFeed github.com/ocboogie/pixel-art/services/feed Service
@@ -24,15 +24,13 @@ type Service interface {
 }
 
 type service struct {
-	log      *logrus.Logger
 	userRepo repositories.User
 	postRepo repositories.Post
 	likeRepo repositories.Like
 }
 
-func New(log *logrus.Logger, userRepo repositories.User, postRepo repositories.Post, likeRepo repositories.Like) Service {
+func New(userRepo repositories.User, postRepo repositories.Post, likeRepo repositories.Like) Service {
 	return &service{
-		log:      log,
 		userRepo: userRepo,
 		postRepo: postRepo,
 		likeRepo: likeRepo,
@@ -54,7 +52,7 @@ func (s *service) Create(input models.PostNew) (string, error) {
 		return "", err
 	}
 
-	s.log.WithFields(logrus.Fields{
+	log.WithFields(log.Fields{
 		"postID": id,
 		"title":  input.Title,
 		"userID": input.UserID,
@@ -84,7 +82,7 @@ func (s *service) Like(userID string, postID string) error {
 		return err
 	}
 
-	s.log.WithFields(logrus.Fields{
+	log.WithFields(log.Fields{
 		"postID": postID,
 		"userID": userID,
 	}).Info("Post liked")
@@ -97,7 +95,7 @@ func (s *service) Unlike(userID string, postID string) error {
 		return err
 	}
 
-	s.log.WithFields(logrus.Fields{
+	log.WithFields(log.Fields{
 		"postID": postID,
 		"userID": userID,
 	}).Info("Post unliked")
