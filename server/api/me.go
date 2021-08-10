@@ -7,13 +7,27 @@ import (
 	"time"
 
 	"github.com/ocboogie/pixel-art/models"
+	"github.com/ocboogie/pixel-art/services/profile"
 )
 
 func (s *server) handleMe() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		user, err := s.getCurrentUser(w, r)
+		userID, err := s.getUserID(w, r)
 		if err != nil {
 			s.error(w, r, unexpectedAPIError(err))
+			return
+		}
+
+		includes, err := s.getUserIncludes(w, r)
+		if err != nil {
+			s.error(w, r, unexpectedAPIError(err))
+			return
+		}
+
+		user, err := s.profile.Find(userID, includes)
+		if err != nil {
+			s.error(w, r, unexpectedAPIError(err))
+			return
 		}
 
 		s.respond(w, r, http.StatusOK, user)
@@ -93,7 +107,13 @@ func (s *server) handleUpdateMe() http.HandlerFunc {
 			return
 		}
 
-		user, err := s.getCurrentUser(w, r)
+		userID, err := s.getUserID(w, r)
+		if err != nil {
+			s.error(w, r, unexpectedAPIError(err))
+			return
+		}
+
+		user, err := s.profile.Find(userID, profile.UserIncludes{})
 		if err != nil {
 			s.error(w, r, unexpectedAPIError(err))
 			return

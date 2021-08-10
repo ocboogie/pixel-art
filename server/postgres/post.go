@@ -15,9 +15,9 @@ type postRepo struct {
 	sb sq.StatementBuilderType
 }
 
-// BaseSelect is used to fetch post(s) because the query for posts is pretty
+// postBaseSelect is used to fetch post(s) because the query for posts is pretty
 // complex
-func BaseSelect(sb sq.StatementBuilderType, includes repositories.PostIncludes) sq.SelectBuilder {
+func postBaseSelect(sb sq.StatementBuilderType, includes repositories.PostIncludes) sq.SelectBuilder {
 	stmt := sb.Select(`posts.*`).
 		From("posts")
 
@@ -57,11 +57,14 @@ func NewPostRepository(db *sqlx.DB, sb sq.StatementBuilderType) repositories.Pos
 func (r *postRepo) Find(id string, includes repositories.PostIncludes) (*models.Post, error) {
 	post := models.Post{}
 
-	query, args, _ := BaseSelect(r.sb, includes).
+	query, args, err := postBaseSelect(r.sb, includes).
 		Where("posts.id=?", id).
 		ToSql()
+	if err != nil {
+		panic(err)
+	}
 
-	err := r.db.Get(&post, query, args...)
+	err = r.db.Get(&post, query, args...)
 
 	if err == sql.ErrNoRows {
 		return nil, repositories.ErrPostNotFound
@@ -108,18 +111,21 @@ func (r *postRepo) Latest(limit int, after *time.Time, includes repositories.Pos
 	//       causes nulls in the output
 	posts := []*models.Post{}
 
-	stmt := BaseSelect(r.sb, includes)
+	stmt := postBaseSelect(r.sb, includes)
 
 	if after != nil {
 		stmt = stmt.Having("posts.created_at > ?", after)
 	}
 
-	query, args, _ := stmt.
+	query, args, err := stmt.
 		OrderBy("posts.created_at").
 		Limit(uint64(limit)).
 		ToSql()
+	if err != nil {
+		panic(err)
+	}
 
-	if err := r.db.Select(&posts, query, args...); err != nil {
+	if err = r.db.Select(&posts, query, args...); err != nil {
 		return nil, err
 	}
 
@@ -130,17 +136,20 @@ func (r *postRepo) PostsByUser(userID string, limit int, after *time.Time, inclu
 	// TODO: DRY: Latest
 	posts := []*models.Post{}
 
-	stmt := BaseSelect(r.sb, includes)
+	stmt := postBaseSelect(r.sb, includes)
 
 	if after != nil {
 		stmt = stmt.Having("posts.created_at > ?", after)
 	}
 
-	query, args, _ := stmt.
+	query, args, err := stmt.
 		Where("posts.author_id = ?", userID).
 		OrderBy("posts.created_at").
 		Limit(uint64(limit)).
 		ToSql()
+	if err != nil {
+		panic(err)
+	}
 
 	if err := r.db.Select(&posts, query, args...); err != nil {
 		return nil, err

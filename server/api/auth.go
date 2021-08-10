@@ -13,7 +13,6 @@ import (
 const sessionCookie = "sessionId"
 
 type userIDContextKey struct{}
-type currentUserContextKey struct{}
 
 func (s *server) saveSession(w http.ResponseWriter, r *http.Request, session *models.Session) {
 	http.SetCookie(w, &http.Cookie{
@@ -78,29 +77,6 @@ func (s *server) getUserID(w http.ResponseWriter, r *http.Request) (string, erro
 	*r = *r.WithContext(ctx)
 
 	return userID, nil
-}
-
-func (s *server) getCurrentUser(w http.ResponseWriter, r *http.Request) (*models.User, error) {
-	user, ok := r.Context().Value(currentUserContextKey{}).(*models.User)
-	if ok {
-		return user, nil
-	}
-
-	userID, err := s.getUserID(w, r)
-	if err != nil {
-		return nil, err
-	}
-
-	user, err = s.profile.Find(userID)
-	if err != nil {
-		return nil, err
-	}
-
-	ctx := context.WithValue(r.Context(), currentUserContextKey{}, user)
-
-	*r = *r.WithContext(ctx)
-
-	return user, nil
 }
 
 func (s *server) authenticated(next http.Handler) http.Handler {

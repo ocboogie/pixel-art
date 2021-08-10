@@ -9,6 +9,7 @@ import (
 
 	gomock "github.com/golang/mock/gomock"
 	models "github.com/ocboogie/pixel-art/models"
+	repositories "github.com/ocboogie/pixel-art/repositories"
 )
 
 // ServiceProfile is a mock of Service interface.
@@ -35,18 +36,46 @@ func (m *ServiceProfile) EXPECT() *ServiceProfileMockRecorder {
 }
 
 // Find mocks base method.
-func (m *ServiceProfile) Find(arg0 string) (*models.User, error) {
+func (m *ServiceProfile) Find(arg0 string, arg1 repositories.UserIncludes) (*models.User, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Find", arg0)
+	ret := m.ctrl.Call(m, "Find", arg0, arg1)
 	ret0, _ := ret[0].(*models.User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Find indicates an expected call of Find.
-func (mr *ServiceProfileMockRecorder) Find(arg0 interface{}) *gomock.Call {
+func (mr *ServiceProfileMockRecorder) Find(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*ServiceProfile)(nil).Find), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*ServiceProfile)(nil).Find), arg0, arg1)
+}
+
+// Follow mocks base method.
+func (m *ServiceProfile) Follow(arg0, arg1 string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Follow", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Follow indicates an expected call of Follow.
+func (mr *ServiceProfileMockRecorder) Follow(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Follow", reflect.TypeOf((*ServiceProfile)(nil).Follow), arg0, arg1)
+}
+
+// Unfollow mocks base method.
+func (m *ServiceProfile) Unfollow(arg0, arg1 string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Unfollow", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Unfollow indicates an expected call of Unfollow.
+func (mr *ServiceProfileMockRecorder) Unfollow(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Unfollow", reflect.TypeOf((*ServiceProfile)(nil).Unfollow), arg0, arg1)
 }
 
 // Update mocks base method.

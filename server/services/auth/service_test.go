@@ -81,7 +81,7 @@ func TestLogin(t *testing.T) {
 			config:      cfg,
 		}
 
-		userRepo.EXPECT().FindByEmail(gomock.Eq("foo@bar.com")).Return(user, nil)
+		userRepo.EXPECT().FindByEmail(gomock.Eq("foo@bar.com"), repositories.UserIncludes{}).Return(user, nil)
 		sessionRepo.EXPECT().Save(gomock.AssignableToTypeOf(&models.Session{})).Return(nil)
 
 		session, err := s.Login(&models.UserCredentials{
@@ -105,7 +105,7 @@ func TestLogin(t *testing.T) {
 			config:      cfg,
 		}
 
-		userRepo.EXPECT().FindByEmail(gomock.Eq("foo@bar.com")).Return(nil, repositories.ErrUserNotFound)
+		userRepo.EXPECT().FindByEmail(gomock.Eq("foo@bar.com"), repositories.UserIncludes{}).Return(nil, repositories.ErrUserNotFound)
 
 		_, err := s.Login(&models.UserCredentials{
 			Email: "foo@bar.com",
@@ -124,7 +124,7 @@ func TestLogin(t *testing.T) {
 			config:      cfg,
 		}
 
-		userRepo.EXPECT().FindByEmail(gomock.Eq("foo@bar.com")).Return(user, nil)
+		userRepo.EXPECT().FindByEmail(gomock.Eq("foo@bar.com"), repositories.UserIncludes{}).Return(user, nil)
 
 		_, err := s.Login(&models.UserCredentials{
 			Email:    "foo@bar.com",

@@ -5,5 +5,7 @@ import (
 )
 
 var (
-	ErrNotFound = repositories.ErrUserNotFound
+	ErrNotFound            = repositories.ErrUserNotFound
+	ErrFollowAlreadyExists = repositories.ErrFollowAlreadyExists
+	ErrFollowNotFound      = repositories.ErrFollowNotFound
 )

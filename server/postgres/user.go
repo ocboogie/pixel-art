@@ -3,6 +3,7 @@ package postgres
 import (
 	"database/sql"
 
+	sq "github.com/Masterminds/squirrel"
 	"github.com/jmoiron/sqlx"
 	"github.com/ocboogie/pixel-art/models"
 	"github.com/ocboogie/pixel-art/repositories"
@@ -10,22 +11,40 @@ import (
 
 type userRepo struct {
 	db *sqlx.DB
+	sb sq.StatementBuilderType
 }
 
-func NewRepositoryUser(db *sqlx.DB) repositories.User {
+func NewRepositoryUser(db *sqlx.DB, sb sq.StatementBuilderType) repositories.User {
 	return &userRepo{
 		db: db,
+		sb: sb,
 	}
 }
 
-func (r *userRepo) Find(id string) (*models.User, error) {
+func userBaseSelect(sb sq.StatementBuilderType, includes repositories.UserIncludes) sq.SelectBuilder {
+	stmt := sb.Select(`*`).
+		From("users")
+
+	if includes.Following != "" {
+		stmt = stmt.
+			Column("EXISTS(SELECT 1 FROM follows WHERE follows.followed_id = users.id AND follows.follower_id = ?) AS following", includes.Following)
+	}
+
+	return stmt
+}
+
+func (r *userRepo) Find(id string, includes repositories.UserIncludes) (*models.User, error) {
 	user := models.User{}
 
-	err := r.db.Get(
-		&user,
-		`SELECT * FROM users WHERE id=$1 LIMIT 1`,
-		id,
-	)
+	query, args, err := userBaseSelect(r.sb, includes).
+		Where("users.id=?", id).
+		Limit(1).
+		ToSql()
+	if err != nil {
+		panic(err)
+	}
+
+	err = r.db.Get(&user, query, args...)
 
 	if err == sql.ErrNoRows {
 		return nil, repositories.ErrUserNotFound
@@ -34,14 +53,18 @@ func (r *userRepo) Find(id string) (*models.User, error) {
 	return &user, err
 }
 
-func (r *userRepo) FindByEmail(email string) (*models.User, error) {
+func (r *userRepo) FindByEmail(email string, includes repositories.UserIncludes) (*models.User, error) {
 	user := models.User{}
 
-	err := r.db.Get(
-		&user,
-		`SELECT * FROM users WHERE email=$1 LIMIT 1`,
-		email,
-	)
+	query, args, err := userBaseSelect(r.sb, includes).
+		Where("users.email=?", email).
+		Limit(1).
+		ToSql()
+	if err != nil {
+		panic(err)
+	}
+
+	err = r.db.Get(&user, query, args...)
 
 	if err == sql.ErrNoRows {
 		return nil, repositories.ErrUserNotFound

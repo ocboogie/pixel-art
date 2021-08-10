@@ -7,12 +7,37 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/ocboogie/pixel-art/services/feed"
+	"github.com/ocboogie/pixel-art/services/profile"
 )
+
+func (s *server) getUserIncludes(w http.ResponseWriter, r *http.Request) (profile.UserIncludes, error) {
+	query := r.URL.Query()
+
+	var err error
+	userID := ""
+	if query.Get("following") != "" {
+		userID, err = s.getUserID(w, r)
+		if err != nil {
+			return profile.UserIncludes{}, err
+		}
+	}
+
+	return profile.UserIncludes{
+		Following: userID,
+	}, nil
+}
 
 func (s *server) handleUsersFind() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		userID := chi.URLParam(r, "id")
-		user, err := s.profile.Find(userID)
+
+		includes, err := s.getUserIncludes(w, r)
+		if err != nil {
+			s.error(w, r, unexpectedAPIError(err))
+			return
+		}
+
+		user, err := s.profile.Find(userID, includes)
 
 		if err != nil {
 			if err == feed.ErrNotFound {

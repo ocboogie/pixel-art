@@ -50,14 +50,15 @@ func main() {
 	defer db.Close()
 
 	validate := validator.New()
-	userRepo := postgres.NewRepositoryUser(db)
+	userRepo := postgres.NewRepositoryUser(db, sb)
 	postRepo := postgres.NewPostRepository(db, sb)
 	likeRepo := postgres.NewLikeRepository(db)
+	followRepo := postgres.NewFollowRepository(db)
 	sessionRepo := postgres.NewRepositorySession(db)
 
 	auth := auth.New(auth.DefaultConfig(), userRepo, sessionRepo)
 	feed := feed.New(userRepo, postRepo, likeRepo)
-	profile := profile.New(userRepo)
+	profile := profile.New(userRepo, followRepo)
 
 	server := api.New(auth, avatarSpec, artSpec, feed, profile, validate)
 

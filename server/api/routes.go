@@ -40,4 +40,10 @@ func (s *server) routes() {
 		r.Post("/", s.handleLikesLike())
 		r.Delete("/", s.handleLikesUnlike())
 	})
+
+	s.router.Route("/follows/{id}", func(r chi.Router) {
+		r.Use(s.authenticated)
+		r.Put("/", s.handleFollowsFollow())
+		r.Delete("/", s.handleFollowsUnfollow())
+	})
 }

@@ -9,6 +9,7 @@ import (
 
 	gomock "github.com/golang/mock/gomock"
 	models "github.com/ocboogie/pixel-art/models"
+	repositories "github.com/ocboogie/pixel-art/repositories"
 )
 
 // RepositoryUser is a mock of User interface.
@@ -50,33 +51,33 @@ func (mr *RepositoryUserMockRecorder) ExistsEmail(arg0 interface{}) *gomock.Call
 }
 
 // Find mocks base method.
-func (m *RepositoryUser) Find(arg0 string) (*models.User, error) {
+func (m *RepositoryUser) Find(arg0 string, arg1 repositories.UserIncludes) (*models.User, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Find", arg0)
+	ret := m.ctrl.Call(m, "Find", arg0, arg1)
 	ret0, _ := ret[0].(*models.User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Find indicates an expected call of Find.
-func (mr *RepositoryUserMockRecorder) Find(arg0 interface{}) *gomock.Call {
+func (mr *RepositoryUserMockRecorder) Find(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*RepositoryUser)(nil).Find), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*RepositoryUser)(nil).Find), arg0, arg1)
 }
 
 // FindByEmail mocks base method.
-func (m *RepositoryUser) FindByEmail(arg0 string) (*models.User, error) {
+func (m *RepositoryUser) FindByEmail(arg0 string, arg1 repositories.UserIncludes) (*models.User, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "FindByEmail", arg0)
+	ret := m.ctrl.Call(m, "FindByEmail", arg0, arg1)
 	ret0, _ := ret[0].(*models.User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // FindByEmail indicates an expected call of FindByEmail.
-func (mr *RepositoryUserMockRecorder) FindByEmail(arg0 interface{}) *gomock.Call {
+func (mr *RepositoryUserMockRecorder) FindByEmail(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByEmail", reflect.TypeOf((*RepositoryUser)(nil).FindByEmail), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByEmail", reflect.TypeOf((*RepositoryUser)(nil).FindByEmail), arg0, arg1)
 }
 
 // Save mocks base method.

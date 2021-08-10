@@ -30,3 +30,10 @@ CREATE TABLE "likes"
     post_id uuid REFERENCES posts(id) ON DELETE CASCADE NOT NULL,
     CONSTRAINT like_pkey PRIMARY KEY (user_id, post_id)
 );
+
+CREATE TABLE "follows"
+(
+    followed_id uuid REFERENCES users(id) ON DELETE CASCADE NOT NULL,
+    follower_id uuid REFERENCES users(id) ON DELETE CASCADE NOT NULL,
+    CONSTRAINT follow_pkey PRIMARY KEY (followed_id, follower_id)
+);

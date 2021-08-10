@@ -83,7 +83,7 @@ func (s *service) SignUp(user *models.UserNew) (*models.Session, error) {
 }
 
 func (s *service) Login(credentials *models.UserCredentials) (*models.Session, error) {
-	user, err := s.userRepo.FindByEmail(credentials.Email)
+	user, err := s.userRepo.FindByEmail(credentials.Email, repositories.UserIncludes{})
 	if err != nil {
 		// TODO: Doc why this is here
 		argon2.Hash(credentials.Password, s.config.HashConfig)

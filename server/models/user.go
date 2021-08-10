@@ -13,6 +13,9 @@ type User struct {
 	Email     string    `json:"email"`
 	Password  string    `json:"-"`
 	CreatedAt time.Time `json:"createdAt" db:"created_at"`
+	// Virtual fields, meaning that they don't actually exist in the
+	// database, but are infered from other factors
+	Following *bool `json:"following"`
 }
 
 func (u User) Hide() PublicUser {
@@ -28,6 +31,9 @@ type PublicUser struct {
 	ID     string `json:"id"`
 	Name   string `json:"name"`
 	Avatar Avatar `json:"avatar"`
+	// Virtual fields, meaning that they don't actually exist in the
+	// database, but are infered from other factors
+	Following *bool `json:"following"`
 }
 
 // This is the data necessary to create a user
