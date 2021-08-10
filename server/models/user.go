@@ -10,9 +10,24 @@ type User struct {
 	ID        string    `json:"id"`
 	Name      string    `json:"name"`
 	Avatar    Avatar    `json:"avatar"`
-	Email     string    `json:"-"`
+	Email     string    `json:"email"`
 	Password  string    `json:"-"`
 	CreatedAt time.Time `json:"createdAt" db:"created_at"`
+}
+
+func (u User) Hide() PublicUser {
+	return PublicUser{
+		ID:     u.ID,
+		Name:   u.Name,
+		Avatar: u.Avatar,
+	}
+}
+
+// PublicUser is the same as User but with private fields hidden
+type PublicUser struct {
+	ID     string `json:"id"`
+	Name   string `json:"name"`
+	Avatar Avatar `json:"avatar"`
 }
 
 // This is the data necessary to create a user

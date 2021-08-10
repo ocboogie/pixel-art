@@ -8,16 +8,42 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/ocboogie/pixel-art/models"
-	postService "github.com/ocboogie/pixel-art/services/feed"
+	"github.com/ocboogie/pixel-art/services/feed"
 )
+
+func (s *server) getPostIncludes(w http.ResponseWriter, r *http.Request) (feed.PostIncludes, error) {
+	query := r.URL.Query()
+
+	var err error
+	userID := ""
+	if query.Get("liked") != "" {
+		userID, err = s.getUserID(w, r)
+		if err != nil {
+			return feed.PostIncludes{}, err
+		}
+	}
+
+	return feed.PostIncludes{
+		Author: query.Get("author") != "",
+		Likes:  query.Get("likes") != "",
+		Liked:  userID,
+	}, nil
+}
 
 func (s *server) handlePostsFind() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		postID := chi.URLParam(r, "id")
-		post, err := s.feed.Find(postID)
+
+		includes, err := s.getPostIncludes(w, r)
+		if err != nil {
+			s.error(w, r, unexpectedAPIError(err))
+			return
+		}
+
+		post, err := s.feed.Find(postID, includes)
 
 		if err != nil {
-			if err == postService.ErrNotFound {
+			if err == feed.ErrNotFound {
 				s.error(w, r, errPostNotFound)
 				return
 			}
@@ -45,7 +71,11 @@ func (s *server) handlePostsCreate() http.HandlerFunc {
 			return
 		}
 
-		userID := s.getUserID(w, r)
+		userID, err := s.getUserID(w, r)
+		if err != nil {
+			s.error(w, r, unexpectedAPIError(err))
+			return
+		}
 
 		newPost := models.PostNew{
 			Title:  body.Title,
@@ -73,10 +103,11 @@ func (s *server) handlePostsCreate() http.HandlerFunc {
 func (s *server) handlePostsDelete() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		postID := chi.URLParam(r, "id")
-		post, err := s.feed.Find(postID)
+
+		post, err := s.feed.Find(postID, feed.PostIncludes{})
 
 		if err != nil {
-			if err == postService.ErrNotFound {
+			if err == feed.ErrNotFound {
 				s.error(w, r, errPostNotFound)
 				return
 			}
@@ -84,10 +115,14 @@ func (s *server) handlePostsDelete() http.HandlerFunc {
 			return
 		}
 
-		userID := s.getUserID(w, r)
+		userID, err := s.getUserID(w, r)
+		if err != nil {
+			s.error(w, r, unexpectedAPIError(err))
+			return
+		}
 
 		// TODO: Abstract this away somewhere.
-		if userID != post.Author.ID {
+		if userID != post.AuthorID {
 			s.error(w, r, errInvalidPermissions)
 			return
 		}
@@ -95,7 +130,7 @@ func (s *server) handlePostsDelete() http.HandlerFunc {
 		err = s.feed.Delete(post.ID)
 
 		if err != nil {
-			if err == postService.ErrNotFound {
+			if err == feed.ErrNotFound {
 				s.error(w, r, errPostNotFound)
 				return
 			}
@@ -109,6 +144,7 @@ func (s *server) handlePostsDelete() http.HandlerFunc {
 
 func (s *server) handlePostsAll() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		// TODO: Abstract away default limits
 		limit := 50
 		limitQuery := r.URL.Query().Get("limit")
 		if limitQuery != "" {
@@ -135,7 +171,13 @@ func (s *server) handlePostsAll() http.HandlerFunc {
 			after = &afterDate
 		}
 
-		posts, err := s.feed.Latest(limit, after)
+		includes, err := s.getPostIncludes(w, r)
+		if err != nil {
+			s.error(w, r, unexpectedAPIError(err))
+			return
+		}
+
+		posts, err := s.feed.Latest(limit, after, includes)
 		if err != nil {
 			s.error(w, r, unexpectedAPIError(err))
 			return

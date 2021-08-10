@@ -17,22 +17,34 @@ type postRepo struct {
 
 // BaseSelect is used to fetch post(s) because the query for posts is pretty
 // complex
-func BaseSelect(sb sq.StatementBuilderType) sq.SelectBuilder {
-	return sb.Select(`posts.id "id",
-			posts.title "title",
-			posts.art "art",
-			posts.created_at "created_at",
-			count(likes.post_id) "likes",
-			author.id "author.id",
-			author.name "author.name",
-			author.avatar "author.avatar",
-			author.created_at "author.created_at"`).
-		From("posts").
-		Join("users AS author ON posts.author_id = author.id").
-		JoinClause("LEFT OUTER JOIN likes ON posts.id = likes.post_id").
-		// Not sure if the use of author.id in the GROUP BY will break anything but
-		// postgres complains otherwise
-		GroupBy("posts.id", "author.id")
+func BaseSelect(sb sq.StatementBuilderType, includes repositories.PostIncludes) sq.SelectBuilder {
+	stmt := sb.Select(`posts.*`).
+		From("posts")
+
+	if includes.Author {
+		stmt = stmt.
+			Join("users AS author ON posts.author_id = author.id").
+			// Ugh https://github.com/jmoiron/sqlx/issues/131
+			Columns(`author.id "author.id",
+				author.name "author.name",
+				author.avatar "author.avatar"`)
+	}
+	if includes.Likes {
+		stmt = stmt.
+			LeftJoin("likes ON posts.id = likes.post_id").
+			Column(`COUNT(likes.post_id) likes`).
+			GroupBy("posts.id")
+
+		// See https://stackoverflow.com/q/19601948/4910911
+		if includes.Author {
+			stmt = stmt.GroupBy("author.id")
+		}
+	}
+	if includes.Liked != "" {
+		stmt = stmt.
+			Column("EXISTS(SELECT 1 FROM likes WHERE likes.post_id = posts.id AND likes.user_id = ?) liked", includes.Liked)
+	}
+	return stmt
 }
 
 func NewPostRepository(db *sqlx.DB, sb sq.StatementBuilderType) repositories.Post {
@@ -42,11 +54,11 @@ func NewPostRepository(db *sqlx.DB, sb sq.StatementBuilderType) repositories.Pos
 	}
 }
 
-func (r *postRepo) Find(id string) (*models.Post, error) {
+func (r *postRepo) Find(id string, includes repositories.PostIncludes) (*models.Post, error) {
 	post := models.Post{}
 
-	query, args, _ := BaseSelect(r.sb).
-		Having("posts.id=?", id).
+	query, args, _ := BaseSelect(r.sb, includes).
+		Where("posts.id=?", id).
 		ToSql()
 
 	err := r.db.Get(&post, query, args...)
@@ -84,26 +96,26 @@ func (r *postRepo) Delete(id string) error {
 func (r *postRepo) Save(post *models.Post) error {
 	_, err := r.db.NamedExec(
 		`INSERT INTO posts (id, author_id, title, art, created_at) 
-		 VALUES (:id, :author.id, :title, :art, :created_at)`,
+		 VALUES (:id, :author_id, :title, :art, :created_at)`,
 		post,
 	)
 
 	return err
 }
 
-func (r *postRepo) Latest(limit int, after *time.Time) ([]*models.Post, error) {
+func (r *postRepo) Latest(limit int, after *time.Time, includes repositories.PostIncludes) ([]*models.Post, error) {
 	// TODO: This could be faster by using make with limit as the size but this
 	//       causes nulls in the output
 	posts := []*models.Post{}
 
-	stmt := BaseSelect(r.sb)
+	stmt := BaseSelect(r.sb, includes)
 
 	if after != nil {
 		stmt = stmt.Having("posts.created_at > ?", after)
 	}
 
 	query, args, _ := stmt.
-		OrderBy("created_at").
+		OrderBy("posts.created_at").
 		Limit(uint64(limit)).
 		ToSql()
 
@@ -114,19 +126,19 @@ func (r *postRepo) Latest(limit int, after *time.Time) ([]*models.Post, error) {
 	return posts, nil
 }
 
-func (r *postRepo) PostsByUser(userID string, limit int, after *time.Time) ([]*models.Post, error) {
+func (r *postRepo) PostsByUser(userID string, limit int, after *time.Time, includes repositories.PostIncludes) ([]*models.Post, error) {
 	// TODO: DRY: Latest
 	posts := []*models.Post{}
 
-	stmt := BaseSelect(r.sb)
+	stmt := BaseSelect(r.sb, includes)
 
 	if after != nil {
 		stmt = stmt.Having("posts.created_at > ?", after)
 	}
 
 	query, args, _ := stmt.
-		Having("posts.author_id = ?", userID).
-		OrderBy("created_at").
+		Where("posts.author_id = ?", userID).
+		OrderBy("posts.created_at").
 		Limit(uint64(limit)).
 		ToSql()
 

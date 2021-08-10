@@ -8,11 +8,15 @@ import (
 
 type Post struct {
 	ID        string    `json:"id"`
-	Author    User      `json:"author" db:"author"`
 	Title     string    `json:"title"`
 	Art       Art       `json:"art"`
-	Likes     int       `json:"likes"`
 	CreatedAt time.Time `json:"createdAt" db:"created_at"`
+	AuthorID  string    `json:"authorId" db:"author_id"`
+	// Virtual fields, meaning that they don't actually exist in the
+	// database, but are infered from other factors
+	Author *PublicUser `json:"author" db:"author"`
+	Likes  *int        `json:"likes"`
+	Liked  *bool       `json:"liked"`
 }
 
 type PostNew struct {

@@ -10,9 +10,13 @@ import (
 func (s *server) handleLikesLike() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		postID := chi.URLParam(r, "id")
-		userID := s.getUserID(w, r)
+		userID, err := s.getUserID(w, r)
+		if err != nil {
+			s.error(w, r, unexpectedAPIError(err))
+			return
+		}
 
-		err := s.feed.Like(userID, postID)
+		err = s.feed.Like(userID, postID)
 
 		if err != nil {
 			apiErr := unexpectedAPIError(err)
@@ -33,9 +37,13 @@ func (s *server) handleLikesLike() http.HandlerFunc {
 func (s *server) handleLikesUnlike() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		postID := chi.URLParam(r, "id")
-		userID := s.getUserID(w, r)
+		userID, err := s.getUserID(w, r)
+		if err != nil {
+			s.error(w, r, unexpectedAPIError(err))
+			return
+		}
 
-		err := s.feed.Unlike(userID, postID)
+		err = s.feed.Unlike(userID, postID)
 
 		if err != nil {
 			apiErr := unexpectedAPIError(err)

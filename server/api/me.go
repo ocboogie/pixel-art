@@ -11,8 +11,7 @@ import (
 
 func (s *server) handleMe() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		userID := s.getUserID(w, r)
-		user, err := s.profile.Find(userID)
+		user, err := s.getCurrentUser(w, r)
 		if err != nil {
 			s.error(w, r, unexpectedAPIError(err))
 		}
@@ -50,8 +49,19 @@ func (s *server) handleMePosts() http.HandlerFunc {
 			after = &afterDate
 		}
 
-		userID := s.getUserID(w, r)
-		posts, err := s.feed.PostsByUser(userID, limit, after)
+		userID, err := s.getUserID(w, r)
+		if err != nil {
+			s.error(w, r, unexpectedAPIError(err))
+			return
+		}
+
+		includes, err := s.getPostIncludes(w, r)
+		if err != nil {
+			s.error(w, r, unexpectedAPIError(err))
+			return
+		}
+
+		posts, err := s.feed.PostsByUser(userID, limit, after, includes)
 		if err != nil {
 			s.error(w, r, unexpectedAPIError(err))
 			return
@@ -83,7 +93,7 @@ func (s *server) handleUpdateMe() http.HandlerFunc {
 			return
 		}
 
-		user, err := s.profile.Find(s.getUserID(w, r))
+		user, err := s.getCurrentUser(w, r)
 		if err != nil {
 			s.error(w, r, unexpectedAPIError(err))
 			return

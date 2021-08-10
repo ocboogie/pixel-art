@@ -10,6 +10,7 @@ import (
 
 	gomock "github.com/golang/mock/gomock"
 	models "github.com/ocboogie/pixel-art/models"
+	repositories "github.com/ocboogie/pixel-art/repositories"
 )
 
 // ServiceFeed is a mock of Service interface.
@@ -65,33 +66,33 @@ func (mr *ServiceFeedMockRecorder) Delete(arg0 interface{}) *gomock.Call {
 }
 
 // Find mocks base method.
-func (m *ServiceFeed) Find(arg0 string) (*models.Post, error) {
+func (m *ServiceFeed) Find(arg0 string, arg1 repositories.PostIncludes) (*models.Post, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Find", arg0)
+	ret := m.ctrl.Call(m, "Find", arg0, arg1)
 	ret0, _ := ret[0].(*models.Post)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Find indicates an expected call of Find.
-func (mr *ServiceFeedMockRecorder) Find(arg0 interface{}) *gomock.Call {
+func (mr *ServiceFeedMockRecorder) Find(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*ServiceFeed)(nil).Find), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*ServiceFeed)(nil).Find), arg0, arg1)
 }
 
 // Latest mocks base method.
-func (m *ServiceFeed) Latest(arg0 int, arg1 *time.Time) ([]*models.Post, error) {
+func (m *ServiceFeed) Latest(arg0 int, arg1 *time.Time, arg2 repositories.PostIncludes) ([]*models.Post, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Latest", arg0, arg1)
+	ret := m.ctrl.Call(m, "Latest", arg0, arg1, arg2)
 	ret0, _ := ret[0].([]*models.Post)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Latest indicates an expected call of Latest.
-func (mr *ServiceFeedMockRecorder) Latest(arg0, arg1 interface{}) *gomock.Call {
+func (mr *ServiceFeedMockRecorder) Latest(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Latest", reflect.TypeOf((*ServiceFeed)(nil).Latest), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Latest", reflect.TypeOf((*ServiceFeed)(nil).Latest), arg0, arg1, arg2)
 }
 
 // Like mocks base method.
@@ -109,18 +110,18 @@ func (mr *ServiceFeedMockRecorder) Like(arg0, arg1 interface{}) *gomock.Call {
 }
 
 // PostsByUser mocks base method.
-func (m *ServiceFeed) PostsByUser(arg0 string, arg1 int, arg2 *time.Time) ([]*models.Post, error) {
+func (m *ServiceFeed) PostsByUser(arg0 string, arg1 int, arg2 *time.Time, arg3 repositories.PostIncludes) ([]*models.Post, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "PostsByUser", arg0, arg1, arg2)
+	ret := m.ctrl.Call(m, "PostsByUser", arg0, arg1, arg2, arg3)
 	ret0, _ := ret[0].([]*models.Post)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // PostsByUser indicates an expected call of PostsByUser.
-func (mr *ServiceFeedMockRecorder) PostsByUser(arg0, arg1, arg2 interface{}) *gomock.Call {
+func (mr *ServiceFeedMockRecorder) PostsByUser(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PostsByUser", reflect.TypeOf((*ServiceFeed)(nil).PostsByUser), arg0, arg1, arg2)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PostsByUser", reflect.TypeOf((*ServiceFeed)(nil).PostsByUser), arg0, arg1, arg2, arg3)
 }
 
 // Unlike mocks base method.

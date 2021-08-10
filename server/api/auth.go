@@ -13,6 +13,7 @@ import (
 const sessionCookie = "sessionId"
 
 type userIDContextKey struct{}
+type currentUserContextKey struct{}
 
 func (s *server) saveSession(w http.ResponseWriter, r *http.Request, session *models.Session) {
 	http.SetCookie(w, &http.Cookie{
@@ -53,40 +54,70 @@ func (s *server) getSessionID(w http.ResponseWriter, r *http.Request) string {
 	return cookie.Value
 }
 
+func (s *server) getUserID(w http.ResponseWriter, r *http.Request) (string, error) {
+	userID, ok := r.Context().Value(userIDContextKey{}).(string)
+	if ok {
+		return userID, nil
+	}
+
+	sessionID := s.getSessionID(w, r)
+
+	if sessionID == "" {
+		return "", nil
+	}
+	userID, err := s.auth.VerifySession(sessionID)
+	if err != nil {
+		if err == auth.ErrSessionNotFound || err == auth.ErrExpiredSession {
+			return "", nil
+		}
+		return "", err
+	}
+
+	ctx := context.WithValue(r.Context(), userIDContextKey{}, userID)
+
+	*r = *r.WithContext(ctx)
+
+	return userID, nil
+}
+
+func (s *server) getCurrentUser(w http.ResponseWriter, r *http.Request) (*models.User, error) {
+	user, ok := r.Context().Value(currentUserContextKey{}).(*models.User)
+	if ok {
+		return user, nil
+	}
+
+	userID, err := s.getUserID(w, r)
+	if err != nil {
+		return nil, err
+	}
+
+	user, err = s.profile.Find(userID)
+	if err != nil {
+		return nil, err
+	}
+
+	ctx := context.WithValue(r.Context(), currentUserContextKey{}, user)
+
+	*r = *r.WithContext(ctx)
+
+	return user, nil
+}
+
 func (s *server) authenticated(next http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
-		sessionID := s.getSessionID(w, r)
-
-		if sessionID == "" {
-			s.error(w, r, errUnauthenticated)
-			return
-		}
-		userID, err := s.auth.VerifySession(sessionID)
+		userID, err := s.getUserID(w, r)
 		if err != nil {
-			if err == auth.ErrSessionNotFound || err == auth.ErrExpiredSession {
-				s.error(w, r, errUnauthenticated)
-				return
-			}
 			s.error(w, r, unexpectedAPIError(err))
 			return
 		}
-
-		ctx := context.WithValue(r.Context(), userIDContextKey{}, userID)
-
-		r = r.WithContext(ctx)
+		if userID == "" {
+			s.error(w, r, errUnauthenticated)
+			return
+		}
 
 		next.ServeHTTP(w, r)
 	}
 	return http.HandlerFunc(fn)
-}
-
-func (s *server) getUserID(w http.ResponseWriter, r *http.Request) string {
-	// TODO: Test if this works
-	id, ok := r.Context().Value(userIDContextKey{}).(string)
-	if !ok {
-		panic("getUserID was call without the authenticated middleware")
-	}
-	return id
 }
 
 func (s *server) handleLogin() http.HandlerFunc {

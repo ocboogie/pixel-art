@@ -58,14 +58,14 @@ func TestFind(t *testing.T) {
 	}
 
 	mockPost := &models.Post{
-		Author: models.User{ID: "60aaf13d-8ddc-403b-ba42-960e18a22f6a"},
+		Author: &models.PublicUser{ID: "60aaf13d-8ddc-403b-ba42-960e18a22f6a"},
 		Title:  "Yup",
 		Art:    models.Art(""),
 	}
 
-	repo.EXPECT().Find("60aaf13d-8ddc-403b-ba42-960e18a22f6a").Return(mockPost, nil)
+	repo.EXPECT().Find("60aaf13d-8ddc-403b-ba42-960e18a22f6a", PostIncludes{Author: true}).Return(mockPost, nil)
 
-	post, err := s.Find("60aaf13d-8ddc-403b-ba42-960e18a22f6a")
+	post, err := s.Find("60aaf13d-8ddc-403b-ba42-960e18a22f6a", PostIncludes{Author: true})
 
 	assert.NoError(t, err)
 	assert.Equal(t, mockPost, post)
@@ -81,26 +81,26 @@ func TestLatest(t *testing.T) {
 
 	mockLatestPosts := []*models.Post{
 		{
-			Author: models.User{ID: "60aaf13d-8ddc-403b-ba42-960e18a22f6a"},
+			Author: &models.PublicUser{ID: "60aaf13d-8ddc-403b-ba42-960e18a22f6a"},
 			Title:  "Yup",
 			Art:    models.Art(""),
 		},
 		{
-			Author: models.User{ID: "6caaf13d-8ddc-403b-ba42-960e18a22f6a"},
+			Author: &models.PublicUser{ID: "6caaf13d-8ddc-403b-ba42-960e18a22f6a"},
 			Title:  "Yup",
 			Art:    models.Art(""),
 		},
 		{
-			Author: models.User{ID: "6aaaf13d-8ddc-403b-ba42-960e18a22f6a"},
+			Author: &models.PublicUser{ID: "6aaaf13d-8ddc-403b-ba42-960e18a22f6a"},
 			Title:  "Yup",
 			Art:    models.Art(""),
 		},
 	}
 	after := time.Now()
 
-	repo.EXPECT().Latest(20, &after).Return(mockLatestPosts, nil)
+	repo.EXPECT().Latest(20, &after, PostIncludes{Author: true}).Return(mockLatestPosts, nil)
 
-	latestPosts, err := s.Latest(20, &after)
+	latestPosts, err := s.Latest(20, &after, PostIncludes{Author: true})
 
 	assert.NoError(t, err)
 	assert.Equal(t, mockLatestPosts, latestPosts)
@@ -116,23 +116,23 @@ func TestPostsByUser(t *testing.T) {
 
 	mockUsersPosts := []*models.Post{
 		{
-			Author: models.User{ID: "60aaf13d-8ddc-403b-ba42-960e18a22f6a"},
+			Author: &models.PublicUser{ID: "60aaf13d-8ddc-403b-ba42-960e18a22f6a"},
 			Title:  "Yup",
 		},
 		{
-			Author: models.User{ID: "6caaf13d-8ddc-403b-ba42-960e18a22f6a"},
+			Author: &models.PublicUser{ID: "6caaf13d-8ddc-403b-ba42-960e18a22f6a"},
 			Title:  "Yup",
 		},
 		{
-			Author: models.User{ID: "6aaaf13d-8ddc-403b-ba42-960e18a22f6a"},
+			Author: &models.PublicUser{ID: "6aaaf13d-8ddc-403b-ba42-960e18a22f6a"},
 			Title:  "Yup",
 		},
 	}
 	after := time.Now()
 
-	repo.EXPECT().PostsByUser("60aaf13d-8ddc-403b-ba42-960e18a22f6a", 20, &after).Return(mockUsersPosts, nil)
+	repo.EXPECT().PostsByUser("60aaf13d-8ddc-403b-ba42-960e18a22f6a", 20, &after, PostIncludes{Author: true}).Return(mockUsersPosts, nil)
 
-	usersPosts, err := s.PostsByUser("60aaf13d-8ddc-403b-ba42-960e18a22f6a", 20, &after)
+	usersPosts, err := s.PostsByUser("60aaf13d-8ddc-403b-ba42-960e18a22f6a", 20, &after, PostIncludes{Author: true})
 
 	assert.NoError(t, err)
 	assert.Equal(t, mockUsersPosts, usersPosts)
