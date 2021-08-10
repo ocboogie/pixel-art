@@ -48,7 +48,7 @@ func (s *server) handleUsersFind() http.HandlerFunc {
 			return
 		}
 
-		s.respond(w, r, http.StatusOK, user)
+		s.respond(w, r, http.StatusOK, user.HideSensitive())
 	}
 }
 

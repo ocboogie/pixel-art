@@ -18,11 +18,12 @@ type User struct {
 	Following *bool `json:"following"`
 }
 
-func (u User) Hide() PublicUser {
+func (u User) HideSensitive() PublicUser {
 	return PublicUser{
-		ID:     u.ID,
-		Name:   u.Name,
-		Avatar: u.Avatar,
+		ID:        u.ID,
+		Name:      u.Name,
+		Avatar:    u.Avatar,
+		Following: u.Following,
 	}
 }
 
