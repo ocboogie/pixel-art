@@ -3,7 +3,7 @@ lockfileVersion: 5.3
 specifiers:
   '@roxi/routify': ^2.18.0
   '@sveltejs/vite-plugin-svelte': ^1.0.0-next.11
-  '@zerodevx/svelte-toast': 0.4.0
+  '@zerodevx/svelte-toast': ^0.4.1
   autoprefixer: ^10.2.6
   axios: ^0.21.1
   classnames: ^2.3.1
@@ -17,7 +17,7 @@ specifiers:
   vite: ^2.4.2
 
 dependencies:
-  '@zerodevx/svelte-toast': 0.4.0
+  '@zerodevx/svelte-toast': 0.4.1
   axios: 0.21.1
   classnames: 2.3.1
 
@@ -178,8 +178,8 @@ packages:
       '@types/node': 16.3.3
     dev: true
 
-  /@zerodevx/svelte-toast/0.4.0:
-    resolution: {integrity: sha512-CG5L8ZcaXAzJabLxzkTDe/X7L7SINFrv20R6wC8bQEbS5ZivI8nGHfLxa7iC6kUoc25ZKwY6TkiN7b6Gf9FfAQ==}
+  /@zerodevx/svelte-toast/0.4.1:
+    resolution: {integrity: sha512-b29YcjIHis0/870F2tLhuiPN7OsFirqRShLlpac778HmNfGObl33Y4bM4y44erhvb90Nzqmk42AF34AuElxq/w==}
     dev: false
 
   /abab/2.0.5:
