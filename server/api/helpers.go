@@ -2,8 +2,11 @@ package api
 
 import (
 	"encoding/json"
-	"log"
+	"fmt"
 	"net/http"
+	"net/http/httputil"
+
+	log "github.com/sirupsen/logrus"
 )
 
 func (s *server) respond(w http.ResponseWriter, r *http.Request, status int, data interface{}) {
@@ -29,9 +32,15 @@ func (s *server) error(w http.ResponseWriter, r *http.Request, apiErr apiError) 
 		},
 	})
 	if err != nil {
-		log.Println(err.Error())
+		log.Errorln(err.Error())
 	}
 	if !apiErr.expected {
-		log.Println(apiErr.Error())
+		dump, err := httputil.DumpRequest(r, true)
+		if err != nil {
+			log.Errorf("Could not create request dump: %v", err)
+		}
+
+		dumpString := fmt.Sprintf("%q", dump)
+		log.WithField("requestDump", dumpString).Errorf("Unexpected API Error: %v", apiErr)
 	}
 }
