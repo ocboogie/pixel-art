@@ -37,7 +37,7 @@ func (s *server) routes() {
 
 	s.router.Route("/likes/{id}", func(r chi.Router) {
 		r.Use(s.authenticated)
-		r.Post("/", s.handleLikesLike())
+		r.Put("/", s.handleLikesLike())
 		r.Delete("/", s.handleLikesUnlike())
 	})
 
