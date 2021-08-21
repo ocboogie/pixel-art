@@ -7,7 +7,7 @@ import (
 	sq "github.com/Masterminds/squirrel"
 	"github.com/go-playground/validator/v10"
 	"github.com/jmoiron/sqlx"
-	"github.com/joho/godotenv"
+	_ "github.com/joho/godotenv/autoload"
 	_ "github.com/lib/pq"
 	"github.com/ocboogie/pixel-art/api"
 	"github.com/ocboogie/pixel-art/models"
@@ -17,6 +17,7 @@ import (
 	"github.com/ocboogie/pixel-art/services/profile"
 )
 
+// TODO: Make this configurable
 var avatarSpec = models.AvatarSpec{
 	Size: 5,
 	Palette: []string{
@@ -31,12 +32,6 @@ var artSpec = models.ArtSpec{
 }
 
 func main() {
-	err := godotenv.Load(".env")
-
-	if err != nil {
-		log.Fatalf("Error loading .env file: %v", err)
-	}
-
 	database, exists := os.LookupEnv("DATABASE")
 	if !exists {
 		log.Fatal("You must supply a \"DATABASE\" environment variable (see .env.example)")
@@ -64,10 +59,4 @@ func main() {
 
 	server.Setup()
 	server.Start()
-
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// defer db.Close()
-	// migrations.Migrate(db.DB)
 }
