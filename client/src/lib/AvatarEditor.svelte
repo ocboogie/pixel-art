@@ -17,7 +17,7 @@
   }
 </script>
 
-<div class="p-4 relative">
+<div class="p-4 relative border-b">
   <Avatar
     editable
     {avatarData}
@@ -26,7 +26,6 @@
     bind:this={avatar}
   />
 </div>
-<hr />
 <div class={cn("rounded mt-8 h-24 w-24 m-auto", $$props.class)}>
   <AvatarEditorTool
     class="tool"
