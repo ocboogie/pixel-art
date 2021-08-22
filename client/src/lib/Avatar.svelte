@@ -1,6 +1,10 @@
 <script>
   import { onMount } from "svelte";
-  import { deserialize, random } from "../utils/avatar";
+  import {
+    deserialize,
+    serialize as serializeAvatar,
+    random,
+  } from "../utils/avatar";
 
   export let size;
   export let avatarData = null;
@@ -35,6 +39,9 @@
 
   export function randomize() {
     cells = random(size);
+  }
+  export function serialize() {
+    return serializeAvatar(cells, cellColor);
   }
 
   function resetDragDrawState() {

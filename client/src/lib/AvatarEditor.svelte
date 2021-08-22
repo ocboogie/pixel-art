@@ -12,6 +12,9 @@
   function randomize() {
     avatar.randomize();
   }
+  export function serialize() {
+    return avatar.serialize();
+  }
 </script>
 
 <div class="p-4 relative">

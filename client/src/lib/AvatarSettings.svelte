@@ -5,11 +5,18 @@
   import { avatarSpec } from "../store";
 
   export let avatar;
+  let avatarEditor;
+
+  // TODO: Get rid of this this excessive propagation
+  export function serialize() {
+    return avatarEditor.serialize();
+  }
 </script>
 
 <div class={cn(Card, "overflow-hidden", $$props.class)}>
   <div class={CardTitle}>Avatar</div>
   <AvatarEditor
+    bind:this={avatarEditor}
     size={$avatarSpec.size}
     palette={$avatarSpec.palette}
     avatarData={avatar}

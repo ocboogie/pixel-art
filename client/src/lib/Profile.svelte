@@ -1,6 +1,5 @@
 <script>
   import cn from "classnames";
-  import { deserialize } from "../utils/avatar";
   import Avatar from "../lib/Avatar.svelte";
   import { avatarSpec } from "../store";
   import { ButtonPrimary, Card } from "./base";
