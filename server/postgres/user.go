@@ -25,9 +25,19 @@ func userBaseSelect(sb sq.StatementBuilderType, includes repositories.UserInclud
 	stmt := sb.Select(`*`).
 		From("users")
 
-	if includes.Following != "" {
+	if includes.IsFollowing != "" {
 		stmt = stmt.
-			Column("EXISTS(SELECT 1 FROM follows WHERE follows.followed_id = users.id AND follows.follower_id = ?) AS following", includes.Following)
+			Column("EXISTS(SELECT 1 FROM follows WHERE follows.followed_id = users.id AND follows.follower_id = ?) AS is_following", includes.IsFollowing)
+	}
+
+	if includes.Followers {
+		// TODO: Could to be better to use a left join idk
+		stmt = stmt.
+			Column("(SELECT count(*) FROM follows WHERE follows.followed_id = users.id) followers")
+	}
+	if includes.FollowingCount {
+		stmt = stmt.
+			Column("(SELECT count(*) FROM follows WHERE follows.follower_id = users.id) following_count")
 	}
 
 	return stmt

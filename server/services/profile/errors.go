@@ -8,4 +8,5 @@ var (
 	ErrNotFound            = repositories.ErrUserNotFound
 	ErrFollowAlreadyExists = repositories.ErrFollowAlreadyExists
 	ErrFollowNotFound      = repositories.ErrFollowNotFound
+	ErrFollowSelf          = repositories.ErrFollowSelf
 )

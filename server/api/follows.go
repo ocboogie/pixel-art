@@ -16,6 +16,11 @@ func (s *server) handleFollowsFollow() http.HandlerFunc {
 			return
 		}
 
+		if followedID == followerID {
+			s.error(w, r, errMustntFollowSelf)
+			return
+		}
+
 		err = s.profile.Follow(followedID, followerID)
 
 		if err != nil {
@@ -25,6 +30,8 @@ func (s *server) handleFollowsFollow() http.HandlerFunc {
 				apiErr = errAlreadyFollowing
 			case profile.ErrNotFound:
 				apiErr = errUserNotFound
+			case profile.ErrFollowSelf:
+				apiErr = errMustntFollowSelf
 			}
 			s.error(w, r, apiErr)
 			return

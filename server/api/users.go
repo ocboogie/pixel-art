@@ -15,7 +15,7 @@ func (s *server) getUserIncludes(w http.ResponseWriter, r *http.Request) (profil
 
 	var err error
 	userID := ""
-	if query.Get("following") != "" {
+	if query.Get("isFollowing") != "" {
 		userID, err = s.getUserID(w, r)
 		if err != nil {
 			return profile.UserIncludes{}, err
@@ -23,7 +23,9 @@ func (s *server) getUserIncludes(w http.ResponseWriter, r *http.Request) (profil
 	}
 
 	return profile.UserIncludes{
-		Following: userID,
+		IsFollowing:    userID,
+		Followers:      query.Get("followers") != "",
+		FollowingCount: query.Get("followingCount") != "",
 	}, nil
 }
 

@@ -1,6 +1,8 @@
 package postgres
 
 import (
+	"log"
+
 	"github.com/jmoiron/sqlx"
 	"github.com/lib/pq"
 	"github.com/ocboogie/pixel-art/repositories"
@@ -25,7 +27,10 @@ func (r *followRepo) Save(followedID string, followerID string) error {
 	)
 
 	if err, ok := err.(*pq.Error); ok {
+		log.Println(err.Code.Name())
 		switch err.Code.Name() {
+		case "check_violation":
+			return repositories.ErrFollowSelf
 		case "unique_violation":
 			return repositories.ErrFollowAlreadyExists
 		case "foreign_key_violation":

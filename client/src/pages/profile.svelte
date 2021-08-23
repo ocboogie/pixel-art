@@ -14,7 +14,7 @@
 
 <div class="max-w-lg m-auto">
   {#if $me}
-    <Profile user={$me} />
+    <Profile userId={$me.id} />
   {:else}
     <Loading>Loading...</Loading>
   {/if}

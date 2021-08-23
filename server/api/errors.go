@@ -17,4 +17,5 @@ var (
 	errInvalidLimit       = newSimpleAPIError(http.StatusBadRequest, false, `The "limit" parameter must be a number`)
 	errInvalidAfter       = newSimpleAPIError(http.StatusBadRequest, false, `The "after" parameter must be a iso-8601 formatted date`)
 	errUserNotFound       = newSimpleAPIError(http.StatusNotFound, false, "User not found")
+	errMustntFollowSelf   = newSimpleAPIError(http.StatusNotFound, false, "May not follow self")
 )

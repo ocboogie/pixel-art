@@ -8,9 +8,11 @@ import (
 
 // PostIncludes exists to denote which virtual properties should be computed
 type UserIncludes struct {
+	Followers      bool
+	FollowingCount bool
 	// Whether to include if the user is being followed by the user with this ID
 	// "" means don't include
-	Following string
+	IsFollowing string
 }
 
 type User interface {

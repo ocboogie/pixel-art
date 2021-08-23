@@ -15,15 +15,19 @@ type User struct {
 	CreatedAt time.Time `json:"createdAt" db:"created_at"`
 	// Virtual fields, meaning that they don't actually exist in the
 	// database, but are infered from other factors
-	Following *bool `json:"following"`
+	IsFollowing    *bool `json:"isFollowing" db:"is_following"`
+	Followers      *int  `json:"followers"`
+	FollowingCount *int  `json:"followingCount" db:"following_count"`
 }
 
 func (u User) HideSensitive() PublicUser {
 	return PublicUser{
-		ID:        u.ID,
-		Name:      u.Name,
-		Avatar:    u.Avatar,
-		Following: u.Following,
+		ID:             u.ID,
+		Name:           u.Name,
+		Avatar:         u.Avatar,
+		IsFollowing:    u.IsFollowing,
+		Followers:      u.Followers,
+		FollowingCount: u.FollowingCount,
 	}
 }
 
@@ -34,7 +38,9 @@ type PublicUser struct {
 	Avatar Avatar `json:"avatar"`
 	// Virtual fields, meaning that they don't actually exist in the
 	// database, but are infered from other factors
-	Following *bool `json:"following"`
+	IsFollowing    *bool `json:"isFollowing"`
+	Followers      *int  `json:"followers"`
+	FollowingCount *int  `json:"followingCount"`
 }
 
 // This is the data necessary to create a user

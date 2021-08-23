@@ -24,9 +24,9 @@ func TestFind(t *testing.T) {
 		Password: "correct battery horse staple but this should been hashed",
 	}
 
-	repo.EXPECT().Find("60aaf13d-8ddc-403b-ba42-960e18a22f6a", UserIncludes{Following: "c41270f0-0555-4923-999e-4c798bd47f01"}).Return(mockUser, nil)
+	repo.EXPECT().Find("60aaf13d-8ddc-403b-ba42-960e18a22f6a", UserIncludes{IsFollowing: "c41270f0-0555-4923-999e-4c798bd47f01"}).Return(mockUser, nil)
 
-	user, err := s.Find("60aaf13d-8ddc-403b-ba42-960e18a22f6a", UserIncludes{Following: "c41270f0-0555-4923-999e-4c798bd47f01"})
+	user, err := s.Find("60aaf13d-8ddc-403b-ba42-960e18a22f6a", UserIncludes{IsFollowing: "c41270f0-0555-4923-999e-4c798bd47f01"})
 
 	assert.NoError(t, err)
 	assert.Equal(t, mockUser, user)

@@ -35,5 +35,6 @@ CREATE TABLE "follows"
 (
     followed_id uuid REFERENCES users(id) ON DELETE CASCADE NOT NULL,
     follower_id uuid REFERENCES users(id) ON DELETE CASCADE NOT NULL,
-    CONSTRAINT follow_pkey PRIMARY KEY (followed_id, follower_id)
+    CONSTRAINT follow_pkey PRIMARY KEY (followed_id, follower_id),
+    CONSTRAINT mustnt_follow_self CHECK (followed_id <> follower_id)
 );
