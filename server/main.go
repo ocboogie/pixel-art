@@ -1,48 +1,23 @@
 package main
 
 import (
-	"log"
-	"os"
-
-	sq "github.com/Masterminds/squirrel"
 	"github.com/go-playground/validator/v10"
-	"github.com/jmoiron/sqlx"
 	_ "github.com/joho/godotenv/autoload"
 	_ "github.com/lib/pq"
 	"github.com/ocboogie/pixel-art/api"
-	"github.com/ocboogie/pixel-art/models"
+	"github.com/ocboogie/pixel-art/config"
 	"github.com/ocboogie/pixel-art/postgres"
 	"github.com/ocboogie/pixel-art/services/auth"
 	"github.com/ocboogie/pixel-art/services/feed"
 	"github.com/ocboogie/pixel-art/services/profile"
 )
 
-// TODO: Make this configurable
-var avatarSpec = models.AvatarSpec{
-	Size: 5,
-	Palette: []string{
-		"#1abc9c", "#2ecc71", "#3498db", "#9b59b6", "#e74c3c",
-	},
-}
-var artSpec = models.ArtSpec{
-	Size:   3,
-	Colors: 3,
-	// Size:   25,
-	// Colors: 8,
-}
-
 func main() {
-	database, exists := os.LookupEnv("DATABASE")
-	if !exists {
-		log.Fatal("You must supply a \"DATABASE\" environment variable (see .env.example)")
-	}
-
-	db, err := sqlx.Open("postgres", database)
-	if err != nil {
-		panic(err)
-	}
-	sb := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
+	db, sb := config.NewPGDB()
 	defer db.Close()
+
+	artSpec := config.NewArtSpec()
+	avatarSpec := config.NewAvatarSpec()
 
 	validate := validator.New()
 	userRepo := postgres.NewRepositoryUser(db, sb)
@@ -51,11 +26,14 @@ func main() {
 	followRepo := postgres.NewFollowRepository(db)
 	sessionRepo := postgres.NewRepositorySession(db)
 
-	auth := auth.New(auth.DefaultConfig(), userRepo, sessionRepo)
+	authConfig := config.NewAuthConfig()
+	auth := auth.New(authConfig, userRepo, sessionRepo)
 	feed := feed.New(userRepo, postRepo, likeRepo)
 	profile := profile.New(userRepo, followRepo)
 
-	server := api.New(auth, avatarSpec, artSpec, feed, profile, validate)
+	addr := config.NewAddr()
+	corsOptions := config.NewCorsOptions()
+	server := api.New(addr, corsOptions, auth, avatarSpec, artSpec, feed, profile, validate)
 
 	server.Setup()
 	server.Start()
