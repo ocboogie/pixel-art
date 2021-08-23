@@ -3,6 +3,7 @@
   import ArtRenderer from "./ArtRenderer.svelte";
   import Avatar from "./Avatar.svelte";
   import { avatarSpec } from "../store";
+  import { url } from "@roxi/routify";
 
   export let post;
   export let frameless = false;
@@ -17,13 +18,17 @@
 >
   {#if !frameless}
     <!-- TODO: Take the user to the user page of the author -->
-    <div class="flex flex-row p-2 justify-start items-center">
+    <a
+      class="flex flex-row p-2 justify-start items-center"
+      href={$url("/user/:id", { id: post.authorId })}
+    >
       <Avatar
         class="h-10 w-10 rounded drop-shadow shadow"
         size={$avatarSpec.size}
+        avatarData={post.author.avatar}
       />
       <div class="ml-2">{post.author.name}</div>
-    </div>
+    </a>
     <hr />
   {/if}
   <div>

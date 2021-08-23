@@ -65,6 +65,21 @@ func (mr *ServiceFeedMockRecorder) Delete(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*ServiceFeed)(nil).Delete), arg0)
 }
 
+// Feed mocks base method.
+func (m *ServiceFeed) Feed(arg0 string, arg1 int, arg2 *time.Time, arg3 repositories.PostIncludes) ([]*models.Post, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Feed", arg0, arg1, arg2, arg3)
+	ret0, _ := ret[0].([]*models.Post)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Feed indicates an expected call of Feed.
+func (mr *ServiceFeedMockRecorder) Feed(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Feed", reflect.TypeOf((*ServiceFeed)(nil).Feed), arg0, arg1, arg2, arg3)
+}
+
 // Find mocks base method.
 func (m *ServiceFeed) Find(arg0 string, arg1 repositories.PostIncludes) (*models.Post, error) {
 	m.ctrl.T.Helper()

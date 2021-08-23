@@ -136,6 +136,41 @@ func TestPostsByUser(t *testing.T) {
 	assert.Equal(t, mockUsersPosts, usersPosts)
 }
 
+// As is right now, this is pretty much the same test as TestPostsByUser.  Like
+// a lot of these tests, it's just testing to ensure that the correct repo
+// function is called.
+func TestFeed(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	repo := mocks.NewRepositoryPost(ctrl)
+	s := &service{
+		postRepo: repo,
+	}
+
+	mockUsersPosts := []*models.Post{
+		{
+			Author: &models.PublicUser{ID: "60aaf13d-8ddc-403b-ba42-960e18a22f6a"},
+			Title:  "Yup",
+		},
+		{
+			Author: &models.PublicUser{ID: "6caaf13d-8ddc-403b-ba42-960e18a22f6a"},
+			Title:  "Yup",
+		},
+		{
+			Author: &models.PublicUser{ID: "6aaaf13d-8ddc-403b-ba42-960e18a22f6a"},
+			Title:  "Yup",
+		},
+	}
+	after := time.Now()
+
+	repo.EXPECT().Feed("60aaf13d-8ddc-403b-ba42-960e18a22f6a", 20, &after, PostIncludes{Author: true}).Return(mockUsersPosts, nil)
+
+	usersPosts, err := s.Feed("60aaf13d-8ddc-403b-ba42-960e18a22f6a", 20, &after, PostIncludes{Author: true})
+
+	assert.NoError(t, err)
+	assert.Equal(t, mockUsersPosts, usersPosts)
+}
+
 func TestLike(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()

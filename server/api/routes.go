@@ -25,6 +25,11 @@ func (s *server) routes() {
 		r.Get("/posts", s.handleUsersPosts())
 	})
 
+	s.router.Route("/feed", func(r chi.Router) {
+		r.Use(s.authenticated)
+		r.Get("/", s.handleFeedGet())
+	})
+
 	s.router.Route("/posts", func(r chi.Router) {
 		r.Get("/{id}", s.handlePostsFind())
 		r.Get("/", s.handlePostsAll())

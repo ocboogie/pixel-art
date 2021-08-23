@@ -157,3 +157,30 @@ func (r *postRepo) PostsByUser(userID string, limit int, after *time.Time, inclu
 
 	return posts, nil
 }
+
+func (r *postRepo) Feed(userID string, limit int, after *time.Time, includes repositories.PostIncludes) ([]*models.Post, error) {
+	// TODO: DRY: Latest
+	posts := []*models.Post{}
+
+	stmt := postBaseSelect(r.sb, includes)
+
+	if after != nil {
+		stmt = stmt.Having("posts.created_at > ?", after)
+	}
+
+	query, args, err := stmt.
+		Where("posts.author_id = follows.followed_id").
+		InnerJoin("follows ON follows.follower_id = ?", userID).
+		OrderBy("posts.created_at").
+		Limit(uint64(limit)).
+		ToSql()
+	if err != nil {
+		panic(err)
+	}
+
+	if err := r.db.Select(&posts, query, args...); err != nil {
+		return nil, err
+	}
+
+	return posts, nil
+}

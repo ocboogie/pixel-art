@@ -23,4 +23,6 @@ type Post interface {
 	Save(post *models.Post) error
 	Latest(limit int, after *time.Time, includes PostIncludes) ([]*models.Post, error)
 	PostsByUser(userID string, limit int, after *time.Time, includes PostIncludes) ([]*models.Post, error)
+	// Posts by users who the user with the id of userID follows
+	Feed(userID string, limit int, after *time.Time, includes PostIncludes) ([]*models.Post, error)
 }

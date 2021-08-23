@@ -19,6 +19,7 @@ type Service interface {
 	Latest(limit int, after *time.Time, includes PostIncludes) ([]*models.Post, error)
 	Find(id string, includes PostIncludes) (*models.Post, error)
 	PostsByUser(id string, limit int, after *time.Time, includes PostIncludes) ([]*models.Post, error)
+	Feed(id string, limit int, after *time.Time, includes PostIncludes) ([]*models.Post, error)
 	Like(userID string, postID string) error
 	Unlike(userID string, postID string) error
 }
@@ -75,6 +76,10 @@ func (s *service) Latest(limit int, after *time.Time, includes PostIncludes) ([]
 
 func (s *service) PostsByUser(userID string, limit int, after *time.Time, includes PostIncludes) ([]*models.Post, error) {
 	return s.postRepo.PostsByUser(userID, limit, after, includes)
+}
+
+func (s *service) Feed(userID string, limit int, after *time.Time, includes PostIncludes) ([]*models.Post, error) {
+	return s.postRepo.Feed(userID, limit, after, includes)
 }
 
 func (s *service) Like(userID string, postID string) error {
