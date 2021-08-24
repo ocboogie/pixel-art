@@ -2,6 +2,7 @@ package models
 
 import (
 	"encoding/hex"
+	"math/rand"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -48,5 +49,28 @@ func TestArtValidate(t *testing.T) {
 	})
 	t.Run("Valid", func(t *testing.T) {
 		assert.Nil(t, Art(hexToByteSlice("0003000303FF000000FF000000FF000102000102000102")).Validate(artSpec))
+	})
+}
+
+func TestGenerateRandomArt(t *testing.T) {
+	t.Run("Is valid", func(t *testing.T) {
+		for i := 0; i < 1000; i++ {
+			art, err := GenerateRandomArt(artSpec)
+			assert.Nil(t, err)
+
+			if err = art.Validate(artSpec); err != nil {
+				t.Errorf("GenerateRandomArt failed to create valid art. Generated %v", art)
+				return
+			}
+		}
+	})
+
+	t.Run("Expected return", func(t *testing.T) {
+		rand.Seed(0)
+		art, err := GenerateRandomArt(artSpec)
+
+		assert.Nil(t, err)
+
+		assert.Equal(t, Art(hexToByteSlice("00030003030194fdc2fa2ffcc041010200000000000000")), art)
 	})
 }

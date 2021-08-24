@@ -59,17 +59,19 @@
       <div>
         <span class="text-gray-500">Following </span>{user.followingCount}
       </div>
-      {#if user.id != $me.id}
-        <button
-          class={cn(ButtonPrimary, "w-full p-1 mt-2")}
-          on:click={followUnfollow}
-        >
-          {#if user.isFollowing}
-            Unfollow
-          {:else}
-            Follow
-          {/if}
-        </button>
+      {#if $me}
+        {#if user.id != $me.id}
+          <button
+            class={cn(ButtonPrimary, "w-full p-1 mt-2")}
+            on:click={followUnfollow}
+          >
+            {#if user.isFollowing}
+              Unfollow
+            {:else}
+              Follow
+            {/if}
+          </button>
+        {/if}
       {/if}
     </div>
   </div>

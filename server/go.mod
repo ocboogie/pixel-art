@@ -4,6 +4,8 @@ go 1.13
 
 require (
 	github.com/Masterminds/squirrel v1.5.0
+	github.com/bxcodec/faker/v3 v3.6.0 // indirect
+	github.com/fatih/color v1.12.0 // indirect
 	github.com/go-chi/chi v1.5.4
 	github.com/go-chi/cors v1.2.0
 	github.com/go-playground/validator/v10 v10.8.0

@@ -63,6 +63,19 @@ func (r *userRepo) Find(id string, includes repositories.UserIncludes) (*models.
 	return &user, err
 }
 
+func (r *userRepo) All(includes repositories.UserIncludes) ([]*models.User, error) {
+	users := make([]*models.User, 0)
+
+	query, args, err := userBaseSelect(r.sb, includes).ToSql()
+	if err != nil {
+		panic(err)
+	}
+
+	err = r.db.Select(&users, query, args...)
+
+	return users, nil
+}
+
 func (r *userRepo) FindByEmail(email string, includes repositories.UserIncludes) (*models.User, error) {
 	user := models.User{}
 

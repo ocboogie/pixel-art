@@ -17,6 +17,7 @@ type UserIncludes struct {
 
 type User interface {
 	Find(id string, includes UserIncludes) (*models.User, error)
+	All(includes UserIncludes) ([]*models.User, error)
 	FindByEmail(email string, includes UserIncludes) (*models.User, error)
 	Update(user *models.User) error
 	Save(user *models.User) error

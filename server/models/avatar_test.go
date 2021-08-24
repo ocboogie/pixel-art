@@ -46,8 +46,16 @@ func TestValidate(t *testing.T) {
 
 func TestGenerateRandom(t *testing.T) {
 	t.Run("Is valid", func(t *testing.T) {
-		assert.Nil(t, GenerateRandomAvatar(avatarSpec).Validate(avatarSpec))
+		for i := 0; i < 1000; i++ {
+			avatar := GenerateRandomAvatar(avatarSpec)
+
+			if err := avatar.Validate(avatarSpec); err != nil {
+				t.Errorf("GenerateRandomAvatar failed to create a valid avatar. Generated %v", avatar)
+				return
+			}
+		}
 	})
+
 	// This may fail if the implementation changes
 	t.Run("Expected return", func(t *testing.T) {
 		rand.Seed(0)
