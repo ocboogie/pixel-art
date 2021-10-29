@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/go-chi/chi"
-	"github.com/ocboogie/pixel-art/services/feed"
 	"github.com/ocboogie/pixel-art/services/profile"
 )
 
@@ -39,7 +38,7 @@ func (s *server) handleUsersFind() http.HandlerFunc {
 		user, err := s.profile.Find(userID, includes)
 
 		if err != nil {
-			if err == feed.ErrNotFound {
+			if err == profile.ErrNotFound {
 				s.error(w, r, errUserNotFound)
 				return
 			}
