@@ -114,7 +114,7 @@ func (r *postRepo) Latest(limit int, after *time.Time, includes repositories.Pos
 	stmt := postBaseSelect(r.sb, includes)
 
 	if after != nil {
-		stmt = stmt.Having("posts.created_at > ?", after)
+		stmt = stmt.Where("posts.created_at > ?", after)
 	}
 
 	query, args, err := stmt.
@@ -139,7 +139,7 @@ func (r *postRepo) PostsByUser(userID string, limit int, after *time.Time, inclu
 	stmt := postBaseSelect(r.sb, includes)
 
 	if after != nil {
-		stmt = stmt.Having("posts.created_at > ?", after)
+		stmt = stmt.Where("posts.created_at > ?", after)
 	}
 
 	query, args, err := stmt.
@@ -165,7 +165,7 @@ func (r *postRepo) Feed(userID string, limit int, after *time.Time, includes rep
 	stmt := postBaseSelect(r.sb, includes)
 
 	if after != nil {
-		stmt = stmt.Having("posts.created_at > ?", after)
+		stmt = stmt.Where("posts.created_at > ?", after)
 	}
 
 	query, args, err := stmt.
