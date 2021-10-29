@@ -2,7 +2,6 @@ package api
 
 import (
 	"net/http"
-	"strconv"
 	"time"
 )
 
@@ -16,29 +15,21 @@ func (s *server) handleFeedGet() http.HandlerFunc {
 
 		// TODO: Abstract away default limits
 		limit := 50
-		limitQuery := r.URL.Query().Get("limit")
-		if limitQuery != "" {
-			i, err := strconv.Atoi(limitQuery)
-
+		if paramExists(r, "limit") {
+			limit, err = paramNumber(r, "limit")
 			if err != nil {
 				s.error(w, r, errInvalidLimit)
 				return
 			}
-
-			limit = i
 		}
 
 		var after *time.Time = nil
-		afterQuery := r.URL.Query().Get("after")
-		if afterQuery != "" {
-			afterDate, err := time.Parse(time.RFC3339, afterQuery)
-
+		if paramExists(r, "after") {
+			after, err = paramTime(r, "after")
 			if err != nil {
 				s.error(w, r, errInvalidAfter)
 				return
 			}
-
-			after = &afterDate
 		}
 
 		includes, err := s.getPostIncludes(w, r)

@@ -40,12 +40,19 @@ func (s *server) routes() {
 		})
 	})
 
+	// TODO: Make this stateless (see https://stackoverflow.com/a/5668406/4910911
+	// and https://www.mscharhag.com/api-design/rest-many-to-many-relations)
+	// PUT `/posts/{postID}/likes/{userID}
+	// DELETE `/posts/{postID}/likes/{userID}
 	s.router.Route("/likes/{id}", func(r chi.Router) {
 		r.Use(s.authenticated)
 		r.Put("/", s.handleLikesLike())
 		r.Delete("/", s.handleLikesUnlike())
 	})
 
+	// TODO: Make this stateless:
+	// PUT `/users/{followedID}/followers/{followerID}
+	// DELETE `/users/{followedID}/followers/{followerID}
 	s.router.Route("/follows/{id}", func(r chi.Router) {
 		r.Use(s.authenticated)
 		r.Put("/", s.handleFollowsFollow())

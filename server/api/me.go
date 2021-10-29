@@ -3,7 +3,6 @@ package api
 import (
 	"encoding/json"
 	"net/http"
-	"strconv"
 	"time"
 
 	"github.com/ocboogie/pixel-art/models"
@@ -37,30 +36,23 @@ func (s *server) handleMe() http.HandlerFunc {
 // TODO: DRY: handlePostsAll and handleUserPosts
 func (s *server) handleMePosts() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		var err error
 		limit := 50
-		limitQuery := r.URL.Query().Get("limit")
-		if limitQuery != "" {
-			i, err := strconv.Atoi(limitQuery)
-
+		if paramExists(r, "limit") {
+			limit, err = paramNumber(r, "limit")
 			if err != nil {
 				s.error(w, r, errInvalidLimit)
 				return
 			}
-
-			limit = i
 		}
 
 		var after *time.Time = nil
-		afterQuery := r.URL.Query().Get("after")
-		if afterQuery != "" {
-			afterDate, err := time.Parse(time.RFC3339, afterQuery)
-
+		if paramExists(r, "after") {
+			after, err = paramTime(r, "after")
 			if err != nil {
 				s.error(w, r, errInvalidAfter)
 				return
 			}
-
-			after = &afterDate
 		}
 
 		userID, err := s.getUserID(w, r)

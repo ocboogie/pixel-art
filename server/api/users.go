@@ -2,7 +2,6 @@ package api
 
 import (
 	"net/http"
-	"strconv"
 	"time"
 
 	"github.com/go-chi/chi"
@@ -11,11 +10,9 @@ import (
 )
 
 func (s *server) getUserIncludes(w http.ResponseWriter, r *http.Request) (profile.UserIncludes, error) {
-	query := r.URL.Query()
-
 	var err error
 	userID := ""
-	if query.Get("isFollowing") != "" {
+	if paramExists(r, "isFollowing") {
 		userID, err = s.getUserID(w, r)
 		if err != nil {
 			return profile.UserIncludes{}, err
@@ -24,8 +21,8 @@ func (s *server) getUserIncludes(w http.ResponseWriter, r *http.Request) (profil
 
 	return profile.UserIncludes{
 		IsFollowing:    userID,
-		Followers:      query.Get("followers") != "",
-		FollowingCount: query.Get("followingCount") != "",
+		Followers:      paramExists(r, "followers"),
+		FollowingCount: paramExists(r, "FollowingCount"),
 	}, nil
 }
 
@@ -57,30 +54,23 @@ func (s *server) handleUsersFind() http.HandlerFunc {
 func (s *server) handleUsersPosts() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// TODO: DRY: handlePostsAll and handleMePosts
+		var err error
 		limit := 50
-		limitQuery := r.URL.Query().Get("limit")
-		if limitQuery != "" {
-			i, err := strconv.Atoi(limitQuery)
-
+		if paramExists(r, "limit") {
+			limit, err = paramNumber(r, "limit")
 			if err != nil {
 				s.error(w, r, errInvalidLimit)
 				return
 			}
-
-			limit = i
 		}
 
 		var after *time.Time = nil
-		afterQuery := r.URL.Query().Get("after")
-		if afterQuery != "" {
-			afterDate, err := time.Parse(time.RFC3339, afterQuery)
-
+		if paramExists(r, "after") {
+			after, err = paramTime(r, "after")
 			if err != nil {
 				s.error(w, r, errInvalidAfter)
 				return
 			}
-
-			after = &afterDate
 		}
 
 		userID := chi.URLParam(r, "id")

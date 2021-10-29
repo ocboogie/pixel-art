@@ -3,7 +3,6 @@ package api
 import (
 	"encoding/json"
 	"net/http"
-	"strconv"
 	"time"
 
 	"github.com/go-chi/chi"
@@ -12,11 +11,9 @@ import (
 )
 
 func (s *server) getPostIncludes(w http.ResponseWriter, r *http.Request) (feed.PostIncludes, error) {
-	query := r.URL.Query()
-
 	var err error
 	userID := ""
-	if query.Get("liked") != "" {
+	if paramExists(r, "liked") {
 		userID, err = s.getUserID(w, r)
 		if err != nil {
 			return feed.PostIncludes{}, err
@@ -24,8 +21,8 @@ func (s *server) getPostIncludes(w http.ResponseWriter, r *http.Request) (feed.P
 	}
 
 	return feed.PostIncludes{
-		Author: query.Get("author") != "",
-		Likes:  query.Get("likes") != "",
+		Author: paramExists(r, "author"),
+		Likes:  paramExists(r, "likes"),
 		Liked:  userID,
 	}, nil
 }
@@ -144,31 +141,23 @@ func (s *server) handlePostsDelete() http.HandlerFunc {
 
 func (s *server) handlePostsAll() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// TODO: Abstract away default limits
+		var err error
 		limit := 50
-		limitQuery := r.URL.Query().Get("limit")
-		if limitQuery != "" {
-			i, err := strconv.Atoi(limitQuery)
-
+		if paramExists(r, "limit") {
+			limit, err = paramNumber(r, "limit")
 			if err != nil {
 				s.error(w, r, errInvalidLimit)
 				return
 			}
-
-			limit = i
 		}
 
 		var after *time.Time = nil
-		afterQuery := r.URL.Query().Get("after")
-		if afterQuery != "" {
-			afterDate, err := time.Parse(time.RFC3339, afterQuery)
-
+		if paramExists(r, "after") {
+			after, err = paramTime(r, "after")
 			if err != nil {
 				s.error(w, r, errInvalidAfter)
 				return
 			}
-
-			after = &afterDate
 		}
 
 		includes, err := s.getPostIncludes(w, r)
