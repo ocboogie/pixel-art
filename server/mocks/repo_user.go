@@ -35,6 +35,21 @@ func (m *RepositoryUser) EXPECT() *RepositoryUserMockRecorder {
 	return m.recorder
 }
 
+// All mocks base method.
+func (m *RepositoryUser) All(arg0 repositories.UserIncludes) ([]*models.User, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "All", arg0)
+	ret0, _ := ret[0].([]*models.User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// All indicates an expected call of All.
+func (mr *RepositoryUserMockRecorder) All(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "All", reflect.TypeOf((*RepositoryUser)(nil).All), arg0)
+}
+
 // ExistsEmail mocks base method.
 func (m *RepositoryUser) ExistsEmail(arg0 string) (bool, error) {
 	m.ctrl.T.Helper()
