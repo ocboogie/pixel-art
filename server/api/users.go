@@ -21,7 +21,7 @@ func (s *server) getUserIncludes(w http.ResponseWriter, r *http.Request) (profil
 	return profile.UserIncludes{
 		IsFollowing:    userID,
 		Followers:      paramExists(r, "followers"),
-		FollowingCount: paramExists(r, "FollowingCount"),
+		FollowingCount: paramExists(r, "followingCount"),
 	}, nil
 }
 
