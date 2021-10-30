@@ -12,22 +12,18 @@
   export let userId;
 
   let user = null;
-  let posts = null;
 
   onMount(async () => {
-    const res = await Promise.all([
-      axios.get(`/users/${userId}`, {
+    user = (
+      await axios.get(`/users/${userId}`, {
         params: {
           // Just need to be non-empty
           isFollowing: "t",
           followers: "t",
           followingCount: "t",
         },
-      }),
-      axios.get(`/users/${userId}/posts`),
-    ]);
-    user = res[0].data;
-    posts = res[1].data;
+      })
+    ).data;
   });
   function followUnfollow() {
     if (user.isFollowing) {
@@ -75,12 +71,7 @@
       {/if}
     </div>
   </div>
-  {#if posts.length === 0}
-    <!-- FIXME: Don't use Loading -->
-    <Loading>They don't have any posts :(</Loading>
-  {:else}
-    <PostList gallery {posts} />
-  {/if}
+  <PostList gallery source={`/users/${userId}/posts`} />
 {:else}
   <Loading>Loading...</Loading>
 {/if}
