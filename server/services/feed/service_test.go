@@ -25,7 +25,7 @@ func TestCreate(t *testing.T) {
 		id, err := s.Create(models.PostNew{
 			UserID: "60aaf13d-8ddc-403b-ba42-960e18a22f6a",
 			Title:  "Yup",
-			Art:    models.Art(""),
+			Art:    models.ArtEncoded(""),
 		})
 
 		assert.NoError(t, err)
@@ -58,7 +58,7 @@ func TestFind(t *testing.T) {
 	mockPost := &models.Post{
 		Author: &models.PublicUser{ID: "60aaf13d-8ddc-403b-ba42-960e18a22f6a"},
 		Title:  "Yup",
-		Art:    models.Art(""),
+		Art:    models.ArtEncoded(""),
 	}
 
 	repo.EXPECT().Find("60aaf13d-8ddc-403b-ba42-960e18a22f6a", PostIncludes{Author: true}).Return(mockPost, nil)
@@ -81,17 +81,17 @@ func TestLatest(t *testing.T) {
 		{
 			Author: &models.PublicUser{ID: "60aaf13d-8ddc-403b-ba42-960e18a22f6a"},
 			Title:  "Yup",
-			Art:    models.Art(""),
+			Art:    models.ArtEncoded(""),
 		},
 		{
 			Author: &models.PublicUser{ID: "6caaf13d-8ddc-403b-ba42-960e18a22f6a"},
 			Title:  "Yup",
-			Art:    models.Art(""),
+			Art:    models.ArtEncoded(""),
 		},
 		{
 			Author: &models.PublicUser{ID: "6aaaf13d-8ddc-403b-ba42-960e18a22f6a"},
 			Title:  "Yup",
-			Art:    models.Art(""),
+			Art:    models.ArtEncoded(""),
 		},
 	}
 	after := time.Now()

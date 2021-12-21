@@ -22,33 +22,46 @@ func hexToByteSlice(hexCode string) []byte {
 	return bytes
 }
 
-func TestArtValidate(t *testing.T) {
+func TestArtDecode(t *testing.T) {
+	assertInvalid := func(art ArtEncoded) {
+		_, err := art.Decode(artSpec)
+		assert.Equal(t, ErrInvalidArt, err)
+	}
+
 	t.Run("Invalid width", func(t *testing.T) {
-		assert.Equal(t, ErrInvalidArt, Art(make([]byte, 0)).Validate(artSpec))
-		assert.Equal(t, ErrInvalidArt, Art(hexToByteSlice("01")).Validate(artSpec))
-		assert.Equal(t, ErrInvalidArt, Art(hexToByteSlice("0010")).Validate(artSpec))
+		assertInvalid(ArtEncoded(make([]byte, 0)))
+		assertInvalid(ArtEncoded(hexToByteSlice("01")))
+		assertInvalid(ArtEncoded(hexToByteSlice("0010")))
 	})
 	t.Run("Invalid height", func(t *testing.T) {
-		assert.Equal(t, ErrInvalidArt, Art(hexToByteSlice("0003")).Validate(artSpec))
-		assert.Equal(t, ErrInvalidArt, Art(hexToByteSlice("000303")).Validate(artSpec))
-		assert.Equal(t, ErrInvalidArt, Art(hexToByteSlice("00030300")).Validate(artSpec))
+		assertInvalid(ArtEncoded(hexToByteSlice("0003")))
+		assertInvalid(ArtEncoded(hexToByteSlice("000303")))
+		assertInvalid(ArtEncoded(hexToByteSlice("00030300")))
 	})
 	t.Run("Invalid color amount", func(t *testing.T) {
-		assert.Equal(t, ErrInvalidArt, Art(hexToByteSlice("00030003")).Validate(artSpec))
-		assert.Equal(t, ErrInvalidArt, Art(hexToByteSlice("0003000304")).Validate(artSpec))
+		assertInvalid(ArtEncoded(hexToByteSlice("00030003")))
+		assertInvalid(ArtEncoded(hexToByteSlice("0003000304")))
 	})
 	t.Run("Invalid color table", func(t *testing.T) {
-		assert.Equal(t, ErrInvalidArt, Art(hexToByteSlice("0003000303FF000000")).Validate(artSpec))
+		assertInvalid(ArtEncoded(hexToByteSlice("0003000303FF000000")))
 	})
 	t.Run("Invalid size", func(t *testing.T) {
-		assert.Equal(t, ErrInvalidArt, Art(hexToByteSlice("0003000303FF000000FF000000FF0001020001020001")).Validate(artSpec))
-		assert.Equal(t, ErrInvalidArt, Art(hexToByteSlice("0003000303FF000000FF000000FF00010200010200010201")).Validate(artSpec))
+		assertInvalid(ArtEncoded(hexToByteSlice("0003000303FF000000FF000000FF0001020001020001")))
+		assertInvalid(ArtEncoded(hexToByteSlice("0003000303FF000000FF000000FF00010200010200010201")))
 	})
 	t.Run("Color index out of range", func(t *testing.T) {
-		assert.Equal(t, ErrInvalidArt, Art(hexToByteSlice("0003000303FF000000FF000000FF000102000102000103")).Validate(artSpec))
+		assertInvalid(ArtEncoded(hexToByteSlice("0003000303FF000000FF000000FF000102000102000103")))
 	})
 	t.Run("Valid", func(t *testing.T) {
-		assert.Nil(t, Art(hexToByteSlice("0003000303FF000000FF000000FF000102000102000102")).Validate(artSpec))
+		decoded, err := ArtEncoded(hexToByteSlice("0003000303FF000000FF000000FF000102000102000102")).Decode(artSpec)
+
+		assert.NoError(t, err)
+		assert.Equal(t, Art{
+			Width:     3,
+			Height:    3,
+			TableSize: 3,
+			Body:      []uint8{0, 1, 2, 0, 1, 2, 0, 1, 2},
+		}, decoded)
 	})
 }
 
@@ -58,7 +71,7 @@ func TestGenerateRandomArt(t *testing.T) {
 			art, err := GenerateRandomArt(artSpec)
 			assert.Nil(t, err)
 
-			if err = art.Validate(artSpec); err != nil {
+			if _, err = art.Decode(artSpec); err != nil {
 				t.Errorf("GenerateRandomArt failed to create valid art. Generated %v", art)
 				return
 			}
@@ -71,6 +84,6 @@ func TestGenerateRandomArt(t *testing.T) {
 
 		assert.Nil(t, err)
 
-		assert.Equal(t, Art(hexToByteSlice("00030003030194fdc2fa2ffcc041010200000000000000")), art)
+		assert.Equal(t, ArtEncoded(hexToByteSlice("00030003030194fdc2fa2ffcc041010200000000000000")), art)
 	})
 }

@@ -4,9 +4,18 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/binary"
+	"image/color"
 	"io"
 	"math/rand"
 )
+
+type Art struct {
+	Width      uint16
+	Height     uint16
+	TableSize  uint8
+	ColorTable []color.Color
+	Body       []uint8
+}
 
 // Form:
 // Width|Height|Color Amount|Colors Table      |Body
@@ -19,7 +28,7 @@ import (
 // Color Amount | 8 bits                      | Unsigned int
 // Color Table  | 24 * {Color Amount} bits    | Hex color
 // Body         | 8 * {Width} * {Height} bits | Indexed color based on the table
-type Art []byte
+type ArtEncoded []byte
 
 // ArtSpec is the info needed to create a correctly formatted art for a post.
 type ArtSpec struct {
@@ -27,9 +36,7 @@ type ArtSpec struct {
 	Colors uint8  `json:"colors"`
 }
 
-type Writer int
-
-func GenerateRandomArt(spec ArtSpec) (Art, error) {
+func GenerateRandomArt(spec ArtSpec) (ArtEncoded, error) {
 	width := 2
 	height := 2
 	colorAmount := 1
@@ -71,63 +78,79 @@ func GenerateRandomArt(spec ArtSpec) (Art, error) {
 		data.WriteByte(byte(rand.Int63n(int64(spec.Colors))))
 	}
 
-	return Art(data.Bytes()), nil
+	return ArtEncoded(data.Bytes()), nil
 }
 
-func (art Art) Validate(spec ArtSpec) error {
+// func (art Art) ToPaletted() *image.Paletted {
+// 	decoder := bufio.NewReader(bytes.NewBuffer(art))
+//
+// 	widthB := make([]byte, 2)
+// 	var width uint16
+// 	if _, err := decoder.Read(widthB); err != nil {
+// 		return nil
+// 	}
+// 	width = binary.BigEndian.Uint16(widthB)
+//
+// }
+
+func (art ArtEncoded) Decode() (ArtDecoded, error) {
+
+}
+
+func (art Art) Decode(spec ArtSpec) (ArtDecoded, error) {
 	decoder := bufio.NewReader(bytes.NewBuffer(art))
+	var artDecoded Art
 
 	// Check for invalid width
 	widthB := make([]byte, 2)
-	var width uint16
 	if _, err := decoder.Read(widthB); err != nil {
-		return ErrInvalidArt
+		return artDecoded, ErrInvalidArt
 	}
-	width = binary.BigEndian.Uint16(widthB)
-	if width != spec.Size {
-		return ErrInvalidArt
+	artDecoded.Width = binary.BigEndian.Uint16(widthB)
+	if artDecoded.Width != spec.Size {
+		return artDecoded, ErrInvalidArt
 	}
 
 	// Check for invalid height
 	heightB := make([]byte, 2)
-	var height uint16
 	if _, err := decoder.Read(heightB); err != nil {
-		return ErrInvalidArt
+		return artDecoded, ErrInvalidArt
 	}
-	height = binary.BigEndian.Uint16(heightB)
-	if height != spec.Size {
-		return ErrInvalidArt
+	artDecoded.Height = binary.BigEndian.Uint16(heightB)
+	if artDecoded.Height != spec.Size {
+		return artDecoded, ErrInvalidArt
 	}
 
 	// Get and check color amount
 	colorAmount, err := decoder.ReadByte()
 	if err != nil {
-		return ErrInvalidArt
+		return artDecoded, ErrInvalidArt
 	}
 	if colorAmount != spec.Colors {
-		return ErrInvalidArt
+		return artDecoded, ErrInvalidArt
 	}
+	artDecoded.TableSize = colorAmount
 
 	// Check and pass the color table
 	if _, err := decoder.Discard(int(colorAmount) * 3); err != nil {
-		return ErrInvalidArt
+		return artDecoded, ErrInvalidArt
 	}
 
 	// Get and check the body
-	artBody := make([]byte, int(width)*int(height))
-	if _, err = io.ReadFull(decoder, artBody); err != nil {
-		return ErrInvalidArt
+	artDecoded.Body = make([]uint8, int(artDecoded.Width)*int(artDecoded.Height))
+	if _, err = io.ReadFull(decoder, artDecoded.Body); err != nil {
+		return artDecoded, ErrInvalidArt
 	}
 	if decoder.Buffered() != 0 {
-		return ErrInvalidArt
+		return artDecoded, ErrInvalidArt
 	}
 
 	// Check if any of the pixel indices are out of range of the color table
-	for _, colorIndex := range artBody {
+	for _, colorIndex := range artDecoded.Body {
 		if colorIndex >= colorAmount {
-			return ErrInvalidArt
+			return artDecoded, ErrInvalidArt
 		}
 	}
 
-	return nil
+	return artDecoded, nil
 }

@@ -54,8 +54,8 @@ func (s *server) handlePostsFind() http.HandlerFunc {
 
 func (s *server) handlePostsCreate() http.HandlerFunc {
 	type request struct {
-		Title string     `json:"title" validate:"required,min=2,max=256"`
-		Art   models.Art `json:"art"`
+		Title string            `json:"title" validate:"required,min=2,max=256"`
+		Art   models.ArtEncoded `json:"art"`
 	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
