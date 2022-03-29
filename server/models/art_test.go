@@ -2,6 +2,7 @@ package models
 
 import (
 	"encoding/hex"
+	"image/color"
 	"math/rand"
 	"testing"
 
@@ -57,10 +58,14 @@ func TestArtDecode(t *testing.T) {
 
 		assert.NoError(t, err)
 		assert.Equal(t, Art{
-			Width:     3,
-			Height:    3,
-			TableSize: 3,
-			Body:      []uint8{0, 1, 2, 0, 1, 2, 0, 1, 2},
+			Width:  3,
+			Height: 3,
+			Body:   []uint8{0, 1, 2, 0, 1, 2, 0, 1, 2},
+			Palette: []color.Color{
+				color.RGBA{255, 0, 0, 255},
+				color.RGBA{0, 255, 0, 255},
+				color.RGBA{0, 0, 255, 255},
+			},
 		}, decoded)
 	})
 }

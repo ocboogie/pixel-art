@@ -4,20 +4,20 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/binary"
+	"image"
 	"image/color"
 	"io"
 	"math/rand"
 )
 
 type Art struct {
-	Width      uint16
-	Height     uint16
-	TableSize  uint8
-	ColorTable []color.Color
-	Body       []uint8
+	Width   uint16
+	Height  uint16
+	Palette color.Palette
+	Body    []uint8
 }
 
-// Form:
+// Example art:
 // Width|Height|Color Amount|Colors Table      |Body
 // 0003  0003   03           FF000000FF000000FF 000102000102000103
 //
@@ -81,23 +81,19 @@ func GenerateRandomArt(spec ArtSpec) (ArtEncoded, error) {
 	return ArtEncoded(data.Bytes()), nil
 }
 
-// func (art Art) ToPaletted() *image.Paletted {
-// 	decoder := bufio.NewReader(bytes.NewBuffer(art))
-//
-// 	widthB := make([]byte, 2)
-// 	var width uint16
-// 	if _, err := decoder.Read(widthB); err != nil {
-// 		return nil
-// 	}
-// 	width = binary.BigEndian.Uint16(widthB)
-//
-// }
-
-func (art ArtEncoded) Decode() (ArtDecoded, error) {
-
+func (art Art) ToPaletted() image.Paletted {
+	return image.Paletted{
+		Pix:    art.Body,
+		Stride: int(art.Width),
+		Rect: image.Rectangle{
+			Min: image.Point{0, 0},
+			Max: image.Point{int(art.Width), int(art.Height)},
+		},
+		Palette: art.Palette,
+	}
 }
 
-func (art Art) Decode(spec ArtSpec) (ArtDecoded, error) {
+func (art ArtEncoded) Decode(spec ArtSpec) (Art, error) {
 	decoder := bufio.NewReader(bytes.NewBuffer(art))
 	var artDecoded Art
 
@@ -129,11 +125,24 @@ func (art Art) Decode(spec ArtSpec) (ArtDecoded, error) {
 	if colorAmount != spec.Colors {
 		return artDecoded, ErrInvalidArt
 	}
-	artDecoded.TableSize = colorAmount
 
-	// Check and pass the color table
-	if _, err := decoder.Discard(int(colorAmount) * 3); err != nil {
-		return artDecoded, ErrInvalidArt
+	// Check and get the palette
+	artDecoded.Palette = make(color.Palette, colorAmount)
+	for i := 0; i < int(colorAmount); i++ {
+		red, err := decoder.ReadByte()
+		if err != nil {
+			return artDecoded, ErrInvalidArt
+		}
+		green, err := decoder.ReadByte()
+		if err != nil {
+			return artDecoded, ErrInvalidArt
+		}
+		blue, err := decoder.ReadByte()
+		if err != nil {
+			return artDecoded, ErrInvalidArt
+		}
+
+		artDecoded.Palette[i] = color.RGBA{red, green, blue, 255}
 	}
 
 	// Get and check the body

@@ -32,7 +32,7 @@
     <hr />
   {/if}
   <div>
-    <ArtRenderer class="w-full" data="AAMAAwP/AAAA/wAAAP8AAQIAAQIAAQI=" />
+    <ArtRenderer class="w-full" data={post.art} />
   </div>
   {#if frameless}
     <div

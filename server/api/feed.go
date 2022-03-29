@@ -1,6 +1,9 @@
 package api
 
 import (
+	"bytes"
+	"image"
+	"image/gif"
 	"net/http"
 	"time"
 )
@@ -42,6 +45,30 @@ func (s *server) handleFeedGet() http.HandlerFunc {
 		if err != nil {
 			s.error(w, r, unexpectedAPIError(err))
 			return
+		}
+		for _, post := range posts {
+			art, err := post.Art.Decode(s.artSpec)
+			if err != nil {
+				panic("")
+			}
+
+			paletted := art.ToPaletted()
+			var artGif gif.GIF
+			artGif.BackgroundIndex = 0
+
+			artGif.Delay = make([]int, 1)
+			artGif.Delay[0] = 0
+
+			artGif.Image = make([]*image.Paletted, 1)
+			artGif.Image[0] = &paletted
+
+			bytes := bytes.NewBuffer(make([]byte, 0))
+			if err := gif.EncodeAll(bytes, &artGif); err != nil {
+				println(err.Error())
+			}
+
+			post.Art = bytes.Bytes()
+			println(post.Art)
 		}
 		s.respond(w, r, http.StatusOK, posts)
 	}
