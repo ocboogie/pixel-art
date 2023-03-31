@@ -1,5 +1,5 @@
 # Pixel Art
-A work-in-process social media platform with a feed, follower system, custom avatar creator, and content favoriting
+A work-in-process social media platform with a feed, follower system, custom avatar creator, and content favoriting.
 
 Feed             |  User page
 :-------------------------:|:-------------------------:
